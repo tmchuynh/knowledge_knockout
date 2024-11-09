@@ -1,9 +1,7 @@
-// app/leaderboard/[slug]/page.tsx
-
 "use client";
 
-import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 type LeaderboardEntry = {
     username: string;

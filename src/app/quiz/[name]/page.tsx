@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; // use `next/navigation` for App Router
+import { useRouter } from 'next/navigation';
 import { Progress, Score } from '@/types';
 
 interface QuizDifficultyPageProps {
@@ -18,7 +18,6 @@ const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = props => {
     const [quizData, setQuizData] = useState<any>( null );
     const [difficultyLevels, setDifficultyLevels] = useState<number[]>( [] );
 
-    // console.log( 'Quiz ID from /quiz/[slug]/:', quizId );
 
     // useEffect( () => {
     //     const fetchQuizDetails = async () => {

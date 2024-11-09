@@ -1,5 +1,3 @@
-// app/quiz/[slug]/difficulty/[id]/page.tsx
-
 'use client';
 
 import { Answer, Question } from '@/types';
@@ -13,7 +11,6 @@ const QuizPage = () => {
     const segments = pathname.split( '/' ).filter( Boolean );
     const currentTitle = segments.length > 1 ? decodeURIComponent( segments[1] ) : '';
     const level = parseInt( segments[3] );
-    const question_id = parseInt( segments[4] );
 
     const [questions, setQuestions] = useState<Question[]>( [] );
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState( 0 );
@@ -26,7 +23,6 @@ const QuizPage = () => {
         const fetchQuestionData = async () => {
             if ( currentTitle ) {
                 try {
-                    // Fetch quiz data to get quiz_id
                     const quizRes = await fetch( `/api/quizzes/${ encodeURIComponent( currentTitle ) }` );
                     const quizData = await quizRes.json();
 
@@ -35,7 +31,6 @@ const QuizPage = () => {
                         return;
                     }
 
-                    // Fetch questions for the quiz
                     const questionsRes = await fetch(
                         `/api/quizzes/${ encodeURIComponent( currentTitle ) }/difficulty/${ level }/questions`
                     );
@@ -46,10 +41,8 @@ const QuizPage = () => {
                         return;
                     }
 
-                    // Shuffle questions
                     const questionsShuffled = questionsData.questions.sort( () => Math.random() - 0.5 );
 
-                    // Fetch answers for each question
                     const questionsWithAnswers = await Promise.all(
                         questionsShuffled.map( async ( question: Question ) => {
                             const answersRes = await fetch( `/api/questions/${ question.question_id }/answers` );
@@ -57,7 +50,7 @@ const QuizPage = () => {
 
                             if ( answersData.error ) {
                                 console.error( `Error fetching answers for question ${ question.question_id }:`, answersData.error );
-                                return { ...question, answers: [] }; // Return question with empty answers array
+                                return { ...question, answers: [] };
                             }
 
                             return { ...question, answers: answersData.answers };
@@ -124,7 +117,6 @@ const QuizPage = () => {
             } );
         }
 
-        // Automatically go to the next question
         goToNextQuestion();
     };
 
@@ -134,15 +126,13 @@ const QuizPage = () => {
         const userAnswer = userInput.trim();
 
         if ( userAnswer === '' ) {
-            // Automatically go to the next question if the input is empty
             goToNextQuestion();
             return;
         }
 
-        // Get the correct answers
         const correctAnswers = currentQuestion.answers
             .filter( ( answer: Answer ) => answer.is_correct )
-            .map( ( answer: Answer ) => answer.answer_text );
+            .map( ( answer: Answer ) => answer.content );
 
         let isCorrect = false;
 
@@ -162,7 +152,6 @@ const QuizPage = () => {
 
 
         if ( isCorrect ) {
-            // Update the score if the answer is correct
             if ( scoreId ) {
                 await fetch( '/api/scores/update', {
                     method: 'PUT',
@@ -172,7 +161,6 @@ const QuizPage = () => {
             }
         }
 
-        // Automatically go to the next question
         goToNextQuestion();
     };
 
@@ -184,7 +172,6 @@ const QuizPage = () => {
         if ( currentQuestionIndex < shuffledQuestions.length - 1 ) {
             setCurrentQuestionIndex( currentQuestionIndex + 1 );
         } else {
-            // Quiz is finished
             router.push( `/quiz/${ encodeURIComponent( currentTitle ) }/difficulty/${ level }/result?scoreId=${ scoreId }` );
         }
     };
@@ -193,7 +180,7 @@ const QuizPage = () => {
 
     return (
         <div className="flex flex-col min-h-full justify-center items-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
-            <h1 className="text-center text-2xl py-5 font-extrabold dark:text-white">{currentQuestion.question_text}</h1>
+            <h1 className="text-center text-2xl py-5 font-extrabold dark:text-white">{currentQuestion.content}</h1>
             {currentQuestion.question_type === 'multiple_choice' || currentQuestion.question_type == "true_false" ? (
                 <div className='w-full flex flex-col'>
                     <div className="grid grid-cols-2 gap-4 p-3">
@@ -202,7 +189,7 @@ const QuizPage = () => {
                                 key={answers.answer_id}
                                 onClick={() => handleSubmitAnswer( answers.is_correct )}
                             >
-                                {answers.answer_text}
+                                {answers.content}
                             </button>
                         ) )}
                     </div>

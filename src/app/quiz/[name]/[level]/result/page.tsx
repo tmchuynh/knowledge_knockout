@@ -21,14 +21,13 @@ const ResultPage = () => {
             }
 
             try {
-                // First fetch: Get the score data
                 const res = await fetch( `/api/scores/${ scoreId }` );
                 const data = await res.json();
 
                 console.log( 'Score data:', data );
 
                 if ( res.ok ) {
-                    const scoreData = data[0]; // Adjust if data is not an array
+                    const scoreData = data[0];
                     setScore( scoreData.score );
                     setTotalQuestions( scoreData.total_questions );
                     // setQuizId( scoreData.quiz_id );
@@ -36,7 +35,6 @@ const ResultPage = () => {
                     console.log( 'Quiz ID:', scoreData.quiz_id );
                     console.log( 'score', scoreData.score );
 
-                    // Second fetch: Get the quiz data using quiz_id from scoreData
                     try {
                         const resQ = await fetch( `/api/quiz/${ scoreData.quiz_id }` );
                         const dataQ = await resQ.json();
@@ -44,8 +42,7 @@ const ResultPage = () => {
                         console.log( 'Quiz data:', dataQ );
 
                         if ( resQ.ok ) {
-                            const quizData = dataQ[0]; // Adjust if dataQ is not an array
-                            // You can set additional state here if needed
+                            const quizData = dataQ[0];
                         } else {
                             console.error( 'Failed to fetch quiz:', dataQ.error );
                         }

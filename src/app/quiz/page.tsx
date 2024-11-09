@@ -1,4 +1,3 @@
-// app/quiz/page.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -7,6 +6,7 @@ import { Progress } from '@/types';
 const QuizSelectionPage: React.FC = () => {
     const [quizProgress] = useState<Progress[]>( [] );
     const [quizNames] = useState<string[]>( [] );
+    const [progress, setProgress] = useState<Progress>();
 
     // useEffect( () => {
     //     const fetchQuizNames = async () => {
@@ -74,7 +74,7 @@ const QuizSelectionPage: React.FC = () => {
 
 
     const getButtonClass = ( quizId: string ): string => {
-        const inProgress = quizProgress.some( ( item ) => item.quizId === quizId && item.current_question_index > 0 );
+        const inProgress = quizProgress.some( ( item ) => item.quiz_id === quizId && item.progress_id === progress?.progress_id );
         return inProgress ? 'bg-amber-700 hover:bg-amber-600' : 'bg-zinc-700 hover:bg-zinc-600';
     };
 
