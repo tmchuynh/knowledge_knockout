@@ -15,13 +15,11 @@ CREATE TABLE IF NOT EXISTS users (
     provider VARCHAR(50),
     provider_id VARCHAR(250),
     reset_password_token VARCHAR(250),
-    reset_password_expires DATETIME DEFAULT date_add(
-        CURRENT_TIMESTAMP,
-        INTERVAL '30:00' MINUTE_SECOND
-    ),
+    reset_password_expires DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
 
 -- Create quizzes table
 CREATE TABLE IF NOT EXISTS quizzes (

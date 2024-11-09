@@ -1,0 +1,7 @@
+{
+    "database-client.disableSqlCodeLenNew": true,
+    "database-client.splitSQLByNewLine": false,
+    "database-client.variableIndicator": [
+        ":"
+    ]
+}
