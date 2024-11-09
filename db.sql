@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
 -- Create questions table
 CREATE TABLE IF NOT EXISTS questions (
     question_id VARCHAR(250) NOT NULL PRIMARY KEY,
-    quiz_id INT NOT NULL,
+    quiz_id VARCHAR(250) NOT NULL,
     content TEXT NOT NULL,
     question_type ENUM(
         'multiple_choice',
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS questions (
 -- Create answers table
 CREATE TABLE IF NOT EXISTS answers (
     answer_id VARCHAR(250) NOT NULL PRIMARY KEY,
-    question_id INT NOT NULL,
+    question_id VARCHAR(250) NOT NULL,
     content TEXT NOT NULL,
     is_correct BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY (question_id) REFERENCES questions (question_id) ON DELETE CASCADE
@@ -50,9 +50,9 @@ CREATE TABLE IF NOT EXISTS answers (
 CREATE TABLE IF NOT EXISTS progress (
     progress_id VARCHAR(250) NOT NULL PRIMARY KEY,
     user_id VARCHAR(250) NOT NULL,
-    quiz_id INT NOT NULL,
-    question_id INT DEFAULT 0,
-    score_id INT NOT NULL DEFAULT 0,
+    quiz_id VARCHAR(250) NOT NULL,
+    question_id VARCHAR(250) DEFAULT 0,
+    score_id VARCHAR(250) NOT NULL DEFAULT 0,
     level INT NOT NULL DEFAULT 1,
     total_questions INT NOT NULL,
     completed BOOLEAN DEFAULT FALSE,
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS progress (
 CREATE TABLE IF NOT EXISTS scores (
     score_id VARCHAR(250) NOT NULL PRIMARY KEY,
     user_id VARCHAR(250) NOT NULL,
-    quiz_id INT NOT NULL,
+    quiz_id VARCHAR(250) NOT NULL,
     level INT NOT NULL DEFAULT 1,
     score INT NOT NULL DEFAULT 0,
     total_questions INT NOT NULL,
