@@ -91,7 +91,7 @@ const QuizSelectionPage: React.FC = () => {
                     <Button
                         key={index}
                         onClick={() => handleQuizSelection( quizName.name )}
-                        className={`button text-white ${ getButtonClass( quizName.name ) } focus:ring-4 focus:outline-none font-medium rounded-lg text-md w-full sm:w-auto px-5 py-2.5 text-center`}
+                        className={`${ getButtonClass( quizName.name ) }`}
                         label={quizName.name}
                     />
                 ) )}

@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import "./styles.css";
-import Button from '@/app/components/ui/button';
 import Input from '@/app/components/ui/input';
 
 const LoginPage: React.FC = () => {
