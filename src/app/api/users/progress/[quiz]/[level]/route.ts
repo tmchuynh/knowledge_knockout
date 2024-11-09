@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function POST( request: Request ) {
     try {
         const body = await request.json();
-        const { userId, quizId, updated_at, questionId, scoreId, completed } = body;
+        const { userId, first_name, last_name, username, password, email, provider, providerId, quizId, updated_at, questionId, scoreId, completed } = body;
 
         if ( !userId || !quizId ) {
             return NextResponse.json( { error: 'User ID and quiz ID are required' }, { status: 400 } );
@@ -16,7 +16,7 @@ export async function POST( request: Request ) {
         } );
 
         if ( !userExists ) {
-            userExists = await addUserToDatabase( userId );
+            userExists = await addUserToDatabase( userId, first_name, last_name, username, password, email, provider, providerId );
             if ( !userExists ) {
                 return NextResponse.json( { error: 'User could not be created' }, { status: 500 } );
             }

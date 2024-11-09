@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Progress, Score } from '@/types';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
 interface QuizDifficultyPageProps {
     params: {

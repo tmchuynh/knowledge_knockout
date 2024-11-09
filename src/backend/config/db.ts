@@ -1,6 +1,6 @@
-import { Sequelize } from 'sequelize';
-import mysql2 from 'mysql2';
 import dotenv from 'dotenv';
+import mysql2 from 'mysql2';
+import { Sequelize } from 'sequelize';
 dotenv.config();
 
 

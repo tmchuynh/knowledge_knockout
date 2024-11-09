@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
 import { Progress } from '@/types';
+import React, { useState } from 'react';
 
 const QuizSelectionPage: React.FC = () => {
     const [quizProgress] = useState<Progress[]>( [] );

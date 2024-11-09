@@ -4,7 +4,7 @@ export const getQuizByTitle = async ( title: string ) => {
     try {
         // Fetch the quiz by title from the database
         const quiz = await Quiz.findOne( {
-            where: { title },
+            where: { name: title },
         } );
 
         if ( !quiz ) {

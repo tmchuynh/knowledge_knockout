@@ -1,4 +1,4 @@
-import '../models'; 
+import '../models';
 import sequelize from './config/db';
 
 ( async () => {
@@ -8,6 +8,6 @@ import sequelize from './config/db';
     } catch ( error ) {
         console.error( 'Failed to sync database:', error );
     } finally {
-        await sequelize.close(); 
+        await sequelize.close();
     }
 } )();

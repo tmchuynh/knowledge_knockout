@@ -1,11 +1,32 @@
 import { User } from '../models';
 
 
-export async function addUserToDatabase( user_id: string ) {
+export async function addUserToDatabase(
+    user_id: string,
+    first_name: string,
+    last_name: string,
+    username: string,
+    password: string,
+    email: string,
+    provider: string | null,
+    providerId: string | null,
+) {
     try {
         // If user doesn't exist, create a new entry
-        const date = new Date();
-        const user = await User.create( { user_id, created_at: date } );
+        const user = await User.create( {
+            user_id,
+            firstName: first_name,
+            lastName: last_name,
+            username: username,
+            password: password,
+            email: email,
+            provider: provider,
+            providerId: providerId,
+            reset_password_token: null,
+            reset_password_expires: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        } );
         console.log( "User added to database:", user );
 
         return user;
@@ -15,7 +36,7 @@ export async function addUserToDatabase( user_id: string ) {
     }
 }
 
-export async function processUser( user_id: any ) {
+export async function processUser( user_id: string, first_name: string, last_name: string, username: string, password: string, email: string, provider: string | null, providerId: string | null ) {
     try {
         // Step 1: Retrieve the user data from Auth0
         const user = await getUserById( user_id );
@@ -25,7 +46,7 @@ export async function processUser( user_id: any ) {
         }
 
         // Step 2: Store or verify user in MySQL
-        const newUser = await addUserToDatabase( user_id );
+        const newUser = await addUserToDatabase( user_id, first_name, last_name, username, password, email, provider, providerId );
         return newUser;
     } catch ( error ) {
         console.error( "Error processing user:", error );

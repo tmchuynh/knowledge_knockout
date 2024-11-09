@@ -9,7 +9,6 @@ export function isValidPassword( password: string ): boolean {
         special: /[!@#$%^&*(),.?":{}|<>]/.test( password ),
     };
 
-    // Return true only if all requirements are met
     return Object.values( requirements ).every( ( value ) => value === true );
 }
 

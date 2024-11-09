@@ -1,9 +1,7 @@
-// app/[id]/scores/page.tsx
 "use client";
-import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { Score } from '@/types';
-
+import { useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 const ScoresPage: React.FC = () => {
     const searchParams = useSearchParams();
@@ -13,19 +11,18 @@ const ScoresPage: React.FC = () => {
     const [filterQuiz, setFilterQuiz] = useState( '' );
     const [selectedDates, setSelectedDates] = useState<Date[]>( [] );
 
-    // Load scores from localStorage for the specific user
     useEffect( () => {
         if ( id ) {
             const userScoresKey = `quizScores_${ id }`;
             const scores = JSON.parse( localStorage.getItem( userScoresKey ) || '[]' );
             setPastScores( scores );
-            setFilteredScores( scores ); // Initial filtered scores
+            setFilteredScores( scores );
         }
     }, [id] );
 
     // Sort scores by quiz name
     const sortByQuiz = () => {
-        const sorted = [...filteredScores].sort( ( a, b ) => a.quiz.localeCompare( b.quiz ) );
+        const sorted = [...filteredScores].sort( ( a, b ) => a.quiz_id.localeCompare( b.quiz_id ) );
         setFilteredScores( sorted );
     };
 
@@ -47,7 +44,7 @@ const ScoresPage: React.FC = () => {
         setFilterQuiz( selectedQuiz );
 
         if ( selectedQuiz ) {
-            setFilteredScores( pastScores.filter( score => score.quiz === selectedQuiz ) );
+            setFilteredScores( pastScores.filter( score => score.quiz_id === selectedQuiz ) );
         } else {
             setFilteredScores( pastScores );
         }
@@ -85,7 +82,7 @@ const ScoresPage: React.FC = () => {
                     className="btn-secondary"
                 >
                     <option value="">Filter by Quiz</option>
-                    {[...new Set( pastScores.map( score => score.quiz ) )].map( quizName => (
+                    {[...new Set( pastScores.map( score => score.quiz_id ) )].map( quizName => (
                         <option key={quizName} value={quizName}>{quizName}</option>
                     ) )}
                 </select>
@@ -110,7 +107,7 @@ const ScoresPage: React.FC = () => {
                         const formattedTime = date.toLocaleTimeString();
                         return (
                             <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                <td className="p-4 border-b">{score.quiz}</td>
+                                <td className="p-4 border-b">{score.quiz_id}</td>
                                 <td className="p-4 border-b">{`${ score.score } / ${ score.total_questions }`}</td>
                                 <td className="p-4 border-b">{percentage}%</td>
                                 <td className="p-4 border-b">{formattedDate}</td>

@@ -3,10 +3,12 @@ import { Progress } from "../models";
 export const addOrUpdateQuizProgress = async (
     userId: string,
     quizId: string,
-    currentQuestionIndex: number = 0,
-    score: number = 0,
-    completed: boolean = false,
-    dateCompleted: Date | null = null
+    scoreId: string,
+    questionId: string,
+    level: number,
+    updated_at: Date,
+    completed: boolean,
+    total_questions: number
 ): Promise<void> => {
     try {
         const existingProgress = await Progress.findOne( {
@@ -18,19 +20,25 @@ export const addOrUpdateQuizProgress = async (
 
         if ( existingProgress ) {
             await existingProgress.update( {
-                current_question_index: currentQuestionIndex,
-                score: score,
-                completed: completed,
-                date_completed: dateCompleted,
+                quiz_id: quizId,
+                score_id: scoreId,
+                question_id: questionId,
+                completed,
+                updatedAt: updated_at,
             } );
         } else {
+            const progress_id = `${ userId }-${ quizId }-${ level }`;
             await Progress.create( {
+                progress_id,
+                level,
                 user_id: userId,
                 quiz_id: quizId,
-                current_question_index: currentQuestionIndex,
-                score: score,
-                completed: completed,
-                date_completed: dateCompleted,
+                score_id: scoreId,
+                question_id: questionId,
+                total_questions,
+                completed,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             } );
         }
     } catch ( error ) {

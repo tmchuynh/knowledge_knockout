@@ -9,8 +9,10 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
     declare username: string;
     declare password: string;
     declare email: string;
-    declare provider: string;
+    declare provider: string | null;
     declare providerId: string | null;
+    declare reset_password_token: string | null;
+    declare reset_password_expires: Date | null;
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
 }
@@ -45,10 +47,17 @@ User.init(
         },
         provider: {
             type: DataTypes.STRING( 50 ),
-            allowNull: false,
-            defaultValue: 'credentials',
+            allowNull: true,
         },
         providerId: {
+            type: DataTypes.STRING( 250 ),
+            allowNull: true,
+        },
+        reset_password_expires: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+        reset_password_token: {
             type: DataTypes.STRING( 250 ),
             allowNull: true,
         },

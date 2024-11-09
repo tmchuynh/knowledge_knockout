@@ -1,4 +1,3 @@
-// app/[id]/dashboard/page.tsx
 'use client';
 
 import { User } from '@/types';
@@ -7,7 +6,6 @@ import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import ColorPickerComponent from '../../components/ColorPicker';
 import ContributionsGrid from '../../components/ContributionsGrid';
-import router from '@/backend/routes/userRoutes';
 
 const DashboardPage: React.FC = () => {
     const [userProfile, setUserProfile] = useState<User | null>( null );
@@ -38,7 +36,6 @@ const DashboardPage: React.FC = () => {
             console.error( 'Error fetching user profile:', error );
         }
     };
-
 
     return (
         <>

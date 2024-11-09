@@ -1,18 +1,5 @@
 {
-  "name": "knowledge_knockout",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
-    "build": "next build",
-    "start": "next start",
-    "start-server": "node dist/server.js",
-    "dev-server": "tsx src/backend/server.ts",
-    "build-server": "tsc",
-    "tailwind": "npx tailwindcss -i ./src/app/globals.css -o ./src/app/styles.css --watch",
-    "db:sync": "ts-node src/scripts/sync.ts"
-  },
+  "author": "Tina Huynh",
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.3",
     "@auth/sequelize-adapter": "^2.7.3",
@@ -43,6 +30,7 @@
     "tsx": "^4.19.2",
     "uuid": "^11.0.2"
   },
+  "description": "This is a web-based **Quiz Application** that allows users to register, log in, take quizzes, and view their past quiz scores. The application stores user data, progress, scores and activity in a MySQL database and uses Sequelize to interact with the database on the backend.",
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18.3.12",
@@ -54,8 +42,6 @@
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.13.0"
   },
-  "description": "This is a web-based **Quiz Application** that allows users to register, log in, take quizzes, and view their past quiz scores. The application stores user data, progress, scores and activity in a MySQL database and uses Sequelize to interact with the database on the backend.",
-  "main": "server.ts",
   "keywords": [
     "quiz",
     "flashcards",
@@ -81,6 +67,20 @@
     "achievements",
     "user profile"
   ],
-  "author": "Tina Huynh",
-  "license": "MIT"
+  "license": "MIT",
+  "main": "server.ts",
+  "name": "knowledge_knockout",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "build-server": "tsc",
+    "db:sync": "ts-node src/scripts/sync.ts",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev-server": "tsx src/backend/server.ts",
+    "start": "next start",
+    "start-server": "node dist/server.js",
+    "tailwind": "npx tailwindcss -i ./src/app/globals.css -o ./src/app/styles.css --watch"
+  },
+  "type": "module",
+  "version": "0.1.0"
 }

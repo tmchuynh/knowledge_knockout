@@ -1,12 +1,11 @@
-// src/app/layout.tsx
 "use client";
 
-import React from "react";
-import "./styles.css";
-import Header from "./components/Header";
 import dotenv from 'dotenv';
 import Head from "next/head";
+import React from "react";
 import { NotFoundProvider, useNotFound } from "../context/NotFoundContext";
+import Header from "./components/Header";
+import "./styles.css";
 
 export default function RootLayout( {
     children,

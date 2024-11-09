@@ -1,11 +1,11 @@
-import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import './models/Score';
-import './models/Quiz';
-import sequelize from './config/db';
-import userRoutes from './routes/userRoutes';
+import express from 'express';
 import setupAssociations from './associations';
+import sequelize from './config/db';
+import './models/Quiz';
+import './models/Score';
+import userRoutes from './routes/userRoutes';
 
 dotenv.config();
 

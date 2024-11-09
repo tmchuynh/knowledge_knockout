@@ -1,14 +1,14 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import LinkedInProvider from "next-auth/providers/linkedin";
-import SpotifyProvider from "next-auth/providers/spotify";
-import bcrypt from "bcrypt";
 import sequelize from "@/backend/config/db";
-import { Op } from "sequelize";
 import { User } from "@/backend/models";
 import SequelizeAdapter from "@auth/sequelize-adapter";
+import bcrypt from "bcrypt";
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import LinkedInProvider from "next-auth/providers/linkedin";
+import SpotifyProvider from "next-auth/providers/spotify";
+import { Op } from "sequelize";
 import { v4 as uuidv4 } from 'uuid';
 
 // NextAuth configuration

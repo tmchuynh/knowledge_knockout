@@ -1,8 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React from "react";
 import "./styles.css";
-import { useRouter } from "next/navigation";
 
 const LoginPage: React.FC = () => {
     const router = useRouter();
