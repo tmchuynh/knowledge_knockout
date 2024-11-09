@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 
 // Helper function to validate email format
 export function validateEmail( email: string ): boolean {
@@ -5,18 +6,13 @@ export function validateEmail( email: string ): boolean {
     return re.test( email );
 }
 
-// Show error for a specific field
-export function showError( elementId: string, message: string ): void {
-    const element = document.getElementById( elementId ) as HTMLInputElement;
-    if ( element ) {
-        element.classList.add( "border-red-500" );
-    }
-    alert( message ); // Replace with custom error handling if preferred
+// Derive a key using PBKDF2
+export function deriveKey( password: string ): string {
+    return crypto.pbkdf2Sync( password, uuid( 25 ), 100000, 64, 'sha512' ).toString( 'hex' );
 }
 
-// Generate a random unique ID (example function)
-export function generateUniqueId(): string {
-    return `id_${ Math.random().toString( 36 ).substring( 2, 9 ) }`;
+export function uuid( length: number = 16 ): string {
+    return crypto.randomBytes( length ).toString( 'hex' );
 }
 
 // Registration validation function

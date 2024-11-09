@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export function isValidPassword( password: string ): boolean {
     const requirements = {
         length: password.length >= 8 && password.length <= 15,
@@ -9,4 +11,8 @@ export function isValidPassword( password: string ): boolean {
 
     // Return true only if all requirements are met
     return Object.values( requirements ).every( ( value ) => value === true );
+}
+
+export function hashPassword( password: string ): string {
+    return crypto.createHash( 'sha256' ).update( password ).digest( 'hex' );
 }
