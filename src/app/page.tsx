@@ -1,11 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import "./styles.css";
+import Button from '@/app/components/ui/button';
+import Input from '@/app/components/ui/input';
 
 const LoginPage: React.FC = () => {
     const router = useRouter();
+    const [userData, setUserData] = useState( {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    } );
 
     const handleLogin = ( event: React.FormEvent<HTMLFormElement> ) => {
         event.preventDefault();
@@ -33,65 +42,138 @@ const LoginPage: React.FC = () => {
             } );
     };
 
+    const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
+        const { name, value } = e.target;
+        setUserData( ( prevData ) => ( {
+            ...prevData,
+            [name]: value
+        } ) );
+    };
+
+    const handleSubmit = ( e: React.FormEvent ) => {
+        e.preventDefault();
+        // Handle form submission
+    };
+
     return (
         <div className="grid md:grid-cols-2 md:gap-6">
+            {/* Register Form */}
             <div>
                 <h2 className="text-4xl font-extrabold mb-5 text-center pt-8">Register</h2>
-                <form className="mx-auto w-full p-10">
+                <form className="mx-auto w-full p-10" onSubmit={handleSubmit}>
                     <div className="grid md:grid-cols-2 md:gap-6">
                         <div className="relative z-0 w-full mb-5 group">
-                            <input type="text" name="register_fName" id="register_fName" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                            <label htmlFor="register_fName" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">First name</label>
+                            <Input
+                                id="register_fName"
+                                type="text"
+                                name="firstName"
+                                value={userData.firstName}
+                                onChange={handleInputChange}
+                                placeholder="First name"
+                            />
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
-                            <input type="text" name="registerlName" id="registerlName" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                            <label htmlFor="registerlName" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Last name</label>
+                            <Input
+                                id="register_lName"
+                                type="text"
+                                name="lastName"
+                                value={userData.lastName}
+                                onChange={handleInputChange}
+                                placeholder="Last name"
+                            />
                         </div>
                     </div>
                     <div className="relative z-0 w-full mb-5 group">
-                        <input type="email" name="register_email" id="register_email" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                        <label htmlFor="register_email" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
+                        <Input
+                            id="register_email"
+                            type="email"
+                            name="email"
+                            value={userData.email}
+                            onChange={handleInputChange}
+                            placeholder="Email address"
+                        />
                     </div>
                     <div className="grid md:grid-cols-2 md:gap-6">
                         <div className="relative z-0 w-full mb-5 group">
-                            <input type="password" name="register_password" id="register_password" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                            <label htmlFor="register_password" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+                            <Input
+                                id="register_password"
+                                type="password"
+                                name="password"
+                                value={userData.password}
+                                onChange={handleInputChange}
+                                placeholder="Password"
+                            />
                         </div>
                         <div className="relative z-0 w-full mb-5 group">
-                            <input type="password" name="register_cPassword" id="register_cPassword" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                            <label htmlFor="register_cPassword" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirm password</label>
+                            <Input
+                                id="register_cPassword"
+                                type="password"
+                                name="confirmPassword"
+                                value={userData.confirmPassword}
+                                onChange={handleInputChange}
+                                placeholder="Confirm password"
+                            />
                         </div>
                     </div>
-                    <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                    <button type="submit" className="button text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-md w-full sm:w-auto px-5 py-2.5 text-center">
+                        Submit
+                    </button>
                 </form>
             </div>
+
+            {/* Login Form */}
             <div>
                 <h2 className="text-4xl font-extrabold mb-5 text-center pt-8">Login</h2>
-                <form className="mx-auto w-full p-10">
+                <form className="mx-auto w-full p-10" onSubmit={handleSubmit}>
                     <div className="relative z-0 w-full mb-5 group">
-                        <input type="email" name="login_email" id="login_email" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                        <label htmlFor="login_email" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Email address</label>
+                        <Input
+                            id="login_email"
+                            type="email"
+                            name="email"
+                            value={userData.email}
+                            onChange={handleInputChange}
+                            placeholder="Email address"
+                        />
                     </div>
                     <div className="relative z-0 w-full mb-5 group">
-                        <input type="password" name="login_password" id="login_password" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                        <label htmlFor="login_password" className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
+                        <Input
+                            id="login_password"
+                            type="password"
+                            name="password"
+                            value={userData.password}
+                            onChange={handleInputChange}
+                            placeholder="Password"
+                        />
                     </div>
-
                     <p className="text-gray-500 dark:text-gray-400 py-5">
-                        <a href="#" id="reset_password" className="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                        <a
+                            href="#"
+                            id="reset_password"
+                            className="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        >
                             Forgot Password
-                            <svg className="w-4 h-4 ms-2 rtl:rotate-180" aria-hidden="true" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                            <svg
+                                className="w-4 h-4 ms-2 rtl:rotate-180"
+                                aria-hidden="true"
+                                fill="none"
+                                viewBox="0 0 14 10"
+                            >
+                                <path
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                                />
                             </svg>
                         </a>
                     </p>
-
-
-                    <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                    <button type="submit" className="button text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-md w-full sm:w-auto px-5 py-2.5 text-center">
+                        Submit
+                    </button>
                 </form>
-            </div >
-        </div >
-
+            </div>
+        </div>
     );
 };
 
