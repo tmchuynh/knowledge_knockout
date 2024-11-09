@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Create quizzes table
 CREATE TABLE IF NOT EXISTS quizzes (
-    quiz_id INT NOT NULL PRIMARY KEY,
+    quiz_id VARCHAR(250) NOT NULL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT DEFAULT NULL,
     total_questions INT NOT NULL DEFAULT 1,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
 
 -- Create questions table
 CREATE TABLE IF NOT EXISTS questions (
-    question_id INT NOT NULL PRIMARY KEY,
+    question_id VARCHAR(250) NOT NULL PRIMARY KEY,
     quiz_id INT NOT NULL,
     content TEXT NOT NULL,
     question_type ENUM(
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS questions (
 
 -- Create answers table
 CREATE TABLE IF NOT EXISTS answers (
-    answer_id INT NOT NULL PRIMARY KEY,
+    answer_id VARCHAR(250) NOT NULL PRIMARY KEY,
     question_id INT NOT NULL,
     content TEXT NOT NULL,
     is_correct BOOLEAN NOT NULL DEFAULT 0,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS answers (
 
 -- Create progress table
 CREATE TABLE IF NOT EXISTS progress (
-    progress_id INT NOT NULL PRIMARY KEY,
+    progress_id VARCHAR(250) NOT NULL PRIMARY KEY,
     user_id VARCHAR(250) NOT NULL,
     quiz_id INT NOT NULL,
     question_id INT DEFAULT 0,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS progress (
 
 -- Create scores table
 CREATE TABLE IF NOT EXISTS scores (
-    score_id INT NOT NULL PRIMARY KEY,
+    score_id VARCHAR(250) NOT NULL PRIMARY KEY,
     user_id VARCHAR(250) NOT NULL,
     quiz_id INT NOT NULL,
     level INT NOT NULL DEFAULT 1,
