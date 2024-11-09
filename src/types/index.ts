@@ -29,6 +29,8 @@ export interface Score {
     score: number;
     total_questions: number;
     quiz_date: Date;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export interface LeaderboardEntry {
@@ -63,14 +65,3 @@ export interface Quiz {
     level: number[];
 }
 
-export interface Score {
-    score_id: string;
-    user_id: string;
-    quiz_id: string;
-    level: number;
-    score: number;
-    total_questions: number;
-    quiz_date: Date;
-    created_at: Date;
-    updated_at: Date;
-}
