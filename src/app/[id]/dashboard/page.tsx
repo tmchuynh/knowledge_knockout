@@ -2,25 +2,28 @@
 'use client';
 
 import { User } from '@/types';
+import { useSession } from "next-auth/react";
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ColorPickerComponent from '../../components/ColorPicker';
 import ContributionsGrid from '../../components/ContributionsGrid';
+import router from '@/backend/routes/userRoutes';
 
 const DashboardPage: React.FC = () => {
     const [userProfile, setUserProfile] = useState<User | null>( null );
     const [baseColor, setBaseColor] = useState( '#6a40d4' );
+    const { data: session, status } = useSession();
+    const { id } = useParams();
+    const router = useRouter();
 
-    // useEffect( () => {
-    //     if ( !isLoading ) {
-    //         if ( !user || user.sub !== params.id ) {
-    //             router.push( '/api/auth/login' );
-    //         } else {
-    //             console.log( user.sub );
-    //             loadUserProfile( user.sub );
-    //         }
-    //     }
-    // }, [isLoading, user, params.id] );
+    useEffect( () => {
+        if ( !session?.user || session?.user.name !== id ) {
+            router.push( '/api/auth/login' );
+        } else {
+            console.log( session?.user.name );
+            loadUserProfile( session?.user.name );
+        }
+    }, [session?.user, id] );
 
     const loadUserProfile = async ( userId: string | undefined ) => {
         try {
