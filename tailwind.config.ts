@@ -10,7 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'cool-blue': {
+        'blue': {
           100: '#dbeafe',
           200: '#bfdbfe',
           300: '#93c5fd',
@@ -21,7 +21,7 @@ const config: Config = {
           800: '#1e40af',
           900: '#1e3a8a',
         },
-        'cool-teal': {
+        'teal': {
           100: '#a7f3d0',
           200: '#6ee7b7',
           300: '#34d399',
@@ -32,7 +32,7 @@ const config: Config = {
           800: '#065f46',
           900: '#064e36',
         },
-        'cool-indigo': {
+        'indigo': {
           100: '#c7d2fe',
           200: '#a5b4fc',
           300: '#818cf8',
@@ -43,7 +43,7 @@ const config: Config = {
           800: '#312e81',
           900: '#2c2a6e',
         },
-        'cool-mint': {
+        'mint': {
           100: '#bbf7d0',
           200: '#86efac',
           300: '#6ee7b7',
@@ -54,7 +54,7 @@ const config: Config = {
           800: '#065f46',
           900: '#064e36',
         },
-        'cool-purple': {
+        'purple': {
           100: '#e9d5ff',
           200: '#d8b4fe',
           300: '#c084fc',
@@ -67,7 +67,7 @@ const config: Config = {
         },
 
         // Complementary colors
-        'cool-red': {
+        'red': {
           100: '#fee2e2',
           200: '#fecaca',
           300: '#fca5a5',
@@ -78,7 +78,7 @@ const config: Config = {
           800: '#991b1b',
           900: '#7f1d1d',
         },
-        'cool-green': {
+        'green': {
           100: '#d1fae5',
           200: '#a7f3d0',
           300: '#6ee7b7',
@@ -89,7 +89,7 @@ const config: Config = {
           800: '#065f46',
           900: '#064e36',
         },
-        'cool-yellow': {
+        'yellow': {
           100: '#fef3c7',
           200: '#fde68a',
           300: '#fcd34d',
@@ -100,7 +100,7 @@ const config: Config = {
           800: '#b45309',
           900: '#9c2c00',
         },
-        'cool-brown': {
+        'brown': {
           100: '#e2d9d2',
           200: '#d1b6ab',
           300: '#b98e7e',

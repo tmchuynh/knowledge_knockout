@@ -916,7 +916,7 @@ video {
 
 .bg-green-700 {
   --tw-bg-opacity: 1;
-  background-color: rgb(21 128 61 / var(--tw-bg-opacity));
+  background-color: rgb(4 120 87 / var(--tw-bg-opacity));
 }
 
 .bg-transparent {
@@ -1172,7 +1172,7 @@ body {
 
 .hover\:bg-green-800:hover {
   --tw-bg-opacity: 1;
-  background-color: rgb(22 101 52 / var(--tw-bg-opacity));
+  background-color: rgb(6 95 70 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-zinc-600:hover {
