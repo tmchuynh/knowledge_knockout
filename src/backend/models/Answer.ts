@@ -20,7 +20,7 @@ const Answer = sequelize.define(
                 key: 'question_id',
             },
         },
-        answer_text: {
+        content: {
             type: DataTypes.TEXT,
             allowNull: false,
         },
@@ -36,8 +36,6 @@ const Answer = sequelize.define(
 );
 
 // Associations
-Answer.belongsTo( Question, { foreignKey: 'question_id', onDelete: 'CASCADE' } );
-Question.hasMany( Answer, { foreignKey: 'question_id', onDelete: 'CASCADE' } );
 
 
 export default Answer;

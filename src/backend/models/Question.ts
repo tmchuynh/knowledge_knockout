@@ -20,7 +20,7 @@ const Question = sequelize.define(
                 key: 'quiz_id',
             },
         },
-        question_text: {
+        content: {
             type: DataTypes.TEXT,
             allowNull: false,
         },
@@ -28,11 +28,6 @@ const Question = sequelize.define(
             type: DataTypes.ENUM( 'multiple_choice', 'true_false', 'written' ),
             allowNull: false,
             defaultValue: 'multiple_choice',
-        },
-        level: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: 1,
         },
     },
     {
@@ -42,7 +37,6 @@ const Question = sequelize.define(
 );
 
 // Associations
-Question.belongsTo( Quiz, { foreignKey: 'quiz_id', onDelete: 'CASCADE' } );
-Quiz.hasMany( Question, { foreignKey: 'quiz_id', onDelete: 'CASCADE' } );
+
 
 export default Question;

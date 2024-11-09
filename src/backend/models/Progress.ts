@@ -29,18 +29,30 @@ const Progress = sequelize.define(
                 key: 'quiz_id',
             },
         },
-        current_question_index: {
-            type: DataTypes.INTEGER,
-            defaultValue: 0,
-        },
-        score: {
+        question_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: 0,
+            references: {
+                model: 'questions',
+                key: 'question_id',
+            },
         },
-        completed: {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
+        score_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'scores',
+                key: 'score_id',
+            },
+        },
+        level: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 1,
+        },
+        total_questions: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
         date_completed: {
             type: DataTypes.DATE,
@@ -48,17 +60,10 @@ const Progress = sequelize.define(
         },
     },
     {
-        tableName: 'user_quiz_progress',
+        tableName: 'progress',
         timestamps: false,
     }
 );
-
-// Associations
-Progress.belongsTo( User, { foreignKey: 'user_id', onDelete: 'CASCADE' } );
-User.hasMany( Progress, { foreignKey: 'user_id', onDelete: 'CASCADE' } );
-
-Progress.belongsTo( Quiz, { foreignKey: 'quiz_id', targetKey: 'quiz_id', onDelete: 'CASCADE' } );
-Quiz.hasMany( Progress, { foreignKey: 'quiz_id', sourceKey: 'quiz_id', onDelete: 'CASCADE' } );
 
 
 export default Progress;

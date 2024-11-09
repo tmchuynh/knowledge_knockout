@@ -9,8 +9,12 @@ const Quiz = sequelize.define(
             autoIncrement: true,
             primaryKey: true,
         },
-        title: {
+        name: {
             type: DataTypes.STRING( 100 ),
+            allowNull: false,
+        },
+        category: {
+            type: DataTypes.STRING( 50 ),
             allowNull: false,
         },
         description: {
@@ -20,10 +24,6 @@ const Quiz = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 1,
-        },
-        created_at: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
         },
     },
     {

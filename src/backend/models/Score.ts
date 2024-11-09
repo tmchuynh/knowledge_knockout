@@ -30,7 +30,10 @@ const Score = sequelize.define(
         level: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            defaultValue: 1,
+            references: {
+                model: 'quizzes',
+                key: 'level',
+            },
         },
         score: {
             type: DataTypes.INTEGER,
@@ -45,6 +48,14 @@ const Score = sequelize.define(
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
+        created_at: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+        },
+        updated_at: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+        },
     },
     {
         tableName: 'scores',
@@ -53,10 +64,5 @@ const Score = sequelize.define(
 );
 
 // Associations
-Score.belongsTo( User, { foreignKey: 'user_id', onDelete: 'CASCADE' } );
-User.hasMany( Score, { foreignKey: 'user_id', onDelete: 'CASCADE' } );
-
-Score.belongsTo( Quiz, { foreignKey: 'quiz_id', onDelete: 'CASCADE' } );
-Quiz.hasMany( Score, { foreignKey: 'quiz_id', onDelete: 'CASCADE' } );
 
 export default Score;
