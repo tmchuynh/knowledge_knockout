@@ -1,37 +1,45 @@
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
+import { Quiz, User } from '.';
 
-const Score = sequelize.define(
-    'Score',
+class Score extends Model<InferAttributes<Score>, InferCreationAttributes<Score>> {
+    declare score_id: string;
+    declare user_id: string;
+    declare quiz_id: string;
+    declare level: number;
+    declare score: number;
+    declare total_questions: number;
+    declare quiz_date: Date;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+}
+
+Score.init(
     {
         score_id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
+            type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },
         user_id: {
             type: DataTypes.STRING( 250 ),
             allowNull: false,
             references: {
-                model: 'users',
+                model: User,
                 key: 'user_id',
             },
         },
         quiz_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING( 250 ),
             allowNull: false,
             references: {
-                model: 'quizzes',
+                model: Quiz,
                 key: 'quiz_id',
             },
         },
         level: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            references: {
-                model: 'quizzes',
-                key: 'level',
-            },
+            defaultValue: 1,
         },
         score: {
             type: DataTypes.INTEGER,
@@ -46,21 +54,23 @@ const Score = sequelize.define(
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        created_at: {
+        createdAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        updated_at: {
+        updatedAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
     },
     {
+        sequelize,
+        modelName: 'Score',
         tableName: 'scores',
-        timestamps: false,
+        timestamps: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
     }
 );
-
-// Associations
 
 export default Score;

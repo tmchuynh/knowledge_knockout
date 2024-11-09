@@ -1,40 +1,52 @@
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
 
-const User = sequelize.define(
-    'User',
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+    declare user_id: string;
+    declare username: string;
+    declare password: string;
+    declare email: string;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+}
+
+User.init(
     {
         user_id: {
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
-            allowNull: false,
         },
         username: {
-            type: DataTypes.STRING( 50 ),
+            type: DataTypes.STRING( 100 ),
             allowNull: false,
+            unique: true,
         },
         password: {
             type: DataTypes.STRING( 250 ),
             allowNull: false,
         },
         email: {
-            type: DataTypes.STRING( 100 ),
+            type: DataTypes.STRING( 250 ),
             allowNull: false,
             unique: true,
         },
-
-        created_at: {
+        createdAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        updated_at: {
+        updatedAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
     },
     {
+        sequelize,
+        modelName: 'User',
         tableName: 'users',
-        timestamps: false,
+        timestamps: true,
+        paranoid: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
     }
 );
 

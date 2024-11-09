@@ -1,34 +1,49 @@
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
 
-const Quiz = sequelize.define(
-    'Quiz',
+class Quiz extends Model<InferAttributes<Quiz>, InferCreationAttributes<Quiz>> {
+    declare quiz_id: string;
+    declare name: string;
+    declare description: string | null;
+    declare total_questions: number;
+    declare category: string;
+    declare level: number;
+}
+
+Quiz.init(
     {
         quiz_id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
+            type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },
         name: {
             type: DataTypes.STRING( 100 ),
             allowNull: false,
         },
-        category: {
-            type: DataTypes.STRING( 50 ),
-            allowNull: false,
-        },
         description: {
             type: DataTypes.TEXT,
+            allowNull: true,
+        },
+        total_questions: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 1,
+        },
+        category: {
+            type: DataTypes.STRING( 100 ),
+            allowNull: false,
         },
         level: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 1,
-        },
+        }
     },
     {
+        sequelize,
+        modelName: 'Quiz',
         tableName: 'quizzes',
-        timestamps: false,
+        timestamps: true,
     }
 );
 

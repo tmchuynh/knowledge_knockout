@@ -1,21 +1,25 @@
-// models/Answer.ts
-
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
+import { Question } from '.';
 
-const Answer = sequelize.define(
-    'Answer',
+class Answer extends Model<InferAttributes<Answer>, InferCreationAttributes<Answer>> {
+    declare answer_id: string;
+    declare question_id: string;
+    declare content: string;
+    declare is_correct: boolean;
+}
+
+Answer.init(
     {
         answer_id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
+            type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },
         question_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING( 250 ),
             allowNull: false,
             references: {
-                model: 'questions',
+                model: Question,
                 key: 'question_id',
             },
         },
@@ -26,15 +30,15 @@ const Answer = sequelize.define(
         is_correct: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-        },
+            defaultValue: false,
+        }
     },
     {
+        sequelize,
+        modelName: 'Answer',
         tableName: 'answers',
-        timestamps: false,
+        timestamps: true,
     }
 );
-
-// Associations
-
 
 export default Answer;

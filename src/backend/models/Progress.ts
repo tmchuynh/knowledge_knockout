@@ -1,45 +1,55 @@
-// models/Progress.ts
-
-import { DataTypes } from 'sequelize';
+import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
+import { Question, Quiz, Score, User } from '.';
 
-const Progress = sequelize.define(
-    'Progress',
+class Progress extends Model<InferAttributes<Progress>, InferCreationAttributes<Progress>> {
+    declare progress_id: string;
+    declare user_id: string;
+    declare quiz_id: string;
+    declare question_id: string;
+    declare score_id: string | null;
+    declare level: number;
+    declare total_questions: number;
+    declare completed: boolean;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+}
+
+Progress.init(
     {
         progress_id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
+            type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },
         user_id: {
             type: DataTypes.STRING( 250 ),
             allowNull: false,
             references: {
-                model: 'users',
+                model: User,
                 key: 'user_id',
             },
         },
         quiz_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING( 250 ),
             allowNull: false,
             references: {
-                model: 'quizzes',
+                model: Quiz,
                 key: 'quiz_id',
             },
         },
         question_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING( 250 ),
             allowNull: false,
             references: {
-                model: 'questions',
+                model: Question,
                 key: 'question_id',
             },
         },
         score_id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
+            type: DataTypes.STRING( 250 ),
+            allowNull: true,
             references: {
-                model: 'scores',
+                model: Score,
                 key: 'score_id',
             },
         },
@@ -52,16 +62,28 @@ const Progress = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        date_completed: {
+        completed: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+        },
+        updatedAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
     },
     {
+        sequelize,
+        modelName: 'Progress',
         tableName: 'progress',
-        timestamps: false,
+        timestamps: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
     }
 );
-
 
 export default Progress;
