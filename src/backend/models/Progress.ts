@@ -1,9 +1,7 @@
 // models/Progress.ts
 
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import sequelize from '../config/db';
-import User from './User';
-import Quiz from './Quiz';
 
 const Progress = sequelize.define(
     'Progress',

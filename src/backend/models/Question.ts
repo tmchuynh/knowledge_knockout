@@ -1,7 +1,6 @@
 // models/Question.ts
 
-import { DataTypes, Model } from 'sequelize';
-import Quiz from './Quiz';
+import { DataTypes } from 'sequelize';
 import sequelize from '../config/db';
 
 const Question = sequelize.define(

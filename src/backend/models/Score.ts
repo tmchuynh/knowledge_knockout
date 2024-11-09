@@ -1,7 +1,5 @@
-import { DataTypes, Model } from 'sequelize';
-import User from './User';
+import { DataTypes } from 'sequelize';
 import sequelize from '../config/db';
-import Quiz from './Quiz';
 
 const Score = sequelize.define(
     'Score',

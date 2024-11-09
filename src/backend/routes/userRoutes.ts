@@ -1,6 +1,5 @@
 // src/routes/userRoutes.ts
-import express, { Request, Response } from 'express';
-import { addUserToDatabase, getUserById } from '../controllers/userController';
+import express from 'express';
 
 const router = express.Router();
 
