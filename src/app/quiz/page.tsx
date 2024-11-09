@@ -1,15 +1,12 @@
 // app/quiz/page.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ProgressItem, Quiz } from '@/types';
+import React, { useState } from 'react';
+import { Progress } from '@/types';
 
 const QuizSelectionPage: React.FC = () => {
-    const router = useRouter();
-    const [quizzes, setQuizzes] = useState<Quiz[]>( [] );
-    const [quizProgress] = useState<ProgressItem[]>( [] );
-    const [quizNames, setQuizNames] = useState<string[]>( [] );
+    const [quizProgress] = useState<Progress[]>( [] );
+    const [quizNames] = useState<string[]>( [] );
 
     // useEffect( () => {
     //     const fetchQuizNames = async () => {

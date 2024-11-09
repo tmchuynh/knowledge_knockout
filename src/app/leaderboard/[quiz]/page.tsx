@@ -58,7 +58,7 @@ const LeaderboardPage: React.FC = () => {
     if ( !quizNameStr ) return <p>Loading...</p>;
 
     return (
-        <div className="leaderboard-page flex flex-col justify-center items-center min-h-screen px-6 py-4 lg:px-8 bg-gray-800 text-white rounded-lg">
+        <div className="leaderboard-page flex flex-col justify-center items-center min-h-screen px-6 py-4 lg:px-8 bg-gray-800 text-white">
             <h2 className="text-4xl font-extrabold mb-5 text-center">Leaderboard for {quizNameStr}</h2>
             {leaderboard && [...leaderboard.keys()].sort( ( a, b ) => a - b ).map( ( level ) => (
                 <div key={level} className="w-full mb-6">

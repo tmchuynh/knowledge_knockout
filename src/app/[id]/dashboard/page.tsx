@@ -1,15 +1,13 @@
 // app/[id]/dashboard/page.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { User } from '@/types';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import ColorPickerComponent from '../../components/ColorPicker';
 import ContributionsGrid from '../../components/ContributionsGrid';
-import { User } from '@/types';
 
 const DashboardPage: React.FC = () => {
-    const router = useRouter();
-    const params = useParams();
     const [userProfile, setUserProfile] = useState<User | null>( null );
     const [baseColor, setBaseColor] = useState( '#6a40d4' );
 
@@ -41,7 +39,7 @@ const DashboardPage: React.FC = () => {
 
     return (
         <>
-            <div className="dashboard-container flex flex-col items-center min-h-screen px-6 py-4 lg:px-8 bg-gray-800 text-white rounded-lg w-full lg:w-2/3">
+            <div className="dashboard-container flex flex-col items-center min-h-screen px-6 py-4 lg:px-8 bg-gray-800 text-white w-full">
                 <h2 className="text-4xl font-extrabold mb-5">User Profile</h2>
                 {userProfile && (
                     <div className="profile-info space-y-4">

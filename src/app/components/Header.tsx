@@ -7,8 +7,8 @@ import "../styles.css";
 const Header = () => {
 
     return (
-        <header className="p-4 bg-gray-900 text-white flex justify-between items-center">
-            <h1 className="text-2xl col-span-9">My App</h1>
+        <header className="p-4 mb-12 bg-gray-900 text-white flex justify-between items-center">
+            <h1 className="text-2xl col-span-9">Knowledge Knockout</h1>
             <nav>
                 <>
                     <Link className='p-7' href={`/${ 0 }/dashboard`}>Profile</Link>
