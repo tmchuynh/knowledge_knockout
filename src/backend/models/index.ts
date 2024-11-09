@@ -1,12 +1,12 @@
-// models/index.ts
 import User from './User';
 import Quiz from './Quiz';
 import Question from './Question';
 import Answer from './Answer';
 import Score from './Score';
-import sequelize from '../config/db';
 import Progress from './Progress';
+import sequelize from '../config/db';
 
+// Associations
 
 // Association between User and Quiz
 User.hasMany( Quiz, { foreignKey: 'user_id' } );
@@ -40,11 +40,9 @@ Quiz.hasMany( Progress, { foreignKey: 'quiz_id' } );
 Progress.belongsTo( Score, { foreignKey: 'score_id' } );
 Score.hasMany( Progress, { foreignKey: 'score_id' } );
 
-
-sequelize.sync().then( () => {
+sequelize.sync( { force: false } ).then( () => {
     console.log( 'Database & tables created!' );
 } );
-
 
 export {
     sequelize,
@@ -55,4 +53,3 @@ export {
     Progress,
     Score,
 };
-
