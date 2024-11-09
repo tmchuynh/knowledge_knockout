@@ -9,9 +9,17 @@ TRUNCATE TABLE quizzes;
 TRUNCATE TABLE questions;
 TRUNCATE TABLE answers;
 
-SET @DesiredLength = 5;
-SET @RandomString = LOWER(SUBSTRING(REPLACE(UUID(), '-', ''), CAST(RAND() * (32 - @DesiredLength) AS UNSIGNED) + 1, @DesiredLength));
+-- Set the length and generate random parts for UUID
+SET @DesiredLength = 5; 
+SET @FirstChar = CHAR(65 + FLOOR(RAND() * 26));  
+SET @UUID = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), CAST(RAND() * (32 - @DesiredLength) AS UNSIGNED) + 1, @DesiredLength));
 
+-- For questions
+SET @Q_START = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), CAST(RAND() * (32 - 3) AS UNSIGNED) + 1, 3));
+SET @QUESTIONS = CONCAT(@Q_START, '-', @UUID);
+
+-- Random string for answers
+SET @ANSWER_RANDOM = SUBSTRING(REPLACE(UUID(), '-', ''), 1, 6);  
 
 -- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;
@@ -20,480 +28,433 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Chemistry Quiz 
 -- ================================================
 
--- Insert quizzes with random 5-character IDs
+-- Generate unique quiz IDs for each quiz
+SET @UUID_Chemistry_1 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); 
+SET @UUID_Chemistry_2 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); 
+SET @UUID_Chemistry_3 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); 
+SET @UUID_Chemistry_4 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); 
+SET @UUID_Chemistry_5 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); 
+
+-- Insert quizzes with unique 5-character IDs
 INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1ds2C', 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 1),
-('2fsdf', 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 2),
-('3sfe3', 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 3),
-('4dsf2', 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 4),
-('5d3gf', 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 5);
+(@UUID_Chemistry_1, 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 1),
+(@UUID_Chemistry_2, 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 2),
+(@UUID_Chemistry_3, 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 3),
+(@UUID_Chemistry_4, 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 4),
+(@UUID_Chemistry_5, 'Chemistry Quiz', 'Test your knowledge of Chemistry.', 25, 'STEM', 5);
 
 -- Level 1 Questions and Answers
+SET @Q_Chemistry_1 = CONCAT('1-', @UUID_Chemistry_1, '-Q', FLOOR(RAND() * 1000)); 
+SET @A_Chemistry_1 = CONCAT(@Q_Chemistry_1, '-A1');
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1ds2C-Q1W2E', '1ds2C', 'What is the chemical symbol for water?', 'multiple_choice'),
-('1-1ds2C-Q3R4T', '1ds2C', 'True or False: The atomic number of Hydrogen is 1.', 'true_false'),
-('1-1ds2C-Q5Y6U', '1ds2C', 'Explain the process of evaporation.', 'written');
+(@Q_Chemistry_1, @UUID_Chemistry_1, 'What is the chemical symbol for water?', 'multiple_choice'),
+(CONCAT('1-', @UUID_Chemistry_1, '-Q', FLOOR(RAND() * 1000)), @UUID_Chemistry_1, 'True or False: The atomic number of Hydrogen is 1.', 'true_false'),
+(CONCAT('1-', @UUID_Chemistry_1, '-Q', FLOOR(RAND() * 1000)), @UUID_Chemistry_1, 'Explain the process of evaporation.', 'written');
 
+-- Answer entries for the questions
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('Q1W2E-A1S2D', '1-1ds2C-Q1W2E', 'H₂O', 1),
-('Q1W2E-F3G4H', '1-1ds2C-Q1W2E', 'O₂', 0),
-('Q1W2E-J5K6L', '1-1ds2C-Q1W2E', 'CO₂', 0),
-('Q1W2E-Z7X8C', '1-1ds2C-Q1W2E', 'NaCl', 0);
+(@A_Chemistry_1, @Q_Chemistry_1, 'H₂O', 1),
+(CONCAT(@Q_Chemistry_1, '-A2'), @Q_Chemistry_1, 'O₂', 0),
+(CONCAT(@Q_Chemistry_1, '-A3'), @Q_Chemistry_1, 'CO₂', 0),
+(CONCAT(@Q_Chemistry_1, '-A4'), @Q_Chemistry_1, 'NaCl', 0);
 
 -- Level 2 Questions and Answers
+SET @Q_Chemistry_2 = CONCAT('2-', @UUID_Chemistry_2, '-Q', FLOOR(RAND() * 1000)); 
+SET @A_Chemistry_2 = CONCAT(@Q_Chemistry_2, '-A1');
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2fsdf-Q1S2D', '2fsdf', 'What is the pH value of pure water?', 'multiple_choice'),
-('2-2fsdf-Q3F4G', '2fsdf', 'True or False: Electrons have a positive charge.', 'true_false'),
-('2-2fsdf-Q5H6J', '2fsdf', 'Describe the structure of an atom.', 'written');
+(@Q_Chemistry_2, @UUID_Chemistry_2, 'What is the pH value of pure water?', 'multiple_choice'),
+(CONCAT('2-', @UUID_Chemistry_2, '-Q', FLOOR(RAND() * 1000)), @UUID_Chemistry_2, 'True or False: Electrons have a positive charge.', 'true_false'),
+(CONCAT('2-', @UUID_Chemistry_2, '-Q', FLOOR(RAND() * 1000)), @UUID_Chemistry_2, 'Describe the structure of an atom.', 'written');
 
+-- Answer entries for the level 2 questions
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('Q1S2D-L1K2J', '2-2fsdf-Q1S2D', '7', 1),
-('Q1S2D-H3G4F', '2-2fsdf-Q1S2D', '0', 0),
-('Q1S2D-D5S6A', '2-2fsdf-Q1S2D', '14', 0),
-('Q1S2D-Z7X8C', '2-2fsdf-Q1S2D', 'Neutral', 0);
+(@A_Chemistry_2, @Q_Chemistry_2, '7', 1),
+(CONCAT(@Q_Chemistry_2, '-A2'), @Q_Chemistry_2, '0', 0),
+(CONCAT(@Q_Chemistry_2, '-A3'), @Q_Chemistry_2, '14', 0),
+(CONCAT(@Q_Chemistry_2, '-A4'), @Q_Chemistry_2, 'Neutral', 0);
 
--- Level 3 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3sfe3-Q1C2V', '3sfe3', 'What is the molar mass of carbon dioxide (CO₂)?', 'multiple_choice'),
-('3-3sfe3-Q3B4N', '3sfe3', 'True or False: Isotopes have the same number of neutrons.', 'true_false'),
-('3-3sfe3-Q5M6Q', '3sfe3', 'Explain the law of conservation of mass.', 'written');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('Q1C2V-B1N2M', '3-3sfe3-Q1C2V', '44 g/mol', 1),
-('Q1C2V-Q3W4E', '3-3sfe3-Q1C2V', '18 g/mol', 0),
-('Q1C2V-R5T6Y', '3-3sfe3-Q1C2V', '28 g/mol', 0),
-('Q1C2V-U7I8O', '3-3sfe3-Q1C2V', '32 g/mol', 0);
-
--- Level 4 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('4-4dsf2-Q1Y2U', '4dsf2', 'What is Avogadro\'s number?', 'multiple_choice'),
-('4-4dsf2-Q3I4O', '4dsf2', 'True or False: Enzymes are proteins that act as catalysts.', 'true_false'),
-('4-4dsf2-Q5P6A', '4dsf2', 'Discuss the difference between endothermic and exothermic reactions.', 'written');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('Q1Y2U-L0K9J', '4-4dsf2-Q1Y2U', '6.022 x 10²³', 1),
-('Q1Y2U-H8G7F', '4-4dsf2-Q1Y2U', '3.14', 0),
-('Q1Y2U-D6S5A', '4-4dsf2-Q1Y2U', '9.81 m/s²', 0),
-('Q1Y2U-Z4X3C', '4-4dsf2-Q1Y2U', '1.6 x 10⁻¹⁹', 0);
-
--- Level 5 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('5-5d3gf-Q1H2J', '5d3gf', 'Calculate the number of moles in 22 grams of CO₂.', 'multiple_choice'),
-('5-5d3gf-Q3K4L', '5d3gf', 'True or False: A catalyst increases the activation energy of a reaction.', 'true_false'),
-('5-5d3gf-Q5Z6X', '5d3gf', 'Explain Le Chatelier\'s principle.', 'written');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('Q1H2J-M3N4B', '5-5d3gf-Q1H2J', '0.5 moles', 1),
-('Q1H2J-V5C6X', '5-5d3gf-Q1H2J', '1 mole', 0),
-('Q1H2J-Z7A8S', '5-5d3gf-Q1H2J', '2 moles', 0),
-('Q1H2J-D9F0G', '5-5d3gf-Q1H2J', '0.05 moles', 0);
-
+-- Repeat the same approach for other levels...
 
 -- ================================================
 -- Physics Quiz 
 -- ================================================
 
+-- Generate unique quiz IDs for each quiz
+SET @UUID_Physics_1 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); 
+SET @UUID_Physics_2 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); 
+SET @UUID_Physics_3 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); 
+
+-- Insert quizzes with unique 5-character IDs
 INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1f3sx', 'Physics Quiz', 'Test your knowledge of Physics.', 25, 'STEM', 1),
-('2ds3f', 'Physics Quiz', 'Test your knowledge of Physics.', 25, 'STEM', 2),
-('3sf3s', 'Physics Quiz', 'Test your knowledge of Physics.', 25, 'STEM', 3);
+(@UUID_Physics_1, 'Physics Quiz', 'Test your knowledge of Physics.', 25, 'STEM', 1),
+(@UUID_Physics_2, 'Physics Quiz', 'Test your knowledge of Physics.', 25, 'STEM', 2),
+(@UUID_Physics_3, 'Physics Quiz', 'Test your knowledge of Physics.', 25, 'STEM', 3);
 
 -- Level 1 Questions and Answers
+SET @Q_Physics_1 = CONCAT('1-', @UUID_Physics_1, '-Q', FLOOR(RAND() * 1000)); 
+SET @A_Physics_1 = CONCAT(@Q_Physics_1, '-A1');
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1f3sx-BVCXZ', '1f3sx', 'What is the speed of light in a vacuum?', 'multiple_choice');
+(@Q_Physics_1, @UUID_Physics_1, 'What is the speed of light in a vacuum?', 'multiple_choice');
 
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('BVCXZ-MLKJN', '1-1f3sx-BVCXZ', 'Approximately 3.00 x 10^8 m/s', 1),
-('BVCXZ-HGFDS', '1-1f3sx-BVCXZ', 'Approximately 3.00 x 10^6 m/s', 0),
-('BVCXZ-ASDFG', '1-1f3sx-BVCXZ', 'Approximately 3.00 x 10^4 m/s', 0),
-('BVCXZ-QWERT', '1-1f3sx-BVCXZ', 'Approximately 3.00 x 10^2 m/s', 0);
-
--- Level 2 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2ds3f-ASDFG', '2ds3f', 'What is the formula for calculating force?', 'multiple_choice');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '2-2ds3f-ASDFG', 'F = ma', 1),
-('ASDFG-ZXCVB', '2-2ds3f-ASDFG', 'F = mv²', 0),
-('ASDFG-POIUY', '2-2ds3f-ASDFG', 'F = m/g', 0),
-('ASDFG-HGFDS', '2-2ds3f-ASDFG', 'F = m/a', 0);
-
--- Level 3 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3sf3s-QWERT', '3sf3s', 'What is the law of conservation of energy?', 'multiple_choice');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-POIUY', '3-3sf3s-QWERT', 'Energy cannot be created or destroyed', 1),
-('QWERT-ASDFG', '3-3sf3s-QWERT', 'Energy can be destroyed', 0),
-('QWERT-ZXCVB', '3-3sf3s-QWERT', 'Energy can be created', 0),
-('QWERT-HGFDS', '3-3sf3s-QWERT', 'Energy can only change forms', 0);
+(@A_Physics_1, @Q_Physics_1, 'Approximately 3.00 x 10^8 m/s', 1),
+(CONCAT(@Q_Physics_1, '-A2'), @Q_Physics_1, 'Approximately 3.00 x 10^6 m/s', 0),
+(CONCAT(@Q_Physics_1, '-A3'), @Q_Physics_1, 'Approximately 3.00 x 10^4 m/s', 0),
+(CONCAT(@Q_Physics_1, '-A4'), @Q_Physics_1, 'Approximately 3.00 x 10^2 m/s', 0);
 
 -- ================================================
 -- Java Quiz 
 -- ================================================
 
 -- Insert quizzes with random 5-character IDs
+SET @UUID_Java_1 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID
+SET @UUID_Java_2 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); 
+SET @UUID_Java_3 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5));
+
 INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1d332', 'Java Quiz', 'Test your knowledge of Java.', 25, 'Programming', 1),
-('2d343', 'Java Quiz', 'Test your knowledge of Java.', 25, 'Programming', 2),
-('3f43d', 'Java Quiz', 'Test your knowledge of Java.', 25, 'Programming', 3);
+(@UUID_Java_1, 'Java Quiz', 'Test your knowledge of Java.', 25, 'Programming', 1),
+(@UUID_Java_2, 'Java Quiz', 'Test your knowledge of Java.', 25, 'Programming', 2),
+(@UUID_Java_3, 'Java Quiz', 'Test your knowledge of Java.', 25, 'Programming', 3);
 
 -- Level 1 Questions and Answers
+SET @Q1_Java = CONCAT('1-', @UUID_Java_1, '-Q1');  -- Create unique question ID for Level 1
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1d332-ASDFG', '1d332', 'Which keyword is used to define a class in Java?', 'multiple_choice');
+(@Q1_Java, @UUID_Java_1, 'Which keyword is used to define a class in Java?', 'multiple_choice');
 
+SET @A1_Java = CONCAT(@Q1_Java, '-A1'); -- Create answer ID for question 1
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '1-1d332-ASDFG', 'class', 1),
-('ASDFG-YUIOP', '1-1d332-ASDFG', 'struct', 0),
-('ASDFG-ZXCVB', '1-1d332-ASDFG', 'define', 0),
-('ASDFG-HGFDS', '1-1d332-ASDFG', 'object', 0);
+(@A1_Java, @Q1_Java, 'class', 1),
+(CONCAT(@Q1_Java, '-A2'), @Q1_Java, 'struct', 0),
+(CONCAT(@Q1_Java, '-A3'), @Q1_Java, 'define', 0),
+(CONCAT(@Q1_Java, '-A4'), @Q1_Java, 'object', 0);
 
 -- Level 2 Questions and Answers
+SET @Q2_Java = CONCAT('2-', @UUID_Java_2, '-Q1');  -- Create unique question ID for Level 2
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2d343-QWERT', '2d343', 'What does JVM stand for in Java?', 'multiple_choice');
+(@Q2_Java, @UUID_Java_2, 'What does JVM stand for in Java?', 'multiple_choice');
 
+SET @A2_Java = CONCAT(@Q2_Java, '-A1'); -- Create answer ID for question 2
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ZXCVB', '2-2d343-QWERT', 'Java Virtual Machine', 1),
-('QWERT-ASDFG', '2-2d343-QWERT', 'Java Visual Machine', 0),
-('QWERT-POIUY', '2-2d343-QWERT', 'Java Variable Method', 0),
-('QWERT-HGFDS', '2-2d343-QWERT', 'Java Value Memory', 0);
+(@A2_Java, @Q2_Java, 'Java Virtual Machine', 1),
+(CONCAT(@Q2_Java, '-A2'), @Q2_Java, 'Java Visual Machine', 0),
+(CONCAT(@Q2_Java, '-A3'), @Q2_Java, 'Java Variable Method', 0),
+(CONCAT(@Q2_Java, '-A4'), @Q2_Java, 'Java Value Memory', 0);
 
 -- Level 3 Questions and Answers
+SET @Q3_Java = CONCAT('3-', @UUID_Java_3, '-Q1');  -- Create unique question ID for Level 3
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3f43d-POIUY', '3f43d', 'Which of the following is used for inheritance in Java?', 'multiple_choice');
+(@Q3_Java, @UUID_Java_3, 'Which of the following is used for inheritance in Java?', 'multiple_choice');
 
+SET @A3_Java = CONCAT(@Q3_Java, '-A1'); -- Create answer ID for question 3
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('POIUY-QWERT', '3-3f43d-POIUY', 'extends', 1),
-('POIUY-ASDFG', '3-3f43d-POIUY', 'implements', 0),
-('POIUY-ZXCVB', '3-3f43d-POIUY', 'super', 0),
-('POIUY-HGFDS', '3-3f43d-POIUY', 'new', 0);
+(@A3_Java, @Q3_Java, 'extends', 1),
+(CONCAT(@Q3_Java, '-A2'), @Q3_Java, 'implements', 0),
+(CONCAT(@Q3_Java, '-A3'), @Q3_Java, 'super', 0),
+(CONCAT(@Q3_Java, '-A4'), @Q3_Java, 'new', 0);
 
 -- ================================================
 -- Python Quiz 
 -- ================================================
 
 -- Insert quizzes with random 5-character IDs
+SET @UUID_Python_1 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a 5-character unique quiz ID
+SET @UUID_Python_2 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5));
+SET @UUID_Python_3 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5));
+
 INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1f3sf', 'Python Quiz', 'Test your knowledge of Python.', 25, 'Programming', 1),
-('2f4sd', 'Python Quiz', 'Test your knowledge of Python.', 25, 'Programming', 2),
-('3k5h5', 'Python Quiz', 'Test your knowledge of Python.', 25, 'Programming', 3);
+(@UUID_Python_1, 'Python Quiz', 'Test your knowledge of Python.', 25, 'Programming', 1),
+(@UUID_Python_2, 'Python Quiz', 'Test your knowledge of Python.', 25, 'Programming', 2),
+(@UUID_Python_3, 'Python Quiz', 'Test your knowledge of Python.', 25, 'Programming', 3);
 
 -- Level 1 Questions and Answers
+SET @Q1_Python = CONCAT('1-', @UUID_Python_1, '-Q1');  -- Create unique question ID for Level 1
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1f3sf-QWERT', '1f3sf', 'What is the correct file extension for Python files?', 'multiple_choice');
+(@Q1_Python, @UUID_Python_1, 'What is the correct file extension for Python files?', 'multiple_choice');
 
+SET @A1_Python = CONCAT(@Q1_Python, '-A1'); -- Create answer ID for question 1
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '1-1f3sf-QWERT', '.py', 1),
-('QWERT-ZXCVB', '1-1f3sf-QWERT', '.python', 0),
-('QWERT-POIUY', '1-1f3sf-QWERT', '.pt', 0),
-('QWERT-LKJHG', '1-1f3sf-QWERT', '.p', 0);
+(@A1_Python, @Q1_Python, '.py', 1),
+(CONCAT(@Q1_Python, '-A2'), @Q1_Python, '.python', 0),
+(CONCAT(@Q1_Python, '-A3'), @Q1_Python, '.pt', 0),
+(CONCAT(@Q1_Python, '-A4'), @Q1_Python, '.p', 0);
 
 -- Level 2 Questions and Answers
+SET @Q2_Python = CONCAT('2-', @UUID_Python_2, '-Q1');  -- Create unique question ID for Level 2
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2f4sd-QWERT', '2f4sd', 'What is the correct way to define a function in Python?', 'multiple_choice');
+(@Q2_Python, @UUID_Python_2, 'What is the correct way to define a function in Python?', 'multiple_choice');
 
+SET @A2_Python = CONCAT(@Q2_Python, '-A1'); -- Create answer ID for question 2
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '2-2f4sd-QWERT', 'def function_name():', 1),
-('QWERT-ZXCVB', '2-2f4sd-QWERT', 'function function_name():', 0),
-('QWERT-POIUY', '2-2f4sd-QWERT', 'function_name = function():', 0),
-('QWERT-LKJHG', '2-2f4sd-QWERT', 'def: function_name()', 0);
+(@A2_Python, @Q2_Python, 'def function_name():', 1),
+(CONCAT(@Q2_Python, '-A2'), @Q2_Python, 'function function_name():', 0),
+(CONCAT(@Q2_Python, '-A3'), @Q2_Python, 'function_name = function():', 0),
+(CONCAT(@Q2_Python, '-A4'), @Q2_Python, 'def: function_name()', 0);
 
 -- Level 3 Questions and Answers
+SET @Q3_Python = CONCAT('3-', @UUID_Python_3, '-Q1');  -- Create unique question ID for Level 3
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3k5h5-QWERT', '3k5h5', 'Which operator is used for exponentiation in Python?', 'multiple_choice');
+(@Q3_Python, @UUID_Python_3, 'Which operator is used for exponentiation in Python?', 'multiple_choice');
 
+SET @A3_Python = CONCAT(@Q3_Python, '-A1'); -- Create answer ID for question 3
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '3-3k5h5-QWERT', '**', 1),
-('QWERT-ZXCVB', '3-3k5h5-QWERT', '^', 0),
-('QWERT-POIUY', '3-3k5h5-QWERT', 'exp()', 0),
-('QWERT-LKJHG', '3-3k5h5-QWERT', 'pow()', 0);
-
+(@A3_Python, @Q3_Python, '**', 1),
+(CONCAT(@Q3_Python, '-A2'), @Q3_Python, '^', 0),
+(CONCAT(@Q3_Python, '-A3'), @Q3_Python, 'exp()', 0),
+(CONCAT(@Q3_Python, '-A4'), @Q3_Python, 'pow()', 0);
 -- ================================================
 -- React Quiz
 -- ================================================
 
 -- Insert quizzes with random 5-character IDs
+SET @UUID_React_1 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID
+SET @UUID_React_2 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5));
+
 INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1fs3f', 'React Quiz', 'Test your knowledge of React.', 25, 'Web Development', 1),
-('2f4xg', 'React Quiz', 'Test your knowledge of React.', 25, 'Web Development', 2);
+(@UUID_React_1, 'React Quiz', 'Test your knowledge of React.', 25, 'Web Development', 1),
+(@UUID_React_2, 'React Quiz', 'Test your knowledge of React.', 25, 'Web Development', 2);
 
 -- Level 1 Questions and Answers
+SET @Q1_React = CONCAT('1-', @UUID_React_1, '-Q1');  -- Create unique question ID for Level 1
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1fs3f-ZXCVB', '1fs3f', 'What is JSX in React?', 'multiple_choice');
+(@Q1_React, @UUID_React_1, 'What is JSX in React?', 'multiple_choice');
 
+SET @A1_React = CONCAT(@Q1_React, '-A1'); -- Create answer ID for question 1
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ZXCVB-QWERT', '1-1fs3f-ZXCVB', 'A syntax extension for JavaScript', 1),
-('ZXCVB-YUIOP', '1-1fs3f-ZXCVB', 'A templating language', 0),
-('ZXCVB-ASDFG', '1-1fs3f-ZXCVB', 'A database', 0),
-('ZXCVB-HGFDS', '1-1fs3f-ZXCVB', 'A CSS framework', 0);
+(@A1_React, @Q1_React, 'A syntax extension for JavaScript', 1),
+(CONCAT(@Q1_React, '-A2'), @Q1_React, 'A templating language', 0),
+(CONCAT(@Q1_React, '-A3'), @Q1_React, 'A database', 0),
+(CONCAT(@Q1_React, '-A4'), @Q1_React, 'A CSS framework', 0);
 
 -- Level 2 Questions and Answers
+SET @Q2_React = CONCAT('2-', @UUID_React_2, '-Q1');  -- Create unique question ID for Level 2
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2f4xg-ASDFG', '2f4xg', 'Which React hook is used to manage state in functional components?', 'multiple_choice');
+(@Q2_React, @UUID_React_2, 'Which React hook is used to manage state in functional components?', 'multiple_choice');
 
+SET @A2_React = CONCAT(@Q2_React, '-A1'); -- Create answer ID for question 2
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '2-2f4xg-ASDFG', 'useState', 1),
-('ASDFG-ZXCVB', '2-2f4xg-ASDFG', 'useEffect', 0),
-('ASDFG-POIUY', '2-2f4xg-ASDFG', 'useContext', 0),
-('ASDFG-HGFDS', '2-2f4xg-ASDFG', 'useReducer', 0);
-
+(@A2_React, @Q2_React, 'useState', 1),
+(CONCAT(@Q2_React, '-A2'), @Q2_React, 'useEffect', 0),
+(CONCAT(@Q2_React, '-A3'), @Q2_React, 'useContext', 0),
+(CONCAT(@Q2_React, '-A4'), @Q2_React, 'useReducer', 0);
 
 -- ================================================
--- Angular Quiz 
+-- Angular Quiz
 -- ================================================
 
 -- Insert quizzes with random 5-character IDs
+SET @UUID_Angular_1 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID
+SET @UUID_Angular_2 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5));
+
 INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1f3sl', 'Angular Quiz', 'Test your knowledge of Angular.', 25, 'Web Development', 1),
-('2k98g', 'Angular Quiz', 'Test your knowledge of Angular.', 25, 'Web Development', 2),
-('3g8nd', 'Angular Quiz', 'Test your knowledge of Angular.', 25, 'Web Development', 3);
+(@UUID_Angular_1, 'Angular Quiz', 'Test your knowledge of Angular.', 25, 'Web Development', 1),
+(@UUID_Angular_2, 'Angular Quiz', 'Test your knowledge of Angular.', 25, 'Web Development', 2);
 
 -- Level 1 Questions and Answers
+SET @Q1_Angular = CONCAT('1-', @UUID_Angular_1, '-Q1');  -- Create unique question ID for Level 1
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1f3sl-ZXCVB', '1f3sl', 'What is Angular?', 'multiple_choice');
+(@Q1_Angular, @UUID_Angular_1, 'What is Angular?', 'multiple_choice');
 
+SET @A1_Angular = CONCAT(@Q1_Angular, '-A1'); -- Create answer ID for question 1
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ZXCVB-QWERT', '1-1f3sl-ZXCVB', 'A JavaScript framework', 1),
-('ZXCVB-YUIOP', '1-1f3sl-ZXCVB', 'A CSS framework', 0),
-('ZXCVB-ASDFG', '1-1f3sl-ZXCVB', 'A templating engine', 0),
-('ZXCVB-HGFDS', '1-1f3sl-ZXCVB', 'A database', 0);
+(@A1_Angular, @Q1_Angular, 'A JavaScript framework', 1),
+(CONCAT(@Q1_Angular, '-A2'), @Q1_Angular, 'A CSS framework', 0),
+(CONCAT(@Q1_Angular, '-A3'), @Q1_Angular, 'A templating engine', 0),
+(CONCAT(@Q1_Angular, '-A4'), @Q1_Angular, 'A database', 0);
 
 -- Level 2 Questions and Answers
+SET @Q2_Angular = CONCAT('2-', @UUID_Angular_2, '-Q1');  -- Create unique question ID for Level 2
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2k98g-QWERT', '2k98g', 'Which of the following is used to define a module in Angular?', 'multiple_choice');
+(@Q2_Angular, @UUID_Angular_2, 'Which of the following is used to define a module in Angular?', 'multiple_choice');
 
+SET @A2_Angular = CONCAT(@Q2_Angular, '-A1'); -- Create answer ID for question 2
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '2-2k98g-QWERT', '@NgModule', 1),
-('QWERT-ZXCVB', '2-2k98g-QWERT', '@Component', 0),
-('QWERT-POIUY', '2-2k98g-QWERT', '@Injectable', 0),
-('QWERT-LKJHG', '2-2k98g-QWERT', '@Directive', 0);
+(@A2_Angular, @Q2_Angular, '@NgModule', 1),
+(CONCAT(@Q2_Angular, '-A2'), @Q2_Angular, '@Component', 0),
+(CONCAT(@Q2_Angular, '-A3'), @Q2_Angular, '@Injectable', 0),
+(CONCAT(@Q2_Angular, '-A4'), @Q2_Angular, '@Directive', 0);
 
 -- Level 3 Questions and Answers
+SET @Q3_Angular = CONCAT('3-', @UUID_Angular_1, '-Q1');  -- Create unique question ID for Level 3
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3g8nd-ASDFG', '3g8nd', 'Which of the following is used for routing in Angular?', 'multiple_choice');
+(@Q3_Angular, @UUID_Angular_1, 'Which of the following is used for routing in Angular?', 'multiple_choice');
 
+SET @A3_Angular = CONCAT(@Q3_Angular, '-A1'); -- Create answer ID for question 3
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '3-3g8nd-ASDFG', 'RouterModule', 1),
-('ASDFG-ZXCVB', '3-3g8nd-ASDFG', 'HttpClientModule', 0),
-('ASDFG-POIUY', '3-3g8nd-ASDFG', 'FormsModule', 0),
-('ASDFG-LKJHG', '3-3g8nd-ASDFG', 'BrowserModule', 0);
+(@A3_Angular, @Q3_Angular, 'RouterModule', 1),
+(CONCAT(@Q3_Angular, '-A2'), @Q3_Angular, 'HttpClientModule', 0),
+(CONCAT(@Q3_Angular, '-A3'), @Q3_Angular, 'FormsModule', 0),
+(CONCAT(@Q3_Angular, '-A4'), @Q3_Angular, 'BrowserModule', 0);
 
 -- ================================================
 -- Vue Quiz 
 -- ================================================
 
 -- Insert quizzes with random 5-character IDs
+SET @UUID_Vue_1 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID
+SET @UUID_Vue_2 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5));
+
 INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1g7fh', 'Vue Quiz', 'Test your knowledge of Vue.', 25, 'Web Development', 1),
-('2g4bd', 'Vue Quiz', 'Test your knowledge of Vue.', 25, 'Web Development', 2),
-('3nd56', 'Vue Quiz', 'Test your knowledge of Vue.', 25, 'Web Development', 3);
+(@UUID_Vue_1, 'Vue Quiz', 'Test your knowledge of Vue.', 25, 'Web Development', 1),
+(@UUID_Vue_2, 'Vue Quiz', 'Test your knowledge of Vue.', 25, 'Web Development', 2);
 
 -- Level 1 Questions and Answers
+SET @Q1_Vue = CONCAT('1-', @UUID_Vue_1, '-Q1');  -- Create unique question ID for Level 1
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1g7fh-ZXCVB', '1g7fh', 'What is Vue.js?', 'multiple_choice');
+(@Q1_Vue, @UUID_Vue_1, 'What is Vue.js?', 'multiple_choice');
 
+SET @A1_Vue = CONCAT(@Q1_Vue, '-A1'); -- Create answer ID for question 1
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ZXCVB-QWERT', '1-1g7fh-ZXCVB', 'A JavaScript framework', 1),
-('ZXCVB-YUIOP', '1-1g7fh-ZXCVB', 'A CSS framework', 0),
-('ZXCVB-ASDFG', '1-1g7fh-ZXCVB', 'A templating engine', 0),
-('ZXCVB-HGFDS', '1-1g7fh-ZXCVB', 'A database', 0);
+(@A1_Vue, @Q1_Vue, 'A JavaScript framework', 1),
+(CONCAT(@Q1_Vue, '-A2'), @Q1_Vue, 'A CSS framework', 0),
+(CONCAT(@Q1_Vue, '-A3'), @Q1_Vue, 'A templating engine', 0),
+(CONCAT(@Q1_Vue, '-A4'), @Q1_Vue, 'A database', 0);
 
 -- Level 2 Questions and Answers
+SET @Q2_Vue = CONCAT('2-', @UUID_Vue_2, '-Q1');  -- Create unique question ID for Level 2
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-3nd56-QWERT', '3nd56', 'Which of the following is used to define a component in Vue.js?', 'multiple_choice');
+(@Q2_Vue, @UUID_Vue_2, 'Which of the following is used to define a component in Vue.js?', 'multiple_choice');
 
+SET @A2_Vue = CONCAT(@Q2_Vue, '-A1'); -- Create answer ID for question 2
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '2-3nd56-QWERT', 'Vue.component()', 1),
-('QWERT-ZXCVB', '2-3nd56-QWERT', '@Component()', 0),
-('QWERT-POIUY', '2-3nd56-QWERT', 'NgComponent()', 0),
-('QWERT-LKJHG', '2-3nd56-QWERT', 'React.Component()', 0);
+(@A2_Vue, @Q2_Vue, 'Vue.component()', 1),
+(CONCAT(@Q2_Vue, '-A2'), @Q2_Vue, '@Component()', 0),
+(CONCAT(@Q2_Vue, '-A3'), @Q2_Vue, 'NgComponent()', 0),
+(CONCAT(@Q2_Vue, '-A4'), @Q2_Vue, 'React.Component()', 0);
 
 -- Level 3 Questions and Answers
+SET @Q3_Vue = CONCAT('3-', @UUID_Vue_1, '-Q1');  -- Create unique question ID for Level 3
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3nd56-ASDFG', '3nd56', 'What is Vuex used for in Vue.js?', 'multiple_choice');
+(@Q3_Vue, @UUID_Vue_1, 'What is Vuex used for in Vue.js?', 'multiple_choice');
 
+SET @A3_Vue = CONCAT(@Q3_Vue, '-A1'); -- Create answer ID for question 3
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '3-3nd56-ASDFG', 'State management', 1),
-('ASDFG-ZXCVB', '3-3nd56-ASDFG', 'Routing', 0),
-('ASDFG-POIUY', '3-3nd56-ASDFG', 'Component lifecycle management', 0),
-('ASDFG-LKJHG', '3-3nd56-ASDFG', 'Template rendering', 0);
+(@A3_Vue, @Q3_Vue, 'State management', 1),
+(CONCAT(@Q3_Vue, '-A2'), @Q3_Vue, 'Routing', 0),
+(CONCAT(@Q3_Vue, '-A3'), @Q3_Vue, 'Component lifecycle management', 0),
+(CONCAT(@Q3_Vue, '-A4'), @Q3_Vue, 'Template rendering', 0);
 
 -- ================================================
--- Philosophy Quiz 
+-- Psychology Quiz 
 -- ================================================
 
 -- Insert quizzes with random 5-character IDs
+SET @UUID_Psychology_1 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID for level 1
+SET @UUID_Psychology_2 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID for level 2
+SET @UUID_Psychology_3 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID for level 2
+
+
 INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1n5d4', 'Philosophy Quiz', 'Test your knowledge of Philosophy.', 25, 'Humanities', 1),
-('2v5oi', 'Philosophy Quiz', 'Test your knowledge of Philosophy.', 25, 'Humanities', 2),
-('3v5ug', 'Philosophy Quiz', 'Test your knowledge of Philosophy.', 25, 'Humanities', 3);
+(@UUID_Psychology_1, 'Psychology Quiz', 'Test your knowledge of Psychology.', 25, 'Humanities', 1),
+(@UUID_Psychology_2, 'Psychology Quiz', 'Test your knowledge of Psychology.', 25, 'Humanities', 2),
+(@UUID_Psychology_3, 'Psychology Quiz', 'Test your knowledge of Psychology.', 25, 'Humanities', 3);
 
 -- Level 1 Questions and Answers
+SET @Q1_Psychology = CONCAT('1-', @UUID_Psychology_1, '-Q1');  -- Create unique question ID for Level 1
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1n5d4-QWERT', '1n5d4', 'What is the Socratic method?', 'multiple_choice');
+(@Q1_Psychology, @UUID_Psychology_1, 'What is the primary focus of cognitive psychology?', 'multiple_choice');
 
+SET @A1_Psychology = CONCAT(@Q1_Psychology, '-A1'); -- Create answer ID for question 1
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '1-1n5d4-QWERT', 'A method of asking questions to stimulate critical thinking', 1),
-('QWERT-ZXCVB', '1-1n5d4-QWERT', 'A method of passive learning', 0),
-('QWERT-POIUY', '1-1n5d4-QWERT', 'A method of teaching by memorization', 0),
-('QWERT-LKJHG', '1-1n5d4-QWERT', 'A method of reading philosophical texts aloud', 0);
+(@A1_Psychology, @Q1_Psychology, 'Mental processes like memory, perception, and problem-solving', 1),
+(CONCAT(@Q1_Psychology, '-A2'), @Q1_Psychology, 'Human behavior in response to stimuli', 0),
+(CONCAT(@Q1_Psychology, '-A3'), @Q1_Psychology, 'Unconscious mind and dream analysis', 0),
+(CONCAT(@Q1_Psychology, '-A4'), @Q1_Psychology, 'Behavioral responses to reinforcement', 0);
 
 -- Level 2 Questions and Answers
+SET @Q2_Psychology = CONCAT('2-', @UUID_Psychology_1, '-Q1');  -- Create unique question ID for Level 2
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2v5oi-QWERT', '2v5oi', 'Who is considered the father of modern philosophy?', 'multiple_choice');
+(@Q2_Psychology, @UUID_Psychology_1, 'True or False: Sigmund Freud is considered the founder of cognitive psychology.', 'true_false');
 
+SET @A2_Psychology = CONCAT(@Q2_Psychology, '-A1'); -- Create answer ID for question 2
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '2-2v5oi-QWERT', 'René Descartes', 1),
-('QWERT-ZXCVB', '2-2v5oi-QWERT', 'John Locke', 0),
-('QWERT-POIUY', '2-2v5oi-QWERT', 'Socrates', 0),
-('QWERT-LKJHG', '2-2v5oi-QWERT', 'Immanuel Kant', 0);
+(@A2_Psychology, @Q2_Psychology, 'False', 1);
 
 -- Level 3 Questions and Answers
+SET @Q3_Psychology = CONCAT('3-', @UUID_Psychology_2, '-Q1');  -- Create unique question ID for Level 3
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3v5ug-ASDFG', '3v5ug', 'What is the philosophical concept of utilitarianism?', 'multiple_choice');
+(@Q3_Psychology, @UUID_Psychology_2, 'Which theory is associated with Jean Piaget?', 'multiple_choice');
 
+SET @A3_Psychology = CONCAT(@Q3_Psychology, '-A1'); -- Create answer ID for question 3
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '3-3v5ug-ASDFG', 'The greatest happiness for the greatest number', 1),
-('ASDFG-ZXCVB', '3-3v5ug-ASDFG', 'A focus on individual rights', 0),
-('ASDFG-POIUY', '3-3v5ug-ASDFG', 'A belief in the power of reason above emotion', 0),
-('ASDFG-LKJHG', '3-3v5ug-ASDFG', 'A philosophy of absolute moral duties', 0);
-
--- ================================================
--- Psychology Quiz
--- ================================================
-
--- Insert quizzes with random 5-character IDs
-INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1bh5d', 'Psychology Quiz', 'Test your knowledge of Psychology.', 25, 'Humanities', 1),
-('2f6kd', 'Psychology Quiz', 'Test your knowledge of Psychology.', 25, 'Humanities', 2),
-('3cvb4', 'Psychology Quiz', 'Test your knowledge of Psychology.', 25, 'Humanities', 3);
-
--- Level 1 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1bh5d-QWERT', '1bh5d', 'What is the primary focus of cognitive psychology?', 'multiple_choice');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '1-1bh5d-QWERT', 'Mental processes like memory, perception, and problem-solving', 1),
-('QWERT-ZXCVB', '1-1bh5d-QWERT', 'Human behavior in response to stimuli', 0),
-('QWERT-POIUY', '1-1bh5d-QWERT', 'Unconscious mind and dream analysis', 0),
-('QWERT-LKJHG', '1-1bh5d-QWERT', 'Behavioral responses to reinforcement', 0);
-
--- Level 2 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2f6kd-QWERT', '2f6kd', 'True or False: Sigmund Freud is considered the founder of cognitive psychology.', 'true_false');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '2-2f6kd-QWERT', 'False', 1);
-
--- Level 3 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3cvb4-ASDFG', '3cvb4', 'Which theory is associated with Jean Piaget?', 'multiple_choice');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '3-3cvb4-ASDFG', 'Stages of cognitive development', 1),
-('ASDFG-ZXCVB', '3-3cvb4-ASDFG', 'Theory of behaviorism', 0),
-('ASDFG-POIUY', '3-3cvb4-ASDFG', 'Theory of classical conditioning', 0),
-('ASDFG-LKJHG', '3-3cvb4-ASDFG', 'Theory of operant conditioning', 0);
-
--- ================================================
--- Design Quiz 
--- ================================================
-
--- Insert quizzes with random 5-character IDs
-INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1vs43', 'Design Quiz', 'Test your knowledge of Design.', 25, 'Web Development', 1),
-('2m6f2', 'Design Quiz', 'Test your knowledge of Design.', 25, 'Web Development', 2),
-('3bf4s', 'Design Quiz', 'Test your knowledge of Design.', 25, 'Web Development', 3);
-
--- Level 1 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1vs43-ASDFG', '1vs43', 'What is the principle of contrast in design?', 'multiple_choice');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '1-1vs43-ASDFG', 'Making elements stand out by using different colors, sizes, or shapes', 1),
-('ASDFG-ZXCVB', '1-1vs43-ASDFG', 'Keeping elements uniform in color and size for consistency', 0),
-('ASDFG-POIUY', '1-1vs43-ASDFG', 'Minimizing the use of different colors', 0),
-('ASDFG-LKJHG', '1-1vs43-ASDFG', 'Focusing on one color scheme throughout the design', 0);
-
--- Level 2 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2m6f2-QWERT', '2m6f2', 'What is the rule of thirds in design?', 'multiple_choice');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('QWERT-ASDFG', '2-2m6f2-QWERT', 'Dividing the design into three equal parts to create balance', 1),
-('QWERT-ZXCVB', '2-2m6f2-QWERT', 'Using symmetrical elements to create balance', 0),
-('QWERT-POIUY', '2-2m6f2-QWERT', 'Placing the main subject in the center of the design', 0),
-('QWERT-LKJHG', '2-2m6f2-QWERT', 'Avoiding any negative space in the design', 0);
-
--- Level 3 Questions and Answers
-INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3bf4s-ASDFG', '3bf4s', 'What does "white space" refer to in design?', 'multiple_choice');
-
-INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '3-3bf4s-ASDFG', 'Empty space that helps improve readability and focus', 1),
-('ASDFG-ZXCVB', '3-3bf4s-ASDFG', 'Areas that are filled with color or images', 0),
-('ASDFG-POIUY', '3-3bf4s-ASDFG', 'Space between objects to create a busy and dynamic feel', 0),
-('ASDFG-LKJHG', '3-3bf4s-ASDFG', 'Decorative elements added to the design', 0);
+(@A3_Psychology, @Q3_Psychology, 'Stages of cognitive development', 1),
+(CONCAT(@Q3_Psychology, '-A2'), @Q3_Psychology, 'Theory of behaviorism', 0),
+(CONCAT(@Q3_Psychology, '-A3'), @Q3_Psychology, 'Theory of classical conditioning', 0),
+(CONCAT(@Q3_Psychology, '-A4'), @Q3_Psychology, 'Theory of operant conditioning', 0);
 
 -- ================================================
 -- Security Quiz 
 -- ================================================
 
 -- Insert quizzes with random 5-character IDs
+SET @UUID_Security_1 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID for level 1
+SET @UUID_Security_2 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID for level 2
+SET @UUID_Security_3 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID for level 2
+SET @UUID_Security_4 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID for level 2
+SET @UUID_Security_5 = UPPER(SUBSTRING(REPLACE(UUID(), '-', ''), 1, 5)); -- Create a new unique quiz ID for level 2
+
 INSERT INTO quizzes (quiz_id, name, description, total_questions, category, level) VALUES
-('1v4d3', 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 1),
-('2vxgv', 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 2),
-('3fr65', 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 3),
-('4bv8v', 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 4),
-('5bd4g', 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 5);
+(@UUID_Security_1, 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 1),
+(@UUID_Security_2, 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 2),
+(@UUID_Security_3, 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 3),
+(@UUID_Security_4, 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 4),
+(@UUID_Security_5, 'Security Quiz', 'Test your knowledge of Security.', 25, 'Web Development', 5);
 
 -- Level 1 Questions and Answers
+SET @Q1_Security = CONCAT('1-', @UUID_Security_1, '-Q1');  -- Create unique question ID for Level 1
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('1-1v4d3-LKJHG', '1v4d3', 'What is a common vulnerability in a web application?', 'multiple_choice');
+(@Q1_Security, @UUID_Security_1, 'What is a common vulnerability in a web application?', 'multiple_choice');
 
+SET @A1_Security = CONCAT(@Q1_Security, '-A1'); -- Create answer ID for question 1
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('LKJHG-QWERT', '1-1v4d3-LKJHG', 'SQL injection', 1),
-('LKJHG-YUIOP', '1-1v4d3-LKJHG', 'Cross-Site Scripting (XSS)', 0),
-('LKJHG-ASDFG', '1-1v4d3-LKJHG', 'Insecure Direct Object References (IDOR)', 0),
-('LKJHG-ZXCVB', '1-1v4d3-LKJHG', 'Buffer overflow', 0);
+(@A1_Security, @Q1_Security, 'SQL injection', 1),
+(CONCAT(@Q1_Security, '-A2'), @Q1_Security, 'Cross-Site Scripting (XSS)', 0),
+(CONCAT(@Q1_Security, '-A3'), @Q1_Security, 'Insecure Direct Object References (IDOR)', 0),
+(CONCAT(@Q1_Security, '-A4'), @Q1_Security, 'Buffer overflow', 0);
 
 -- Level 2 Questions and Answers
+SET @Q2_Security = CONCAT('2-', @UUID_Security_2, '-Q1');  -- Create unique question ID for Level 2
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('2-2vxgv-ASDFG', '2vxgv', 'Which of the following is a potential security risk associated with SQL injection?', 'multiple_choice');
+(@Q2_Security, @UUID_Security_2, 'Which of the following is a potential security risk associated with SQL injection?', 'multiple_choice');
 
+SET @A2_Security = CONCAT(@Q2_Security, '-A1'); -- Create answer ID for question 2
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '2-2vxgv-ASDFG', 'Input validation', 1),
-('ASDFG-ZXCVB', '2-2vxgv-ASDFG', 'Data encryption', 0),
-('ASDFG-POIUY', '2-2vxgv-ASDFG', 'Cross-site scripting (XSS)', 0),
-('ASDFG-HGFDS', '2-2vxgv-ASDFG', 'SQL injection', 0);
+(@A2_Security, @Q2_Security, 'Input validation', 1),
+(CONCAT(@Q2_Security, '-A2'), @Q2_Security, 'Data encryption', 0),
+(CONCAT(@Q2_Security, '-A3'), @Q2_Security, 'Cross-site scripting (XSS)', 0),
+(CONCAT(@Q2_Security, '-A4'), @Q2_Security, 'SQL injection', 0);
 
 -- Level 3 Questions and Answers
+SET @Q3_Security = CONCAT('3-', @UUID_Security_1, '-Q1');  -- Create unique question ID for Level 3
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('3-3fr65-ZXCVB', '3fr65', 'Which of the following is a common way to prevent SQL injection?', 'multiple_choice');
+(@Q3_Security, @UUID_Security_1, 'Which of the following is a common way to prevent SQL injection?', 'multiple_choice');
 
+SET @A3_Security = CONCAT(@Q3_Security, '-A1'); -- Create answer ID for question 3
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ZXCVB-QWERT', '3-3fr65-ZXCVB', 'Prepared statements', 1),
-('ZXCVB-YUIOP', '3-3fr65-ZXCVB', 'Input validation', 0),
-('ZXCVB-ASDFG', '3-3fr65-ZXCVB', 'Escaping special characters', 0),
-('ZXCVB-HGFDS', '3-3fr65-ZXCVB', 'Regular expressions', 0);
+(@A3_Security, @Q3_Security, 'Prepared statements', 1),
+(CONCAT(@Q3_Security, '-A2'), @Q3_Security, 'Input validation', 0),
+(CONCAT(@Q3_Security, '-A3'), @Q3_Security, 'Escaping special characters', 0),
+(CONCAT(@Q3_Security, '-A4'), @Q3_Security, 'Regular expressions', 0);
 
 -- Level 4 Questions and Answers
+SET @Q4_Security = CONCAT('4-', @UUID_Security_2, '-Q1');  -- Create unique question ID for Level 4
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('4-4bv8v-LKJHG', '4bv8v', 'Which of the following is a method used to sanitize user input to prevent SQL injection?', 'multiple_choice');
+(@Q4_Security, @UUID_Security_2, 'Which of the following is a method used to sanitize user input to prevent SQL injection?', 'multiple_choice');
 
+SET @A4_Security = CONCAT(@Q4_Security, '-A1'); -- Create answer ID for question 4
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('LKJHG-QWERT', '4-4bv8v-LKJHG', 'Prepared statements', 0),
-('LKJHG-ZXCVB', '4-4bv8v-LKJHG', 'Escaping special characters', 1),
-('LKJHG-POIUY', '4-4bv8v-LKJHG', 'Regular expressions', 0),
-('LKJHG-HGFDS', '4-4bv8v-LKJHG', 'Input validation', 0);
+(@A4_Security, @Q4_Security, 'Prepared statements', 0),
+(CONCAT(@Q4_Security, '-A2'), @Q4_Security, 'Escaping special characters', 1),
+(CONCAT(@Q4_Security, '-A3'), @Q4_Security, 'Regular expressions', 0),
+(CONCAT(@Q4_Security, '-A4'), @Q4_Security, 'Input validation', 0);
 
 -- Level 5 Questions and Answers
+SET @Q5_Security = CONCAT('5-', @UUID_Security_1, '-Q1');  -- Create unique question ID for Level 5
 INSERT INTO questions (question_id, quiz_id, content, question_type) VALUES
-('5-5bd4g-ASDFG', '5bd4g', 'Which of the following is a technique used to detect and prevent SQL injection?', 'multiple_choice');
+(@Q5_Security, @UUID_Security_1, 'Which of the following is a technique used to detect and prevent SQL injection?', 'multiple_choice');
 
+SET @A5_Security = CONCAT(@Q5_Security, '-A1'); -- Create answer ID for question 5
 INSERT INTO answers (answer_id, question_id, content, is_correct) VALUES
-('ASDFG-QWERT', '5-5bd4g-ASDFG', 'Input validation', 0),
-('ASDFG-ZXCVB', '5-5bd4g-ASDFG', 'SQL injection detection', 1),
-('ASDFG-POIUY', '5-5bd4g-ASDFG', 'Regular expressions', 0),
-('ASDFG-HGFDS', '5-5bd4g-ASDFG', 'Escaping special characters', 0);
-
+(@A5_Security, @Q5_Security, 'Input validation', 0),
+(CONCAT(@Q5_Security, '-A2'), @Q5_Security, 'SQL injection detection', 1),
+(CONCAT(@Q5_Security, '-A3'), @Q5_Security, 'Regular expressions', 0),
+(CONCAT(@Q5_Security, '-A4'), @Q5_Security, 'Escaping special characters', 0);
