@@ -77,16 +77,16 @@ const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = props => {
             </h2>
             {/* <div id="difficultyOptions" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-3">
                 {difficultyLevels.map( ( level ) => (
-                    <button
+                    <Button
                         key={level}
                         onClick={() => handleDifficultySelection( level )}
-                        className={`button text-white ${ getButtonClass( level ) } focus:ring-4 focus:outline-none font-medium rounded-lg text-md w-full sm:w-auto px-5 py-2.5 text-center`}
-                    >
-                        Level {level}
+                        className={`${ getButtonClass( level ) }`}
+                        label={`Level ${level}
                         <div className="text-sm mt-1">
                             {getHighestScoreForLevel( level ) ? `High Score: ${ getHighestScoreForLevel( level ) }` : ''}
                         </div>
-                    </button>
+                        `}
+                    />
                 ) )}
             </div> */}
         </div>

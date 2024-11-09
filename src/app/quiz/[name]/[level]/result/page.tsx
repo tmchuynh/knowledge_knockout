@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Button from '@/app/components/ui/button';
 
 const ResultPage = () => {
     const searchParams = useSearchParams();
@@ -67,12 +68,10 @@ const ResultPage = () => {
             <h6 className="text-center text-l pb-4 font-bold dark:text-white">
                 {score} out of {totalQuestions}
             </h6>
-            <button
-                className="button text-white mx-3 flex-end bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-md px-5 py-2.5 text-center"
+            <Button
                 onClick={() => router.push( '/quiz' )}
-            >
-                Return to Home
-            </button>
+                label={"Return to Home"}
+            />
         </div>
     );
 };

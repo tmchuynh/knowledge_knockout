@@ -4,8 +4,8 @@ import { User } from '@/types';
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import ColorPickerComponent from '../../components/ColorPicker';
-import ContributionsGrid from '../../components/ContributionsGrid';
+import ColorPickerComponent from '@/app/components/ColorPicker';
+import ContributionsGrid from '@/app/components/ContributionsGrid';
 
 const DashboardPage: React.FC = () => {
     const [userProfile, setUserProfile] = useState<User | null>( null );

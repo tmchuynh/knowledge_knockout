@@ -1,14 +1,9 @@
 "use client";
 
+import { LeaderboardEntry } from '@/types';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-
-type LeaderboardEntry = {
-    username: string;
-    score: number;
-    date: string;
-    level: number;
-};
+import Table from '@/app/components/ui/table';
 
 const getLeaderboardDataByLevel = async ( quizName: string ): Promise<Map<number, LeaderboardEntry[]>> => {
     const leaderboardDataByLevel = new Map<number, LeaderboardEntry[]>();
@@ -55,32 +50,44 @@ const LeaderboardPage: React.FC = () => {
 
     if ( !quizNameStr ) return <p>Loading...</p>;
 
+    const headers = ['Username', 'Quiz', 'Level', 'Score', 'Date Completed'];
+
+    // Transforms the LeaderboardEntry into a format that Table expects
+    const transformRowData = ( entry: LeaderboardEntry, _index: number ) => ( {
+        username: entry.username,
+        quiz: quizNameStr,
+        level: entry.level,
+        score: entry.score,
+        date_completed: entry.date_completed.toDateString(),
+    } );
+
+    const renderRow = ( row: { username: string, quiz: string, level: number, score: number, date_completed: string; }, index: number ) => (
+        <tr key={index} className="bg-gray-600 border-b">
+            <td className="px-4 py-2 text-center">{row.username}</td>
+            <td className="px-4 py-2 text-center">{row.quiz}</td>
+            <td className="px-4 py-2 text-center">{row.level}</td>
+            <td className="px-4 py-2 text-center">{row.score}</td>
+            <td className="px-4 py-2 text-center">{row.date_completed}</td>
+        </tr>
+    );
+
     return (
         <div className="leaderboard-page flex flex-col justify-center items-center min-h-screen px-6 py-4 lg:px-8 bg-gray-800 text-white">
             <h2 className="text-4xl font-extrabold mb-5 text-center">Leaderboard for {quizNameStr}</h2>
-            {leaderboard && [...leaderboard.keys()].sort( ( a, b ) => a - b ).map( ( level ) => (
-                <div key={level} className="w-full mb-6">
-                    <h3 className="text-2xl mb-3">Level {level}</h3>
-                    <table className="w-full text-left bg-gray-700 rounded-lg">
-                        <thead>
-                            <tr>
-                                <th className="px-4 py-2">Rank</th>
-                                <th className="px-4 py-2">Score</th>
-                                <th className="px-4 py-2">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {leaderboard.get( level )!.map( ( entry, index ) => (
-                                <tr key={index} className="bg-gray-600 border-b">
-                                    <td className="px-4 py-2 text-center">{index + 1}</td>
-                                    <td className="px-4 py-2 text-center">{entry.score}%</td>
-                                    <td className="px-4 py-2 text-center">{new Date( entry.date ).toLocaleDateString()}</td>
-                                </tr>
-                            ) )}
-                        </tbody>
-                    </table>
-                </div>
-            ) )}
+            {leaderboard &&
+                [...leaderboard.keys()]
+                    .sort( ( a, b ) => a - b )
+                    .map( ( level ) => {
+                        const data = leaderboard.get( level ) || [];
+                        const transformedData = data.map( ( entry, index ) => transformRowData( entry, index ) );
+
+                        return (
+                            <div key={level} className="w-full mb-6">
+                                <h3 className="text-2xl mb-3">Level {level}</h3>
+                                <Table headers={headers} data={transformedData} renderRow={renderRow} />
+                            </div>
+                        );
+                    } )}
         </div>
     );
 };

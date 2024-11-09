@@ -1,39 +1,44 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from "next-auth/react";
+import { User } from "@/types";
+import Button from '@/app/components/ui/button';
 
 const LeaderboardSelectionPage: React.FC = () => {
     const router = useRouter();
     const [quizNames, setQuizNames] = useState<string[]>( [] );
+    const [user, setUser] = useState<User | null>( null );
+    const { data: session } = useSession();
 
-    // useEffect( () => {
-    //     const fetchQuizNames = async () => {
-    //         if ( user && user.sub ) {
-    //             try {
-    //                 const response = await fetch( "/api/quiz" );
-    //                 if ( response.ok ) {
-    //                     const data: { title: string; }[] = await response.json();
-    //                     console.log( 'Fetched quiz names:', data );
+    useEffect( () => {
+        const fetchQuizNames = async () => {
+            if ( session?.user ) {
+                try {
+                    const response = await fetch( "/api/quiz" );
+                    if ( response.ok ) {
+                        const data: { title: string; }[] = await response.json();
+                        console.log( 'Fetched quiz names:', data );
 
-    //                     // Extract unique quiz titles using reduce
-    //                     const uniqueTitles = data
-    //                         .map( quiz => quiz.title )
-    //                         .filter( ( title, index, self ) => self.indexOf( title ) === index );
+                        // Extract unique quiz titles using reduce
+                        const uniqueTitles = data
+                            .map( quiz => quiz.title )
+                            .filter( ( title, index, self ) => self.indexOf( title ) === index );
 
-    //                     console.log( 'Filtered quiz titles:', uniqueTitles );
-    //                     setQuizNames( uniqueTitles );
-    //                 } else {
-    //                     console.error( 'Failed to fetch quiz names: HTTP status', response.status );
-    //                 }
-    //             } catch ( error ) {
-    //                 console.error( 'Error fetching quiz names:', error );
-    //             }
-    //         }
-    //     };
+                        console.log( 'Filtered quiz titles:', uniqueTitles );
+                        setQuizNames( uniqueTitles );
+                    } else {
+                        console.error( 'Failed to fetch quiz names: HTTP status', response.status );
+                    }
+                } catch ( error ) {
+                    console.error( 'Error fetching quiz names:', error );
+                }
+            }
+        };
 
-    //     fetchQuizNames();
-    // }, [user] );
+        fetchQuizNames();
+    }, [session?.user] );
 
     const handleQuizSelection = ( quizName: string ) => {
         router.push( `/leaderboard/${ quizName }` );
@@ -45,13 +50,11 @@ const LeaderboardSelectionPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {quizNames.length > 0 ? (
                     quizNames.map( ( quizName, index ) => (
-                        <button
+                        <Button
                             key={index}
+                            label={quizName}
                             onClick={() => handleQuizSelection( quizName )}
-                            className="text-white bg-green-700 hover:bg-green-800 rounded-lg px-5 py-2.5"
-                        >
-                            {quizName}
-                        </button>
+                        />
                     ) )
                 ) : (
                     <p className="text-gray-400 mx-auto">No quizzes found for this user.</p>

@@ -1,5 +1,7 @@
 'use client';
 
+import Button from '@/app/components/ui/button';
+import Input from '@/app/components/ui/input';
 import { Answer, Question } from '@/types';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -164,8 +166,6 @@ const QuizPage = () => {
         goToNextQuestion();
     };
 
-
-
     const goToNextQuestion = () => {
         setUserInput( '' );
 
@@ -176,8 +176,6 @@ const QuizPage = () => {
         }
     };
 
-
-
     return (
         <div className="flex flex-col min-h-full justify-center items-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
             <h1 className="text-center text-2xl py-5 font-extrabold dark:text-white">{currentQuestion.content}</h1>
@@ -185,22 +183,20 @@ const QuizPage = () => {
                 <div className='w-full flex flex-col'>
                     <div className="grid grid-cols-2 gap-4 p-3">
                         {currentQuestion.answers.map( ( answers: Answer ) => (
-                            <button className="button text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-md w-full sm:w-auto px-5 py-2.5 text-center"
+                            <Button
                                 key={answers.answer_id}
+                                label={answers.content}
                                 onClick={() => handleSubmitAnswer( answers.is_correct )}
-                            >
-                                {answers.content}
-                            </button>
-                        ) )}
+                            /> ) )}
                     </div>
                 </div>
             ) : (
                 <div className='w-full flex flex-col'>
                     <div className="grid grid-cols-1 p-3">
                         <label className="block mb-2 text-md font-medium text-gray-900 dark:text-white">Input your answer</label>
-                        <input
-                            className='bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                            type="text"
+                        <Input
+                            id={"written_answer_input"}
+                            type={"text"}
                             value={userInput}
                             onChange={( e ) => setUserInput( e.target.value )}
                             onKeyDown={( e ) => {
@@ -210,9 +206,10 @@ const QuizPage = () => {
                             }}
                         />
                     </div>
-                    <button className="button text-white mx-3 flex-end bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-md px-5 py-2.5 text-center" onClick={handleWrittenAnswerSubmit} >
-                        Next Question
-                    </button>
+                    <Button
+                        onClick={handleWrittenAnswerSubmit}
+                        label={"submit answer"}
+                    />
                 </div>
             )}
             {result && <div>{result}</div>}
