@@ -1,4 +1,3 @@
-// src/components/Register.tsx
 "use client";
 
 import { useRouter } from 'next/navigation';

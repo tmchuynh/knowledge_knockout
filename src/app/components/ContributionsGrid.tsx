@@ -1,4 +1,3 @@
-// components/ContributionsGrid.tsx
 import React, { useEffect } from 'react';
 import { formatDate } from '../utils/formatUtils';
 
@@ -18,17 +17,15 @@ const ContributionsGrid: React.FC<ContributionsGridProps> = ( { baseColor } ) =>
     );
 };
 
-// Function to create the contribution grid
 export const createContributionGrid = ( baseColor: string ) => {
     const gridContainer = document.getElementById( 'contributionGrid' );
     if ( !gridContainer ) return;
 
     const shades = generateColorShades( baseColor, 5 );
-    gridContainer.innerHTML = ''; // Clear previous grid
-    const currentDate = new Date(); // Get the current date
+    gridContainer.innerHTML = '';
+    const currentDate = new Date();
     currentDate.setDate( currentDate.getDate() + 7 );
 
-    // Create a map to hold months and their respective weeks
     const months: { [key: string]: HTMLElement; } = {};
     const monthNames = [
         'January', 'February', 'March', 'April', 'May', 'June',
@@ -37,10 +34,9 @@ export const createContributionGrid = ( baseColor: string ) => {
 
     for ( let i = 0; i < 365; i++ ) {
         const dateForCell = new Date( currentDate );
-        dateForCell.setDate( currentDate.getDate() - ( 364 - i ) ); // Calculate date
-        const dateString = formatDate( dateForCell ); // Format: mm/dd/yyyy
+        dateForCell.setDate( currentDate.getDate() - ( 364 - i ) );
+        const dateString = formatDate( dateForCell );
 
-        // Calculate month-year key for grouping
         const monthYear = `${ dateForCell.getFullYear() }-${ dateForCell.getMonth() + 1 }`;
 
         const cell = document.createElement( 'div' );
@@ -49,12 +45,11 @@ export const createContributionGrid = ( baseColor: string ) => {
             'transition-transform', 'duration-200', 'ease-in-out', 'transform'
         );
         const level = Math.floor( Math.random() * shades.length );
-        cell.style.backgroundColor = level > 0 ? shades[level] : '#e0e0e0'; // Use appropriate shade or default color
+        cell.style.backgroundColor = level > 0 ? shades[level] : '#e0e0e0';
         cell.classList.add( `date-${ dateString }`, `level-${ level }` );
         cell.addEventListener( 'mouseenter', () => showPopover( cell, level ) );
         cell.addEventListener( 'mouseleave', hidePopover );
 
-        // Check if the month container already exists
         if ( !months[monthYear] ) {
             const monthContainer = document.createElement( 'div' );
             monthContainer.classList.add( 'month-container', 'flex', 'flex-col', 'm-5', 'align-center' );

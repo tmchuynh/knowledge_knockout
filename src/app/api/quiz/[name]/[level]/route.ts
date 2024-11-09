@@ -8,14 +8,12 @@ export async function GET(
     const params = await props.params;
     try {
         const { title, level, id } = params;
-
         const questions = await Question.findAll( {
             where: {
                 quiz_id: id,
             },
             include: [{ model: Answer, as: 'answers' }],
         } );
-
         return NextResponse.json( { questions } );
     } catch ( error ) {
         console.error( 'Error fetching questions:', error );

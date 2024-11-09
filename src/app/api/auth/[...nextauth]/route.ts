@@ -1,11 +1,11 @@
-import NextAuth from 'next-auth';
-import type { NextAuthConfig } from "next-auth";
-import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcrypt';
-import User from '../../../../backend/models/User';
-import sequelize from '@sequelize/core';
+import type { NextAuthConfig } from "next-auth";
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { Op } from "sequelize";
 import { v4 as uuidv4 } from 'uuid';
+import User from '../../../../backend/models/User';
+import { signIn } from 'next-auth/react';
 
 export const authOptions: NextAuthConfig = {
     providers: [
@@ -17,7 +17,6 @@ export const authOptions: NextAuthConfig = {
             },
             async authorize( credentials ) {
                 const { emailOrUsername, password } = credentials!;
-
                 // Find user by email or username
                 const user = await User.findOne( {
                     where: {
@@ -27,25 +26,20 @@ export const authOptions: NextAuthConfig = {
                         ],
                     },
                 } );
-
                 if ( !user ) {
                     throw new Error( 'No user found with the given email or username' );
                 }
-
                 // Compare passwords
                 const isValid = await bcrypt.compare( JSON.stringify( password ), user.password );
                 if ( !isValid ) {
                     throw new Error( 'Invalid password' );
-                }
-
-                // Return user object
-                return {
-                    id: user.user_id,
-                    name: user.username,
-                    email: user.email,
-                };
-            },
-        } ),
+                    // Return user object
+                    return {
+                        id: user.user_id,
+                        name: user.username,
+                        email: user.email,
+                    };
+                } ),
     ],
     callbacks: {
         async jwt( { token, user } ) {
@@ -61,53 +55,38 @@ export const authOptions: NextAuthConfig = {
                 session.user.id = token.id as string;
                 session.user.name = token.name as string;
                 session.user.email = token.email as string;
-            }
-            return session;
-        },
+                return session;
         async signIn( { user, account } ) {
-            if ( account?.provider !== 'credentials' ) {
-                const provider = account?.provider;
-                const providerId = account?.providerAccountId.toString();
-                const email = user.email;
-
-                let existingUser = await User.findOne( {
-                    where: { email: email || '' },
-                } );
-
-                if ( !existingUser ) {
-                    existingUser = await User.create( {
-                        user_id: uuidv4(),
-                        username: '',
-                        password: '',
-                        email: email || '',
-                        provider: provider || '',
-                        providerId,
-                        firstName: "",
-                        lastName: ""
-                    } );
-
-                    user.id = existingUser.user_id;
-                    user.name = existingUser.username;
-                    user.email = existingUser.email;
-
-                    return '/complete-profile';
-                } else {
-                    user.id = existingUser.user_id;
-                    user.name = existingUser.username;
-                    user.email = existingUser.email;
-                }
-            }
-            return true;
-        }
-    },
-    pages: {
-        signIn: '/auth/signin',
-        error: '/auth/error',
-    },
-    session: {
-        strategy: 'jwt',
-    },
-    secret: process.env.NEXTAUTH_SECRET,
-};
-
-export default NextAuth( authOptions );
+                    if ( account?.provider !== 'credentials' ) {
+                        const provider = account?.provider;
+                        const providerId = account?.providerAccountId.toString();
+                        const email = user.email;
+                        let existingUser = await User.findOne( {
+                            where: { email: email || '' },
+                            if( !existingUser ) {
+                                existingUser = await User.create( {
+                                    user_id: uuidv4(),
+                                    username: '',
+                                    password: '',
+                                    email: email || '',
+                                    provider: provider || '',
+                                    providerId,
+                                    firstName: "",
+                                    lastName: ""
+                                } );
+                                user.id = existingUser.user_id;
+                                user.name = existingUser.username;
+                                user.email = existingUser.email;
+                                return '/complete-profile';
+                            } else {
+                                return true;
+                            }
+                        },
+                            pages: {
+                            signIn: '/auth/signin',
+                            error: '/auth/error',
+                            session: {
+                                strategy: 'jwt',
+                                secret: process.env.NEXTAUTH_SECRET,
+                            };
+                            export default NextAuth( authOptions );

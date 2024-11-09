@@ -1,5 +1,5 @@
 import { addUserToDatabase } from '@/backend/controllers/userController';
-import { User, Progress } from '@/backend/models';
+import { Progress, User } from '@/backend/models';
 import { NextResponse } from 'next/server';
 
 export async function POST( request: Request ) {
@@ -7,17 +7,14 @@ export async function POST( request: Request ) {
         const body = await request.json();
         const { userId, quizId, updated_at, questionId, scoreId, completed } = body;
 
-        // Validate required fields
         if ( !userId || !quizId ) {
             return NextResponse.json( { error: 'User ID and quiz ID are required' }, { status: 400 } );
         }
 
-        // Check if the user exists
         let userExists = await User.findOne( {
             where: { user_id: userId },
         } );
 
-        // If user doesn't exist, add the user to the database
         if ( !userExists ) {
             userExists = await addUserToDatabase( userId );
             if ( !userExists ) {
@@ -25,13 +22,11 @@ export async function POST( request: Request ) {
             }
         }
 
-        // Check if user progress already exists
         const progress = await Progress.findOne( {
             where: { user_id: userId, quiz_id: quizId },
         } );
 
         if ( progress ) {
-            // Update existing progress
             await progress.update( {
                 score_id: scoreId,
                 completed,
@@ -40,7 +35,6 @@ export async function POST( request: Request ) {
             return NextResponse.json( { message: 'Progress updated successfully', progress } );
         } else {
             const progressId = `progress-${ userId }-${ quizId }`;
-            // Create new progress entry
             const newProgress = await Progress.create( {
                 progress_id: progressId,
                 user_id: userId,
@@ -58,7 +52,6 @@ export async function POST( request: Request ) {
     } catch ( error: any ) {
         console.error( 'Error processing user progress:', error );
 
-        // Handle specific database errors if needed
         if ( error.code === 'ER_NO_REFERENCED_ROW_2' ) {
             return NextResponse.json( { error: 'Invalid user ID or quiz ID reference' }, { status: 400 } );
         }

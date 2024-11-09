@@ -21,7 +21,6 @@ export async function GET( request: Request, props: { params: Promise<{ id: stri
     }
 }
 
-// app/api/scores/init/route.ts
 
 export async function POST( request: Request ) {
     try {

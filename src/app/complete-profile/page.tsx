@@ -1,8 +1,6 @@
-// src/app/auth/complete-profile/page.tsx
-
-import { useSession, signIn } from 'next-auth/react';
-import { useState, useEffect } from 'react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 const CompleteProfile = () => {
     const { data: session } = useSession();
@@ -20,7 +18,6 @@ const CompleteProfile = () => {
     const handleSubmit = async ( e: React.FormEvent ) => {
         e.preventDefault();
 
-        // Update the user's profile in the database
         await fetch( '/api/user/update-profile', {
             method: 'POST',
             headers: {

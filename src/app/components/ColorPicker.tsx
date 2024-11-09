@@ -1,6 +1,5 @@
-// components/ColorPicker.tsx
-import React, { useEffect, useRef } from 'react';
 import iro from '@jaames/iro';
+import React, { useEffect, useRef } from 'react';
 import { createContributionGrid } from './ContributionsGrid';
 
 interface ColorPickerProps {
@@ -18,16 +17,13 @@ const ColorPickerComponent: React.FC<ColorPickerProps> = ( { onColorChange, init
             layout: [{ component: iro.ui.Slider, options: { sliderType: 'hue' } }],
         } );
 
-        // Define the callback for color change
         const handleColorChange = ( color: any ) => {
             onColorChange( color.hexString );
             updateContributionGridColorTheme( color.hexString );
         };
 
-        // Attach the event listener
         colorPicker.on( 'color:change', handleColorChange );
 
-        // Detach the event listener on cleanup
         return () => colorPicker.off( 'color:change', handleColorChange );
     }, [onColorChange, initialColor] );
 
