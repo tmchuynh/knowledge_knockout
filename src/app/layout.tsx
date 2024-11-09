@@ -24,7 +24,10 @@ export default function RootLayout( {
                     href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=PT+Sans+Narrow:wght@400;700&family=Titan+One&display=swap"
                     rel="stylesheet"
                 />
-                <title>My App</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <meta name="description" content="A knowledge-based quiz game" />
+                <meta title="Knowledge Knockout" />
+                <title>Knowledge Knockout</title>
             </Head>
             <body>
                 <NotFoundProvider>
