@@ -2,11 +2,11 @@
   "name": "knowledge_knockout",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "start-server": "node dist/server.js",
     "dev-server": "tsx src/backend/server.ts",
     "build-server": "tsc",
@@ -44,11 +44,12 @@
     "@types/node": "^20",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "eslint": "^8.57.1",
     "eslint-config-next": "15.0.3",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.13.0"
   },
   "description": "This is a web-based **Quiz Application** that allows users to register, log in, take quizzes, and view their past quiz scores. The application stores user data, progress, scores and activity in a MySQL database and uses Sequelize to interact with the database on the backend.",
   "main": "server.ts",
