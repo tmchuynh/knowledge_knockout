@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation";
-import { signIn, auth } from "../../../auth";
 import Button from '@/app/components/ui/button';
-import Input from '@/app/components/ui/input';
 import { AuthError } from "next-auth";
 
 export default async function SignInPage( props: {
@@ -28,7 +26,7 @@ export default async function SignInPage( props: {
     return (
         <div className="flex flex-col gap-2 justify-center">
             {/* ... existing JSX ... */}
-            {Object.values( providerMap ).map( ( provider, index ) => (
+            {Object.values( providerMap ).map( ( provider ) => (
                 <form className="p-10 w-3/4 gap-3 mx-auto text-center"
                     key={provider.id}
                     action={async () => {
