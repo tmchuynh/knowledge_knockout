@@ -1,4 +1,4 @@
-import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
 
 class Quiz extends Model<InferAttributes<Quiz>, InferCreationAttributes<Quiz>> {

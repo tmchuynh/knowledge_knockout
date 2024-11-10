@@ -1,12 +1,24 @@
-import NextAuth, { NextAuthConfig } from "next-auth";
-import GitHub from "next-auth/providers/github";
+import SequelizeAdapter, { models } from "@auth/sequelize-adapter";
+import dotenv from 'dotenv';
+import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import type { Provider } from "next-auth/providers";
+import GitHub from "next-auth/providers/github";
+import { DataTypes, Sequelize } from "sequelize";
 
-const authConfig: NextAuthConfig = {
-    pages: {
-        error: "/error",
+dotenv.config();
+
+const sequelize = new Sequelize( `${ process.env.DATABASE_URL }` );
+const adapter = SequelizeAdapter( sequelize, {
+    models: {
+        User: sequelize.define( "user", {
+            ...models.User,
+            phoneNumber: DataTypes.STRING,
+        } ),
     },
+} );
+sequelize.sync();
+
+export const { handlers, auth, signIn, signOut } = NextAuth( {
     providers: [
         Credentials( {
             credentials: { password: { label: "Password", type: "password" } },
@@ -20,25 +32,11 @@ const authConfig: NextAuthConfig = {
             },
         } ),
         GitHub,
-    ]
-};
-
-export const providers: Provider[] = authConfig.providers;
-
-export const providerMap = providers
-    .map( ( provider ) => {
-        if ( typeof provider === "function" ) {
-            const providerData = provider();
-            return { id: providerData.id, name: providerData.name };
-        } else {
-            return { id: provider.id, name: provider.name };
-        }
-    } )
-    .filter( ( provider ) => provider.id !== "credentials" );
-
-export const { handlers, auth, signIn, signOut } = NextAuth( {
-    providers,
+    ],
     pages: {
         signIn: "/signin",
+        error: "/error",
+        signOut: "/signout"
     },
+    adapter,
 } );

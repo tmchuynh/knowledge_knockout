@@ -6,6 +6,7 @@ import React from "react";
 import { NotFoundProvider, useNotFound } from "../context/NotFoundContext";
 import Header from "@/app/components/Header";
 import "./styles.css";
+import { SessionProvider } from 'next-auth/react';
 
 export default function RootLayout( {
     children,
@@ -29,9 +30,12 @@ export default function RootLayout( {
                 <title>Knowledge Knockout</title>
             </Head>
             <body>
-                <NotFoundProvider>
-                    <MainContent>{children}</MainContent>
-                </NotFoundProvider>
+                <SessionProvider>
+                    <NotFoundProvider>
+                        <MainContent>{children}</MainContent>
+                    </NotFoundProvider>
+                </SessionProvider>
+
             </body>
         </html>
     );
