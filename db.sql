@@ -12,10 +12,6 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(250) NOT NULL,
     email VARCHAR(250) NOT NULL UNIQUE,
-    provider VARCHAR(50),
-    provider_id VARCHAR(250),
-    reset_password_token VARCHAR(250),
-    reset_password_expires DATETIME,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

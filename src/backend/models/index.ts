@@ -9,36 +9,36 @@ import sequelize from '../config/db';
 // Associations
 
 // Association between User and Quiz
-User.hasMany( Quiz, { foreignKey: 'user_id' } );
-Quiz.belongsTo( User, { foreignKey: 'user_id' } );
+User.hasMany( Quiz, { foreignKey: 'id' } );
+Quiz.belongsTo( User, { foreignKey: 'id' } );
 
 // Association between Quiz and Question
-Quiz.hasMany( Question, { foreignKey: 'quiz_id' } );
-Question.belongsTo( Quiz, { foreignKey: 'quiz_id' } );
+Quiz.hasMany( Question, { foreignKey: 'id' } );
+Question.belongsTo( Quiz, { foreignKey: 'id' } );
 
 // Association between Question and Answer
-Question.hasMany( Answer, { foreignKey: 'question_id' } );
-Answer.belongsTo( Question, { foreignKey: 'question_id' } );
+Question.hasMany( Answer, { foreignKey: 'id' } );
+Answer.belongsTo( Question, { foreignKey: 'id' } );
 
 // Association between Quiz and Score
-Quiz.hasMany( Score, { foreignKey: 'quiz_id' } );
-Score.belongsTo( Quiz, { foreignKey: 'quiz_id' } );
+Quiz.hasMany( Score, { foreignKey: 'id' } );
+Score.belongsTo( Quiz, { foreignKey: 'id' } );
 
 // Association between Score and User
-Score.belongsTo( User, { foreignKey: 'user_id' } );
-User.hasMany( Score, { foreignKey: 'user_id' } );
+Score.belongsTo( User, { foreignKey: 'id' } );
+User.hasMany( Score, { foreignKey: 'id' } );
 
 // Association between Progress and User
-Progress.belongsTo( User, { foreignKey: 'user_id' } );
-User.hasMany( Progress, { foreignKey: 'user_id' } );
+Progress.belongsTo( User, { foreignKey: 'id' } );
+User.hasMany( Progress, { foreignKey: 'id' } );
 
 // Association between Progress and Quiz
-Progress.belongsTo( Quiz, { foreignKey: 'quiz_id' } );
-Quiz.hasMany( Progress, { foreignKey: 'quiz_id' } );
+Progress.belongsTo( Quiz, { foreignKey: 'id' } );
+Quiz.hasMany( Progress, { foreignKey: 'id' } );
 
 // Association between Progress and Score
-Progress.belongsTo( Score, { foreignKey: 'score_id' } );
-Score.hasMany( Progress, { foreignKey: 'score_id' } );
+Progress.belongsTo( Score, { foreignKey: 'id' } );
+Score.hasMany( Progress, { foreignKey: 'id' } );
 
 sequelize.sync( { force: false } ).then( () => {
     console.log( 'Database & tables created!' );

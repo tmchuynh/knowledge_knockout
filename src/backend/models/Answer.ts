@@ -3,7 +3,7 @@ import sequelize from '../config/db';
 import { Question } from '.';
 
 class Answer extends Model<InferAttributes<Answer>, InferCreationAttributes<Answer>> {
-    declare answer_id: string;
+    declare id: string;
     declare question_id: string;
     declare content: string;
     declare is_correct: boolean;
@@ -11,7 +11,7 @@ class Answer extends Model<InferAttributes<Answer>, InferCreationAttributes<Answ
 
 Answer.init(
     {
-        answer_id: {
+        id: {
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },

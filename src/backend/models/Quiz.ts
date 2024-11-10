@@ -2,7 +2,7 @@ import { Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequ
 import sequelize from '../config/db';
 
 class Quiz extends Model<InferAttributes<Quiz>, InferCreationAttributes<Quiz>> {
-    declare quiz_id: string;
+    declare id: string;
     declare name: string;
     declare description: string | null;
     declare total_questions: number;
@@ -12,7 +12,7 @@ class Quiz extends Model<InferAttributes<Quiz>, InferCreationAttributes<Quiz>> {
 
 Quiz.init(
     {
-        quiz_id: {
+        id: {
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },

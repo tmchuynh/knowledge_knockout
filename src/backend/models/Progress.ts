@@ -3,7 +3,7 @@ import sequelize from '../config/db';
 import { Question, Quiz, Score, User } from '.';
 
 class Progress extends Model<InferAttributes<Progress>, InferCreationAttributes<Progress>> {
-    declare progress_id: string;
+    declare id: string;
     declare user_id: string;
     declare quiz_id: string;
     declare question_id: string;
@@ -17,7 +17,7 @@ class Progress extends Model<InferAttributes<Progress>, InferCreationAttributes<
 
 Progress.init(
     {
-        progress_id: {
+        id: {
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },
