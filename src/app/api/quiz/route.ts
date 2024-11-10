@@ -1,5 +1,5 @@
+import { Quiz } from '@/backend/models';
 import { NextResponse } from 'next/server';
-import { Quiz } from '../../../backend/models/index';
 
 export async function GET() {
     try {
