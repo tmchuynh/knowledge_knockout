@@ -6,24 +6,32 @@ USE knowledge_knockout_db;
 
 -- Drop tables
 DROP TABLE IF EXISTS progress;
+
 DROP TABLE IF EXISTS answers;
+
 DROP TABLE IF EXISTS questions;
+
 DROP TABLE IF EXISTS quizzes;
+
 DROP TABLE IF EXISTS scores;
+
 DROP TABLE IF EXISTS users;
 
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(250) NOT NULL PRIMARY KEY,
-    firstName VARCHAR(250) NOT NULL,
-    lastName VARCHAR(250) NOT NULL,
+    first_name VARCHAR(250) NOT NULL,
+    last_name VARCHAR(250) NOT NULL,
     username VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(250) NOT NULL,
     email VARCHAR(250) NOT NULL UNIQUE,
+    email_verified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    image VARCHAR(255),
+    password VARCHAR(250) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE UNIQUE INDEX email ON users (email);
 
 -- Create quizzes table
 CREATE TABLE IF NOT EXISTS quizzes (
