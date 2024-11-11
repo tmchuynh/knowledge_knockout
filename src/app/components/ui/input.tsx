@@ -1,41 +1,22 @@
-import React from 'react';
+import * as React from "react";
 
-interface InputProps {
-    id: string;
-    type: string;
-    value?: string;
-    name?: string;
-    onChange?: ( e: React.ChangeEvent<HTMLInputElement> ) => void;
-    onKeyDown?: ( e: React.KeyboardEvent<HTMLInputElement> ) => void;
-    placeholder?: string;
-    className?: string;
-    disabled?: boolean;
-}
+import { cn } from "@/lib/utils";
 
-const Input: React.FC<InputProps> = ( {
-    id,
-    type,
-    value = '',
-    name,
-    onChange,
-    onKeyDown,
-    placeholder = '',
-    className = '',
-    disabled = false,
-} ) => {
+const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
+  ( { className, type, ...props }, ref ) => {
     return (
-        <input
-            id={id}
-            type={type}
-            name={name}
-            value={value}
-            onChange={onChange}
-            onKeyDown={onKeyDown}
-            placeholder={placeholder}
-            disabled={disabled}
-            className={`bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${ className }`}
-        />
+      <input
+        type={type}
+        className={cn(
+          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
     );
-};
+  }
+);
+Input.displayName = "Input";
 
-export default Input;
+export { Input };
