@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Button from '@/app/components/ui/button';
+import { Button } from '@/app/components/ui/button';
 
 const ResultPage = () => {
     const searchParams = useSearchParams();
@@ -70,8 +70,9 @@ const ResultPage = () => {
             </h6>
             <Button
                 onClick={() => router.push( '/quiz' )}
-                label={"Return to Home"}
-            />
+            >
+                Return to Home
+            </Button>
         </div>
     );
 };
