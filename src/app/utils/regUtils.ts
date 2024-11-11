@@ -6,6 +6,15 @@ export function validateEmail( email: string ): boolean {
     return re.test( email );
 }
 
+export function generateRandomString( length: number ) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for ( let i = 0; i < length; i++ ) {
+        result += characters.charAt( Math.floor( Math.random() * characters.length ) );
+    }
+    return result;
+}
+
 // Derive a key using PBKDF2
 export function deriveKey( password: string ): string {
     return crypto.pbkdf2Sync( password, uuid( 25 ), 100000, 64, 'sha512' ).toString( 'hex' );

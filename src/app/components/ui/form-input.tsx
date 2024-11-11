@@ -14,6 +14,7 @@ type FieldConfig = {
     placeholder?: string;
     validation?: z.ZodType<any, any, any>;
     description?: string;
+    autoComplete?: string;
     inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
     linkProps?: { href: string; text: string; icon?: React.ReactNode; };
 };
@@ -66,6 +67,7 @@ export function GeneralizedForm( { fields, onSubmit, buttonProps }: GeneralizedF
                                     placeholder={field.placeholder}
                                     {...form.register( field.name )}
                                     {...field.inputProps}
+                                    autoComplete={field.autoComplete}
                                 />
                             </div>
                         </PopoverTrigger>
