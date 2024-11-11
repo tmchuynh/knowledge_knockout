@@ -42,7 +42,7 @@ const QuizSelectionPage: React.FC = () => {
         fetchQuizNames();
     }, [user] );
 
-    const handleQuizSelection = async ( id: string, name: string ) => {
+    const handleQuizSelection = async ( id: string, name: string, index: number ) => {
         const quiz_id = quizzes.find( ( quiz ) => quiz.id === id ) || '';
 
         if ( session.data?.user || !name ) {
@@ -52,7 +52,7 @@ const QuizSelectionPage: React.FC = () => {
         }
 
         try {
-            const response = await fetch( '/api/user-progress', {
+            const response = await fetch( `/api/users/progress/${ name }/${ index }`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const QuizSelectionPage: React.FC = () => {
                 {quizzes.map( ( quizName, index ) => (
                     <Button
                         key={index}
-                        onClick={() => handleQuizSelection( quizName.id, quizName.name )}
+                        onClick={() => handleQuizSelection( quizName.id, quizName.name, index )}
                         className={`${ getButtonClass( quizName.id ) }`}
                     >
                         {`${ quizName.name }`}

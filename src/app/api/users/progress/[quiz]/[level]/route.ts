@@ -5,14 +5,14 @@ import { NextResponse } from 'next/server';
 export async function POST( request: Request ) {
     try {
         const body = await request.json();
-        const { userId, first_name, last_name, username, password, email, provider, providerId, quizId, updated_at, questionId, scoreId, completed } = body;
+        const { userId, first_name, last_name, username, password, email, provider, providerId, quizId, updated_at, questionId, index, scoreId, completed } = body;
 
-        if ( !userId || !quizId ) {
+        if ( !quizId ) {
             return NextResponse.json( { error: 'User ID and quiz ID are required' }, { status: 400 } );
         }
 
         let userExists = await User.findOne( {
-            where: { user_id: userId },
+            where: { id: userId },
         } );
 
         if ( !userExists ) {
@@ -23,7 +23,7 @@ export async function POST( request: Request ) {
         }
 
         const progress = await Progress.findOne( {
-            where: { user_id: userId, quiz_id: quizId },
+            where: { id: userId, score_id: scoreId, question_id: questionId },
         } );
 
         if ( progress ) {
@@ -36,12 +36,10 @@ export async function POST( request: Request ) {
         } else {
             const progressId = `progress-${ userId }-${ quizId }`;
             const newProgress = await Progress.create( {
-                progress_id: progressId,
-                user_id: userId,
-                quiz_id: quizId,
+                id: progressId,
                 question_id: questionId,
                 score_id: scoreId,
-                level: 1,
+                level: index,
                 total_questions: 1,
                 completed: completed,
                 createdAt: new Date(),
@@ -68,15 +66,9 @@ export async function GET( request: Request ) {
         const quizId = searchParams.get( 'quizId' )!;
         const progressId = `progress-${ userId }-${ quizId }`;
 
-        if ( !userId || !quizId ) {
-            return NextResponse.json( { error: 'User ID and quiz ID are required' }, { status: 400 } );
-        }
-
         const progress = await Progress.findAll( {
             where: {
-                progress_id: progressId,
-                user_id: userId,
-                quiz_id: quizId,
+                id: progressId,
             },
         } );
 
