@@ -1,5 +1,6 @@
 import { DataTypes, Model, CreationOptional, InferCreationAttributes, InferAttributes } from 'sequelize';
 import sequelize from '@/backend/config/db';
+import User from './User';
 
 class Session extends Model<InferAttributes<Session>, InferCreationAttributes<Session>> {
     declare id: string;
@@ -18,9 +19,12 @@ Session.init(
             primaryKey: true,
         },
         user_id: {
-            type: DataTypes.STRING( 250 ),
+            type: DataTypes.INTEGER,
             allowNull: false,
-            unique: true,
+            references: {
+                model: User,
+                key: 'id',
+            },
         },
         expires: {
             type: DataTypes.DATE,

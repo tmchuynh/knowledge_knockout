@@ -1,11 +1,9 @@
 import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
-import { Question, Quiz, Score, User } from '.';
+import { Question, Score } from '.';
 
 class Progress extends Model<InferAttributes<Progress>, InferCreationAttributes<Progress>> {
     declare id: string;
-    declare user_id: string;
-    declare quiz_id: string;
     declare question_id: string;
     declare score_id: string | null;
     declare level: number;
@@ -21,28 +19,12 @@ Progress.init(
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },
-        user_id: {
-            type: DataTypes.STRING( 250 ),
-            allowNull: false,
-            references: {
-                model: User,
-                key: 'user_id',
-            },
-        },
-        quiz_id: {
-            type: DataTypes.STRING( 250 ),
-            allowNull: false,
-            references: {
-                model: Quiz,
-                key: 'quiz_id',
-            },
-        },
         question_id: {
             type: DataTypes.STRING( 250 ),
             allowNull: false,
             references: {
                 model: Question,
-                key: 'question_id',
+                key: 'id',
             },
         },
         score_id: {
@@ -50,7 +32,7 @@ Progress.init(
             allowNull: true,
             references: {
                 model: Score,
-                key: 'score_id',
+                key: 'id',
             },
         },
         level: {

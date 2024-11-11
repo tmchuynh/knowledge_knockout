@@ -3,22 +3,28 @@ import sequelize from '../config/db';
 import bcrypt from 'bcrypt';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-    declare id: string;
-    declare name: string;
-    declare first_name: string;
-    declare last_name: string;
+    declare id?: number;
+    declare user_id: string;
+    declare name?: string;
+    declare first_name?: string;
+    declare last_name?: string;
     declare username: string;
     declare password: string;
     declare email: string;
-    declare createdAt: CreationOptional<Date>;
-    declare updatedAt: CreationOptional<Date>;
+    declare createdAt?: CreationOptional<Date>;
+    declare updatedAt?: CreationOptional<Date>;
 }
 
 User.init(
     {
         id: {
-            type: DataTypes.STRING( 250 ),
+            type: DataTypes.INTEGER,
             primaryKey: true,
+            allowNull: false,
+        },
+        user_id: {
+            type: DataTypes.STRING( 250 ),
+            allowNull: false,
         },
         name: {
             type: DataTypes.STRING( 100 ),

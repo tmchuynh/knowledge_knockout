@@ -1,10 +1,14 @@
 -- Use the newly created database
 USE knowledge_knockout_db;
 
+DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS sessions;
+DROP TABLE IF EXISTS verification_requests;
+
 CREATE TABLE IF NOT EXISTS accounts (
-    id VARCHAR(250) NOT NULL PRIMARY KEY,
+    id CHAR(36) NOT NULL PRIMARY KEY,
     compound_id VARCHAR(255) NOT NULL,
-    user_id VARCHAR(250) NOT NULL UNIQUE,
+    user_id CHAR(36)NOT NULL UNIQUE,
     provider_type VARCHAR(255) NOT NULL,
     provider_id VARCHAR(255) NOT NULL,
     provider_account_id VARCHAR(255) NOT NULL,
@@ -16,8 +20,8 @@ CREATE TABLE IF NOT EXISTS accounts (
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
-    id VARCHAR(250) NOT NULL PRIMARY KEY,
-    user_id VARCHAR(250) NOT NULL UNIQUE,
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    user_id CHAR(36) NOT NULL UNIQUE,
     expires TIMESTAMP(6) NOT NULL,
     session_token VARCHAR(255) NOT NULL,
     access_token VARCHAR(255) NOT NULL,
@@ -26,7 +30,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 
 CREATE TABLE IF NOT EXISTS verification_requests (
-    id VARCHAR(250) NOT NULL PRIMARY KEY,
+    id CHAR(36) NOT NULL PRIMARY KEY,
     identifier VARCHAR(255) NOT NULL,
     token VARCHAR(255) NOT NULL UNIQUE,
     expires TIMESTAMP(6) NOT NULL,

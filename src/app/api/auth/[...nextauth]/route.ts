@@ -6,6 +6,7 @@ import GitHubProvider from "next-auth/providers/github";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import SpotifyProvider from "next-auth/providers/spotify";
 import bcrypt from "bcrypt";
+import dotenv from 'dotenv';
 import sequelize from "@/backend/config/db";
 import { Op } from "sequelize";
 import SequelizeAdapter from "@auth/sequelize-adapter";
@@ -15,6 +16,7 @@ import { Awaitable } from "@auth/core/types";
 import { User } from "@/backend/models";
 import { adapter } from "../../../../../auth";
 
+dotenv.config();
 export default NextAuth( {
     providers: [
         CredentialsProvider( {
@@ -95,6 +97,7 @@ export default NextAuth( {
 
         async signIn( { user, account } ) {
             if ( account?.provider !== "credentials" ) {
+                const id = user.id;
                 const email = user.email;
                 const name = user.name;
 
@@ -104,7 +107,7 @@ export default NextAuth( {
 
                 if ( !existingUser ) {
                     existingUser = await User.create( {
-                        id: uuid( 4 ),
+                        user_id: id || '',
                         username: "",
                         name: name || "",
                         first_name: "",
@@ -113,15 +116,12 @@ export default NextAuth( {
                         email: email || "",
                     } );
 
-
-                    user.id = existingUser.id;
                     user.name = existingUser.name;
                     user.email = existingUser.email;
                     await existingUser.save(); // Save user to database
 
                     return "/complete-profile"; // Redirect to profile completion
                 } else {
-                    user.id = existingUser.id;
                     user.name = existingUser.username;
                     user.email = existingUser.email;
                 }
@@ -136,11 +136,11 @@ export default NextAuth( {
         error: "/error",
     },
 
-    session: {
-        strategy: "jwt",
-    },
+    // session: {
+    //     strategy: "jwt",
+    // },
 
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: `${ process.env.AUTH_SECRET }`,
 } );
 
 // Named exports for GET and POST

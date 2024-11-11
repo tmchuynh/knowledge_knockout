@@ -1,5 +1,6 @@
 import { DataTypes, Model, CreationOptional, InferCreationAttributes, InferAttributes } from 'sequelize';
 import sequelize from '@/backend/config/db';
+import User from './User';
 
 class Account extends Model<InferAttributes<Account>, InferCreationAttributes<Account>> {
     declare id: string;
@@ -25,9 +26,12 @@ Account.init(
             allowNull: false,
         },
         user_id: {
-            type: DataTypes.STRING( 250 ),
+            type: DataTypes.INTEGER,
             allowNull: false,
-            unique: true,
+            references: {
+                model: User,
+                key: 'id',
+            },
         },
         provider_type: {
             type: DataTypes.STRING( 255 ),

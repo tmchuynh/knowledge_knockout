@@ -15,6 +15,7 @@ Quiz.init(
         id: {
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
+            allowNull: false,
         },
         name: {
             type: DataTypes.STRING( 100 ),

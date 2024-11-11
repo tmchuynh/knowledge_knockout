@@ -21,11 +21,11 @@ Score.init(
             primaryKey: true,
         },
         user_id: {
-            type: DataTypes.STRING( 250 ),
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: User,
-                key: 'user_id',
+                key: 'id',
             },
         },
         quiz_id: {
@@ -33,7 +33,7 @@ Score.init(
             allowNull: false,
             references: {
                 model: Quiz,
-                key: 'quiz_id',
+                key: 'id',
             },
         },
         level: {

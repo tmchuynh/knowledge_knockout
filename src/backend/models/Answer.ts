@@ -20,7 +20,7 @@ Answer.init(
             allowNull: false,
             references: {
                 model: Question,
-                key: 'question_id',
+                key: 'id',
             },
         },
         content: {

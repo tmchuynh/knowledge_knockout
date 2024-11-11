@@ -13,7 +13,10 @@ dotenv.config();
 export const adapter = SequelizeAdapter( sequelize, {
     models: {
         User: sequelize.define( "user", {
-            id: { type: DataTypes.STRING, primaryKey: true },
+            user_id: {
+                type: DataTypes.STRING,
+                field: 'user_id',
+            },
             name: DataTypes.STRING,
             username: {
                 type: DataTypes.STRING,
