@@ -6,7 +6,7 @@ const Register = () => {
     const router = useRouter();
 
     const handleRegister = () => {
-        router.push( '/api/auth/login?screen_hint=signup' );
+        router.push( '/api/auth/signin' );
     };
 
     return (

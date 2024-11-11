@@ -6,7 +6,7 @@ const Login = () => {
     const router = useRouter();
 
     const handleLogin = () => {
-        router.push( '/api/auth/login' );
+        router.push( '/api/auth/signin' );
     };
 
     return (

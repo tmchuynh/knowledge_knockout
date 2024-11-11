@@ -16,7 +16,7 @@ const DashboardPage: React.FC = () => {
 
     useEffect( () => {
         if ( !session?.user || session?.user.name !== id ) {
-            router.push( '/api/auth/login' );
+            router.push( '/api/auth/signin' );
         } else {
             console.log( session?.user.name );
             loadUserProfile( session?.user.name );

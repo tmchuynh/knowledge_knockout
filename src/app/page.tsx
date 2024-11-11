@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
     const handleLogin = ( data: any ) => {
         const { email, password } = data;
 
-        fetch( '/api/auth/login', {
+        fetch( '/api/auth/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ const LoginPage: React.FC = () => {
             .then( data => {
                 if ( data.token ) {
                     localStorage.setItem( 'token', data.token );
-                    router.push( '/signin' );
+                    router.push( '/quiz' );
                 } else {
                     alert( 'Invalid username or password' );
                 }
@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
     const handleRegister = ( data: any ) => {
         const { email, password } = data;
 
-        fetch( '/api/auth/login', {
+        fetch( '/api/auth/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

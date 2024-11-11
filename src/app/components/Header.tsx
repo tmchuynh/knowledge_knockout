@@ -13,7 +13,7 @@ const Header = () => {
                     <Link className='p-7' href={`/${ 0 }/dashboard`}>Profile</Link>
                     <Link className='p-7' href="/leaderboard">Leaderbord</Link>
                     <Link className='p-7' href="/quiz">Quiz</Link>
-                    <Link className='p-7' href="/api/auth/logout">Logout</Link>
+                    <Link className='p-7' href="/api/auth/signout">Logout</Link>
                 </>
             </nav>
         </header>

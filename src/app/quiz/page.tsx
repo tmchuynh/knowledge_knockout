@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Quiz, User } from '@/backend/models';
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Button } from '../components/ui/button';
+import { Button, buttonVariants } from '../components/ui/button';
 
 const QuizSelectionPage: React.FC = () => {
     const [quizProgress] = useState<Progress[]>( [] );
@@ -47,7 +47,7 @@ const QuizSelectionPage: React.FC = () => {
 
         if ( session.data?.user || !name ) {
             console.error( 'User ID or quiz title is missing' );
-            router.push( '/api/auth/login' );
+            router.push( '/api/auth/signin' );
             return;
         }
 
@@ -81,7 +81,7 @@ const QuizSelectionPage: React.FC = () => {
 
 
     const getButtonClass = ( quizId: string ): string => {
-        const inProgress = quizProgress.some( ( item ) => item.quiz_id === quizId && item.progress_id === progress?.progress_id );
+        const inProgress = quizProgress.some( ( item ) => item.progress_id === progress?.progress_id );
         return inProgress ? 'bg-amber-700 hover:bg-amber-600' : 'bg-zinc-700 hover:bg-zinc-600';
     };
 
@@ -94,7 +94,6 @@ const QuizSelectionPage: React.FC = () => {
                         key={index}
                         onClick={() => handleQuizSelection( quizName.id, quizName.name )}
                         className={`${ getButtonClass( quizName.id ) }`}
-                        variant={"outline"}
                     >
                         {`${ quizName.name }`}
                     </Button>
