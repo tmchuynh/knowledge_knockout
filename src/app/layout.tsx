@@ -4,9 +4,10 @@ import dotenv from 'dotenv';
 import Head from "next/head";
 import React from "react";
 import { NotFoundProvider, useNotFound } from "../context/NotFoundContext";
-import Header from "@/app/components/Header";
 import "./styles.css";
 import { SessionProvider } from 'next-auth/react';
+import { SidebarProvider, SidebarTrigger } from './components/ui/sidebar';
+import { AppSidebar } from './components/Sidebar';
 
 export default function RootLayout( {
     children,
@@ -32,7 +33,9 @@ export default function RootLayout( {
             <body>
                 <SessionProvider>
                     <NotFoundProvider>
-                        <MainContent>{children}</MainContent>
+                        <SidebarProvider>
+                            <MainContent>{children}</MainContent>
+                        </SidebarProvider>
                     </NotFoundProvider>
                 </SessionProvider>
             </body>
@@ -49,8 +52,9 @@ const MainContent = ( {
     const { isNotFound } = useNotFound();
     return (
         <>
-            {!isNotFound && <Header />}
-            <main className='mt-14'>
+            {!isNotFound && <AppSidebar />}
+            <main className='mt-14 w-full p-5 h-full'>
+                <SidebarTrigger />
                 {children}
             </main>
         </>

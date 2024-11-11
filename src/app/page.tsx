@@ -7,6 +7,7 @@ import { Label } from "./components/ui/label";
 import { Button } from "./components/ui/button";
 import Link from "./components/ui/link";
 import { CoolMode } from "./components/ui/cool-mode";
+import { signIn } from "../../auth";
 
 const LoginPage: React.FC = () => {
     const router = useRouter();
@@ -17,30 +18,6 @@ const LoginPage: React.FC = () => {
         password: '',
         confirmPassword: ''
     } );
-
-    const handleLogin = ( event: React.FormEvent<HTMLFormElement> ) => {
-        event.preventDefault();
-        const form = event.target as HTMLFormElement;
-        const username = form.login_email.value;
-        const password = form.login_password.value;
-
-        fetch( '/api/auth/signin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify( { username, password } ),
-        } )
-            .then( response => response.json() )
-            .then( data => {
-                if ( data.token ) {
-                    localStorage.setItem( 'token', data.token );
-                    router.push( '/' );
-                } else {
-                    alert( 'Invalid username or password' );
-                }
-            } );
-    };
 
     const handleRegister = ( data: any ) => {
         const { email, password } = data;
@@ -75,7 +52,10 @@ const LoginPage: React.FC = () => {
         <div className="grid md:grid-cols-2 md:gap-6">
             <div>
                 <h2 className="text-4xl font-extrabold mb-5 text-center pt-8">Login</h2>
-                <form className="mx-auto w-full p-10" onSubmit={handleLogin}>
+                <form className="mx-auto w-full p-10" action={async ( formData ) => {
+                    "use server";
+                    await signIn( "credentials", formData );
+                }}>
                     <div className="relative z-0 w-full mb-5 group">
                         <Label htmlFor="login_email">Email address</Label>
                         <Input
