@@ -57,7 +57,7 @@ export function GeneralizedForm( { fields, onSubmit, buttonProps }: GeneralizedF
             {fields.map( ( field, _index ) => (
                 <div key={field.name} className="space-y-4">
                     {field.label && (
-                        <label className="block text-md font-medium text-gray-700">{field.label}</label>
+                        <label className="block font-sans text-md font-medium text-gray-700">{field.label}</label>
                     )}
                     <Popover>
                         <PopoverTrigger asChild>

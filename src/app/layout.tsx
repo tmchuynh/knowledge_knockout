@@ -35,7 +35,6 @@ export default function RootLayout( {
                         <MainContent>{children}</MainContent>
                     </NotFoundProvider>
                 </SessionProvider>
-
             </body>
         </html>
     );
@@ -51,7 +50,9 @@ const MainContent = ( {
     return (
         <>
             {!isNotFound && <Header />}
-            <main>{children}</main>
+            <main className='mt-14'>
+                {children}
+            </main>
         </>
     );
 };
