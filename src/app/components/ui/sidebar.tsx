@@ -7,13 +7,13 @@ import * as React from "react";
 
 import { useIsMobile } from "@/app/components/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Button } from "./button";
 import { Input } from "./input";
 import { Separator } from "./separator";
 import { Sheet, SheetContent } from "./sheet";
 import { Skeleton } from "./skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
+import { TooltipProvider } from "@/app/components/ui/tooltip";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -130,7 +130,7 @@ const SidebarProvider = React.forwardRef<
                             } as React.CSSProperties
                         }
                         className={cn(
-                            "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
+                            "group/sidebar-wrapper flex min-h-svh has-[[data-variant=inset]]:bg-sidebar",
                             className
                         )}
                         ref={ref}
@@ -573,8 +573,9 @@ const SidebarMenuButton = React.forwardRef<
                     side="right"
                     align="center"
                     hidden={state !== "collapsed" || isMobile}
-                    {...tooltip}
-                />
+                >
+                    {tooltip.children}
+                </TooltipContent>
             </Tooltip>
         );
     }

@@ -9,6 +9,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarProvider,
 } from "@/app/components/ui/sidebar";
 
 // Menu items.
@@ -50,7 +51,9 @@ const items = [
     },
 ];
 
+
 export function AppSidebar() {
+
     return (
         <Sidebar>
             <SidebarContent>
@@ -59,14 +62,14 @@ export function AppSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {items.map( ( item ) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
-                                        <a href={item.url}>
-                                            <item.icon />
+                                <li key={item.title}>
+                                    <SidebarMenuButton asChild tooltip={item.title}>
+                                        <a href={item.url} className="flex items-center space-x-2">
+                                            <item.icon className="h-5 w-5" />
                                             <span>{item.title}</span>
                                         </a>
                                     </SidebarMenuButton>
-                                </SidebarMenuItem>
+                                </li>
                             ) )}
                         </SidebarMenu>
                     </SidebarGroupContent>
