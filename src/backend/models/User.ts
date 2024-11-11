@@ -1,6 +1,6 @@
 import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
     declare id?: string;

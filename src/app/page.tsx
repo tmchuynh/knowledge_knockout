@@ -7,7 +7,7 @@ import { Label } from "./components/ui/label";
 import { Button } from "./components/ui/button";
 import Link from "./components/ui/link";
 import { CoolMode } from "./components/ui/cool-mode";
-import { signIn } from "../../auth";
+import { data } from "jquery";
 
 const LoginPage: React.FC = () => {
     const router = useRouter();
@@ -20,24 +20,61 @@ const LoginPage: React.FC = () => {
     } );
 
     const handleRegister = ( data: any ) => {
-        const { email, password } = data;
+        const { firstName, lastName, username, password, email, phoneNumber } = data;
 
-        fetch( '/api/auth/signin', {
+        fetch( '/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify( { email, password } ),
+            body: JSON.stringify( {
+                first_name: firstName,
+                last_name: lastName,
+                username,
+                password,
+                email,
+                phone_number: phoneNumber,
+            } ),
         } )
             .then( response => response.json() )
             .then( data => {
-                if ( data.token ) {
-                    localStorage.setItem( 'token', data.token );
+                if ( data.message === 'User registered successfully' ) {
+                    alert( 'Registration successful! Redirecting to login page...' );
                     router.push( '/signin' );
                 } else {
-                    alert( 'Invalid username or password' );
+                    alert( data.message || 'Registration failed. Please try again.' );
                 }
+            } )
+            .catch( error => {
+                console.error( 'Error during registration:', error );
+                alert( 'An error occurred while registering. Please try again later.' );
             } );
+    };
+
+
+    const handleLogin = async ( data: any ) => {
+        const { email, password } = data;
+
+        try {
+            const response = await fetch( '/api/auth/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify( { email, password } ),
+            } );
+
+            const result = await response.json();
+            if ( response.ok && result.token ) {
+                localStorage.setItem( 'token', result.token );
+                router.push( '/signin' );
+            } else {
+                alert( result.message || 'Invalid username or password' );
+            }
+        } catch ( error ) {
+            console.error( 'Error during login:', error );
+            alert( 'An error occurred while logging in' );
+        }
     };
 
     const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
@@ -52,10 +89,7 @@ const LoginPage: React.FC = () => {
         <div className="grid md:grid-cols-2 md:gap-6">
             <div>
                 <h2 className="text-4xl font-extrabold mb-5 text-center pt-8">Login</h2>
-                <form className="mx-auto w-full p-10" action={async ( formData ) => {
-                    "use server";
-                    await signIn( "credentials", formData );
-                }}>
+                <form className="mx-auto w-full p-10" onSubmit={handleLogin}>
                     <div className="relative z-0 w-full mb-5 group">
                         <Label htmlFor="login_email">Email address</Label>
                         <Input
@@ -168,7 +202,7 @@ const LoginPage: React.FC = () => {
                     </CoolMode>
                 </form>
             </div>
-        </div>
+        </div >
     );
 };
 
