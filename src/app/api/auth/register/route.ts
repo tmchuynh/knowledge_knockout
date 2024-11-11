@@ -1,4 +1,3 @@
-// pages/api/auth/register.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { processUser } from '@/backend/controllers/userController';
 

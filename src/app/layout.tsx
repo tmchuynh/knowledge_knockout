@@ -53,7 +53,7 @@ const MainContent = ( {
     return (
         <>
             {!isNotFound && <AppSidebar />}
-            <main className='mt-14 w-full p-5 h-full'>
+            <main className='w-full p-5 h-full'>
                 <SidebarTrigger />
                 {children}
             </main>

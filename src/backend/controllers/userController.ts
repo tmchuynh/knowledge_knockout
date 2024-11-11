@@ -62,3 +62,11 @@ export async function getUserByEmail( email: string ) {
         console.error( "Error retrieving user by email:", error );
     }
 }
+export async function checkPassword( password: string ) {
+    try {
+        const hashedPassword = encryptData( hashPassword( password ), `${ process.env.SECRET_22 }` );
+        return hashedPassword == password;
+    } catch ( error ) {
+        console.error( "Error checking password:", error );
+    }
+}

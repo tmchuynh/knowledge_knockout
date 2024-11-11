@@ -1,6 +1,6 @@
 import { User } from '@/backend/models';
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from "../../../../../../auth";
+import { auth } from "../../../../../backend/auth";
 
 export async function POST( request: NextRequest ) {
     const session = await auth();
