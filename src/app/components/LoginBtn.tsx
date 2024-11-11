@@ -1,19 +1,31 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+"use client";
 
-export default function Component() {
-    const { data: session } = useSession();
-    if ( session ) {
-        return (
-            <>
-                Signed in as {session.user?.email} <br />
-                <button onClick={() => signOut()}>Sign out</button>
-            </>
-        );
-    }
+import { Button } from "../components/ui/button";
+
+export default function SignInButton( { providerId, callbackUrl }: { providerId: string, callbackUrl: string; } ) {
+    const handleSignIn = async () => {
+        try {
+            const response = await fetch( '/api/auth/signin', {
+                method: 'POST',
+                body: JSON.stringify( {
+                    provider: providerId,
+                    redirectTo: callbackUrl,
+                } ),
+            } );
+
+            if ( response.ok ) {
+                window.location.href = callbackUrl || '/';
+            } else {
+                throw new Error( 'Error signing in' );
+            }
+        } catch ( error ) {
+            console.error( "Sign-in failed:", error );
+        }
+    };
+
     return (
-        <>
-            Not signed in <br />
-            <button onClick={() => signIn()}>Sign in</button>
-        </>
+        <Button onClick={handleSignIn} variant="default" size="lg">
+            {`Sign in with ${ providerId }`}
+        </Button>
     );
 }

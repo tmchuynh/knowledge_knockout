@@ -4,15 +4,12 @@ import bcrypt from 'bcrypt';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
     declare id: string;
-    declare firstName: string;
-    declare lastName: string;
+    declare name: string;
+    declare first_name: string;
+    declare last_name: string;
     declare username: string;
     declare password: string;
     declare email: string;
-    declare provider: string | null;
-    declare providerId: string | null;
-    declare reset_password_token: string | null;
-    declare reset_password_expires: Date | null;
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
 }
@@ -23,11 +20,15 @@ User.init(
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },
-        firstName: {
+        name: {
             type: DataTypes.STRING( 100 ),
             allowNull: false,
         },
-        lastName: {
+        first_name: {
+            type: DataTypes.STRING( 100 ),
+            allowNull: false,
+        },
+        last_name: {
             type: DataTypes.STRING( 100 ),
             allowNull: false,
         },
@@ -44,22 +45,6 @@ User.init(
             type: DataTypes.STRING( 250 ),
             allowNull: false,
             unique: true,
-        },
-        provider: {
-            type: DataTypes.STRING( 50 ),
-            allowNull: true,
-        },
-        providerId: {
-            type: DataTypes.STRING( 250 ),
-            allowNull: true,
-        },
-        reset_password_expires: {
-            type: DataTypes.DATE,
-            allowNull: true,
-        },
-        reset_password_token: {
-            type: DataTypes.STRING( 250 ),
-            allowNull: true,
         },
         createdAt: {
             type: DataTypes.DATE,

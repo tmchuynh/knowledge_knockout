@@ -29,7 +29,28 @@ const LoginPage: React.FC = () => {
             } );
     };
 
-    const fields = [
+    const handleRegister = ( data: any ) => {
+        const { email, password } = data;
+
+        fetch( '/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify( { email, password } ),
+        } )
+            .then( response => response.json() )
+            .then( data => {
+                if ( data.token ) {
+                    localStorage.setItem( 'token', data.token );
+                    router.push( '/signin' );
+                } else {
+                    alert( 'Invalid username or password' );
+                }
+            } );
+    };
+
+    const loginFields = [
         {
             name: "email",
             label: "Email",
@@ -44,7 +65,22 @@ const LoginPage: React.FC = () => {
             validation: z.string().min( 6, "Password must be at least 6 characters." ),
             inputProps: { type: "password" },
             description: "Password must be at least 6 characters long.",
+        }
+    ];
+
+    const registerFields = [
+        {
+            name: "first_name",
+            label: "First Name",
+            placeholder: "Enter your first name",
+            validation: z.string().min( 2, "First name must be at least 2 characters." ),
         },
+        {
+            name: "last_name",
+            label: "Last Name",
+            placeholder: "Enter your last name",
+            validation: z.string().min( 2, "Last name must be at least 2 characters." ),
+        }
     ];
 
     return (
@@ -52,8 +88,19 @@ const LoginPage: React.FC = () => {
             <div>
                 <h2 className="text-4xl font-extrabold mb-5 text-center pt-8">Login</h2>
                 <GeneralizedForm
-                    fields={fields}
+                    fields={loginFields}
                     onSubmit={handleLogin}
+                    buttonProps={{
+                        variant: "default",
+                        size: "lg",
+                    }}
+                />
+            </div>
+            <div>
+                <h2 className="text-4xl font-extrabold mb-5 text-center pt-8">Register</h2>
+                <GeneralizedForm
+                    fields={registerFields}
+                    onSubmit={handleRegister}
                     buttonProps={{
                         variant: "default",
                         size: "lg",

@@ -1,30 +1,31 @@
-import sequelize from "@/backend/config/db";
-import { User } from "@/backend/models";
-import SequelizeAdapter from "@auth/sequelize-adapter";
-import bcrypt from "bcrypt";
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthConfig } from "next-auth";
+import NextAuthOptions from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import SpotifyProvider from "next-auth/providers/spotify";
+import bcrypt from "bcrypt";
+import sequelize from "@/backend/config/db";
 import { Op } from "sequelize";
-import { v4 as uuidv4 } from 'uuid';
-
+import SequelizeAdapter from "@auth/sequelize-adapter";
+import { uuid } from "@/app/utils/regUtils";
+import { NextRequest } from "next/server";
+import { Awaitable } from "@auth/core/types";
+import User from "@/backend/models/User";
 
 export default NextAuth( {
     providers: [
-
         CredentialsProvider( {
-            name: 'Credentials',
+            name: "Credentials",
             credentials: {
-                emailOrUsername: { label: 'Email or Username', type: 'text' },
-                password: { label: 'Password', type: 'password' },
+                emailOrUsername: { label: "Email or Username", type: "text" },
+                password: { label: "Password", type: "password" },
             },
             async authorize( credentials ) {
                 const { emailOrUsername, password } = credentials;
 
-
+                // Find user by email or username
                 const user = await User.findOne( {
                     where: {
                         [Op.or]: [
@@ -35,45 +36,39 @@ export default NextAuth( {
                 } );
 
                 if ( !user ) {
-                    throw new Error( 'No user found with the given email or username' );
+                    throw new Error( "No user found with the given email or username" );
                 }
 
+                // Compare passwords
                 const isValid = await bcrypt.compare( JSON.stringify( password ), user.password );
                 if ( !isValid ) {
                     throw new Error( 'Invalid password' );
                 }
 
-                return {
-                    id: user.id,
-                    name: user.username,
-                    email: user.email,
-                };
-            }
+                // Return user object if authorized
+                return { id: user.id, name: user.username, email: user.email };
+            },
         } ),
 
+        // GoogleProvider( {
+        //     clientId: process.env.GOOGLE_CLIENT_ID!,
+        //     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        // } ),
 
-        GoogleProvider( {
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        } ),
+        // GitHubProvider( {
+        //     clientId: process.env.GITHUB_CLIENT_ID!,
+        //     clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+        // } ),
 
+        // LinkedInProvider( {
+        //     clientId: process.env.LINKEDIN_CLIENT_ID!,
+        //     clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
+        // } ),
 
-        GitHubProvider( {
-            clientId: process.env.GITHUB_CLIENT_ID!,
-            clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-        } ),
-
-
-        LinkedInProvider( {
-            clientId: process.env.LINKEDIN_CLIENT_ID!,
-            clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
-        } ),
-
-
-        SpotifyProvider( {
-            clientId: process.env.SPOTIFY_CLIENT_ID!,
-            clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
-        } ),
+        // SpotifyProvider( {
+        //     clientId: process.env.SPOTIFY_CLIENT_ID!,
+        //     clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
+        // } ),
     ],
 
     adapter: SequelizeAdapter( sequelize ),
@@ -98,10 +93,9 @@ export default NextAuth( {
         },
 
         async signIn( { user, account } ) {
-            if ( account?.provider !== 'credentials' ) {
-                const provider = account?.provider;
-                const providerId = account?.providerAccountId.toString();
+            if ( account?.provider !== "credentials" ) {
                 const email = user.email;
+                const name = user.name;
 
                 let existingUser = await User.findOne( {
                     where: { email: email || '' },
@@ -109,21 +103,26 @@ export default NextAuth( {
 
                 if ( !existingUser ) {
                     existingUser = await User.create( {
-                        id: uuidv4(),
-                        username: '',
-                        password: '',
-                        email: email || '',
-                        provider: provider || '',
-                        providerId,
-                        firstName: "",
-                        lastName: ""
+                        id: uuid( 4 ),
+                        username: "",
+                        name: name || "",
+                        first_name: "",
+                        last_name: "",
+                        password: "",
+                        email: email || "",
                     } );
+
 
                     user.id = existingUser.id;
                     user.name = existingUser.username;
+                    user.username = existingUser.username;
                     user.email = existingUser.email;
+                    user.password = existingUser.password;
+                    user.first_name = existingUser.first_name;
+                    user.last_name = existingUser.last_name;
+                    await existingUser.save(); // Save user to database
 
-                    return '/complete-profile';
+                    return "/complete-profile"; // Redirect to profile completion
                 } else {
                     user.id = existingUser.id;
                     user.name = existingUser.username;
@@ -131,18 +130,22 @@ export default NextAuth( {
                 }
             }
             return true;
-        }
+        },
     },
 
     pages: {
-        signIn: '/auth/signin',
-        newUser: '/complete-profile',
-        error: '/auth/error',
+        signIn: "/signin",
+        newUser: "/complete-profile",
+        error: "/error",
     },
 
     session: {
-        strategy: 'jwt',
+        strategy: "jwt",
     },
 
     secret: process.env.NEXTAUTH_SECRET,
 } );
+
+// Named exports for GET and POST
+export const GET = ( req: NextAuthConfig | ( ( request: NextRequest | undefined ) => Awaitable<NextAuthConfig> ) ) => NextAuth( req );
+export const POST = ( req: NextAuthConfig | ( ( request: NextRequest | undefined ) => Awaitable<NextAuthConfig> ) ) => NextAuth( req );
