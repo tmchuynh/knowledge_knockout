@@ -9,7 +9,7 @@ import { Button } from '../components/ui/button';
 
 const QuizSelectionPage: React.FC = () => {
     const [quizProgress] = useState<Progress[]>( [] );
-    const [quizNames] = useState<string[]>( [] );
+    const [quizNames, setQuizNames] = useState<string[]>( [] );
     const [progress, setProgress] = useState<Progress>();
     const [user, setUser] = useState<User>();
     const [quizzes, setQuizzes] = useState<Quiz[]>( [] );
@@ -25,9 +25,12 @@ const QuizSelectionPage: React.FC = () => {
 
                     const uniqueData = data.filter( ( item: { name: string; }, index: number, self: Quiz[] ) =>
                         index === self.findIndex( ( t ) => t.name === item.name )
-                    ).map( ( quiz: { name: any; } ) => quiz.name );
+                    );
+                    const uniqueQuizzes = uniqueData.map( ( quiz: { name: any; } ) => quiz.name );
 
                     setQuizzes( uniqueData );
+                    setQuizNames( uniqueQuizzes );
+                    console.log( "Quizzes", quizzes );
                 } else {
                     console.error( 'Failed to fetch quiz names: HTTP status', response.status );
                 }
@@ -39,11 +42,10 @@ const QuizSelectionPage: React.FC = () => {
         fetchQuizNames();
     }, [user] );
 
-    const handleQuizSelection = async ( quizName: string ) => {
-        const quizTitle = quizNames.find( ( quiz ) => quiz === quizName ) || '';
-        const quiz_id = quizzes.find( ( quiz ) => quiz.name === quizTitle )?.id || '';
+    const handleQuizSelection = async ( id: string, name: string ) => {
+        const quiz_id = quizzes.find( ( quiz ) => quiz.id === id ) || '';
 
-        if ( session.data?.user || !quizTitle ) {
+        if ( session.data?.user || !name ) {
             console.error( 'User ID or quiz title is missing' );
             router.push( '/api/auth/login' );
             return;
@@ -71,7 +73,7 @@ const QuizSelectionPage: React.FC = () => {
                 throw new Error( 'Failed to update quiz progress' );
             }
 
-            router.push( `/quiz/${ quizTitle }/difficulty/` );
+            router.push( `/quiz/${ name }/difficulty/` );
         } catch ( error ) {
             console.error( 'Error updating quiz progress:', error );
         }
@@ -90,11 +92,11 @@ const QuizSelectionPage: React.FC = () => {
                 {quizzes.map( ( quizName, index ) => (
                     <Button
                         key={index}
-                        onClick={() => handleQuizSelection( quizName.name )}
-                        className={`${ getButtonClass( quizName.name ) }`}
+                        onClick={() => handleQuizSelection( quizName.id, quizName.name )}
+                        className={`${ getButtonClass( quizName.id ) }`}
                         variant={"outline"}
                     >
-                        {quizName.name}
+                        {`${ quizName.name }`}
                     </Button>
                 ) )}
             </div>
