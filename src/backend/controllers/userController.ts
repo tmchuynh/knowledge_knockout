@@ -1,5 +1,9 @@
 import { generateRandomString } from '@/app/utils/regUtils';
 import { User } from '../models';
+import { hashPassword } from '@/app/utils/passwordUtils';
+import { encryptData } from '../utils/encryptionUtils';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export async function addUserToDatabase(
     id: string,
@@ -41,8 +45,9 @@ export async function processUser( first_name: string, last_name: string, userna
         }
 
         const id = generateRandomString( 3 );
+        const hashedPassword = encryptData( hashPassword( password ), `${ process.env.SECRET_22 }` );
 
-        const newUser = await addUserToDatabase( id, first_name, last_name, username, password, phone_number, email );
+        const newUser = await addUserToDatabase( id, first_name, last_name, username, hashedPassword, phone_number, email );
         return newUser;
     } catch ( error ) {
         console.error( "Error processing user:", error );
