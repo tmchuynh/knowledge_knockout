@@ -1,14 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { Form, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "./button";
 import { Input } from "./input";
 import { Popover, PopoverTrigger, PopoverContent } from "./popover";
-import { ToastProvider, ToastViewport } from "./toast";
+import { Toast, ToastTitle, ToastDescription, ToastProvider, ToastViewport } from "./toast";
 import { useToast } from "../hooks/use-toast";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./form";
+import Link from "./link";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "./form";
+
 
 type FieldConfig = {
     name: string;
@@ -17,7 +19,9 @@ type FieldConfig = {
     validation: z.ZodType<any, any, any>;
     description?: string;
     inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+    linkProps?: { href: string; text: string; icon?: React.ReactNode; };
 };
+
 
 function createFormSchema( fields: FieldConfig[] ) {
     const schema: { [key: string]: z.ZodType<any, any, any>; } = {};
@@ -30,9 +34,13 @@ function createFormSchema( fields: FieldConfig[] ) {
 type GeneralizedFormProps = {
     fields: FieldConfig[];
     onSubmit: ( data: any ) => void;
+    buttonProps?: {
+        variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+        size?: "default" | "sm" | "lg" | "icon";
+    };
 };
 
-export function GeneralizedForm( { fields, onSubmit }: GeneralizedFormProps ) {
+export function GeneralizedForm( { fields, onSubmit, buttonProps }: GeneralizedFormProps ) {
     const formSchema = createFormSchema( fields );
 
     const form = useForm<z.infer<typeof formSchema>>( {
@@ -91,11 +99,20 @@ export function GeneralizedForm( { fields, onSubmit }: GeneralizedFormProps ) {
                                             </Popover>
                                         </FormControl>
                                         <FormMessage />
+                                        {field.linkProps && (
+                                            <Link
+                                                href={field.linkProps.href}
+                                                text={field.linkProps.text}
+                                                icon={field.linkProps.icon}
+                                            />
+                                        )}
                                     </FormItem>
                                 )}
                             />
                         ) )}
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit" {...buttonProps}>
+                            Submit
+                        </Button>
                     </form>
                 </Form>
             </ToastProvider>
@@ -107,6 +124,7 @@ export function GeneralizedForm( { fields, onSubmit }: GeneralizedFormProps ) {
 function zodResolver<FormSchema>( FormSchema: any ) {
     return async ( data: any ) => {
         try {
+
             FormSchema.parse( data );
             return { values: data, errors: {} };
         } catch ( e: any ) {

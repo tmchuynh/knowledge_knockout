@@ -4,11 +4,31 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import "./styles.css";
 import { Input } from "./components/ui/input";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/app/components/ui/popover";
+import { z } from "zod";
+
+
+const fields = [
+    {
+        name: "username",
+        label: "Username",
+        placeholder: "Enter your username",
+        validation: z.string().min( 2, "Username is required." ),
+        description: "Must be at least 2 characters long.",
+    },
+    {
+        name: "email",
+        label: "Email",
+        placeholder: "Enter your email",
+        validation: z.string().email( "Invalid email address." ),
+    },
+    {
+        name: "password",
+        label: "Password",
+        placeholder: "Enter your password",
+        validation: z.string().min( 6, "Password must be at least 6 characters." ),
+        inputProps: { type: "password" }, // Customize the input
+    },
+];
 
 
 const LoginPage: React.FC = () => {
