@@ -2,10 +2,15 @@ import SequelizeAdapter from "@auth/sequelize-adapter";
 import mysql2 from 'mysql2';
 import dotenv from 'dotenv';
 import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 import { DataTypes, Sequelize } from "sequelize";
 import sequelize from "@/backend/config/db";
+import { getUserByEmail } from "@/backend/controllers/userController";
+import { hashPassword } from "@/app/utils/passwordUtils";
+import { ZodError } from "zod";
+import { signInSchema } from "@/lib/zod";
 
 dotenv.config();
 
@@ -66,28 +71,46 @@ sequelize.sync( { force: false, alter: true } ).then( () => {
     console.log( "Database & tables created!" );
 } );
 
-// Define the authentication providers
-export const providers = [
-    CredentialsProvider( {
-        credentials: { password: { label: "Password", type: "password" } },
-        async authorize( credentials ) {
-            if ( credentials?.password !== "password" ) return null;
-            return {
-                id: "test",
-                name: "Test User",
-                email: "test@example.com",
-            };
-        },
-    } ),
-    // GitHubProvider( {
-    //     clientId: process.env.GITHUB_CLIENT_ID!,
-    //     clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    // } ),
-];
-
 // Configure NextAuth
-export const { handlers, auth, signIn, signOut } = NextAuth( {
-    providers,
+export const { handlers, auth } = NextAuth( {
+    providers: [
+        Credentials( {
+            credentials: {
+                email: {},
+                password: {},
+            },
+            authorize: async ( credentials ) => {
+                try {
+                    let user = null;
+
+                    const { email, password } = await signInSchema.parseAsync( credentials );
+
+                    // logic to salt and hash password
+                    const pwHash = hashPassword( password );
+
+                    // logic to verify if the user exists
+                    user = await getUserByEmail( email );
+
+                    if ( !user ) {
+                        throw new Error( "Invalid credentials." );
+                    }
+
+                    // return JSON object with the user data
+                    return user;
+                } catch ( error ) {
+                    if ( error instanceof ZodError ) {
+                        // Return `null` to indicate that the credentials are invalid
+                        return null;
+                    }
+                }
+            },
+
+        } ),
+        // GitHubProvider( {
+        //     clientId: process.env.GITHUB_CLIENT_ID!,
+        //     clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+        // } ),
+    ],
     pages: {
         newUser: "/complete-profile",
         error: "/error",
