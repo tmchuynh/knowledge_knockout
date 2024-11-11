@@ -2,10 +2,10 @@
 
 import { Progress } from '@/types';
 import React, { useEffect, useState } from 'react';
-import Button from '@/app/components/ui/button';
 import { Quiz, User } from '@/backend/models';
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Button } from '../components/ui/button';
 
 const QuizSelectionPage: React.FC = () => {
     const [quizProgress] = useState<Progress[]>( [] );
@@ -41,7 +41,7 @@ const QuizSelectionPage: React.FC = () => {
 
     const handleQuizSelection = async ( quizName: string ) => {
         const quizTitle = quizNames.find( ( quiz ) => quiz === quizName ) || '';
-        const quiz_id = quizzes.find( ( quiz ) => quiz.name === quizTitle )?.quiz_id || '';
+        const quiz_id = quizzes.find( ( quiz ) => quiz.name === quizTitle )?.id || '';
 
         if ( session.data?.user || !quizTitle ) {
             console.error( 'User ID or quiz title is missing' );
@@ -92,8 +92,10 @@ const QuizSelectionPage: React.FC = () => {
                         key={index}
                         onClick={() => handleQuizSelection( quizName.name )}
                         className={`${ getButtonClass( quizName.name ) }`}
-                        label={quizName.name}
-                    />
+                        variant={"outline"}
+                    >
+                        {quizName.name}
+                    </Button>
                 ) )}
             </div>
 

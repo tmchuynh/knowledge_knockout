@@ -1,5 +1,5 @@
 import { signOut } from "../../../auth";
-import Button from '@/app/components/ui/button';
+import { Button } from "@/app/components/ui/button";
 
 export default function SignOutPage() {
     return (
@@ -12,9 +12,10 @@ export default function SignOutPage() {
                 }}
             >
                 <Button
-                    label={`Sign out`}
-                    type={'submit'}
-                />
+                    variant={"destructive"}
+                >
+                    See you soon!
+                </Button>
             </form>
         </div>
     );

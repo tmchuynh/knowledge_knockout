@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import Button from '@/app/components/ui/button';
 import { AuthError } from "next-auth";
+import { Button } from "../components/ui/button";
 
 export default async function SignInPage( props: {
     searchParams: { callbackUrl: string | undefined; };
@@ -8,7 +8,6 @@ export default async function SignInPage( props: {
     const providerMap = {
         google: { id: 'google', name: 'Google' },
         github: { id: 'github', name: 'GitHub' },
-        // Add more providers as needed
     };
 
     async function signIn( provider: string, options?: Record<string, any> ): Promise<void> {
@@ -44,9 +43,12 @@ export default async function SignInPage( props: {
                     }}
                 >
                     <Button
-                        label={`Sign in with ${ provider.name }`}
-                        type={'submit'}
-                    />
+                        onClick={() => signIn( provider.id, { redirectTo: props.searchParams } )}
+                        variant="default"
+                        size="lg"
+                    >
+                        {`Sign in with ${ provider.name }`}
+                    </Button>
                 </form>
             ) )}
         </div>
