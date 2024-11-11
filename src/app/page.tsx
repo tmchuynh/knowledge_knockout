@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import "./styles.css";
-import Input from '@/app/components/ui/input';
+import { Input } from "./components/ui/input";
 
 const LoginPage: React.FC = () => {
     const router = useRouter();

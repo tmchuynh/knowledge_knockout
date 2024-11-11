@@ -9,62 +9,81 @@ import {
     FormLabel,
     FormMessage,
 } from "@/app/components/ui/form";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "@/app/components/hooks/use-toast";
 import { Button } from "./button";
 import { Input } from "./input";
 
-const FormSchema = z.object( {
-    username: z.string().min( 2, {
-        message: "Username must be at least 2 characters.",
-    } ),
-} );
+// Generalized Schema Creation for Form Validation
+type FieldConfig = {
+    name: string;
+    label: string;
+    placeholder: string;
+    validation: z.ZodType<any, any, any>;  // Use Zod's validation type
+    description?: string;
+};
 
-export function InputForm() {
-    const form = useForm<z.infer<typeof FormSchema>>( {
-        resolver: zodResolver( FormSchema ),
-        defaultValues: {
-            username: "",
-        },
+// Generate dynamic Zod schema for form fields
+function createFormSchema( fields: FieldConfig[] ) {
+    const schema: { [key: string]: z.ZodType<any, any, any>; } = {};
+    fields.forEach( ( field ) => {
+        schema[field.name] = field.validation;
     } );
+    return z.object( schema );
+}
 
-    function onSubmit( data: z.infer<typeof FormSchema> ) {
-        toast( {
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify( data, null, 2 )}</code>
-                </pre>
-            ),
-        } );
-    }
+type GeneralizedFormProps = {
+    fields: FieldConfig[];
+    onSubmit: ( data: any ) => void;
+};
+
+export function GeneralizedForm( { fields, onSubmit }: GeneralizedFormProps ) {
+    const formSchema = createFormSchema( fields );
+
+    const form = useForm<z.infer<typeof formSchema>>( {
+        resolver: zodResolver( formSchema ),
+        defaultValues: fields.reduce( ( acc, field ) => {
+            acc[field.name] = "";
+            return acc;
+        }, {} as Record<string, any> ),
+    } );
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit( onSubmit )} className="w-2/3 space-y-6">
-                <FormField
-                    control={form.control}
-                    name="username"
-                    render={( { field } ) => (
-                        <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormDescription>
-                                This is your public display name.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                {fields.map( ( field, index ) => (
+                    <FormField
+                        key={index}
+                        control={form.control}
+                        name={field.name as any}
+                        render={( { field: formField } ) => (
+                            <FormItem>
+                                <FormLabel>{field.label}</FormLabel>
+                                <FormControl>
+                                    <Input placeholder={field.placeholder} {...formField} />
+                                </FormControl>
+                                {field.description && <FormDescription>{field.description}</FormDescription>}
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                ) )}
                 <Button type="submit">Submit</Button>
             </form>
         </Form>
     );
 }
-function zodResolver( FormSchema: any ): import( "react-hook-form" ).Resolver<z.infer<any>, any> | undefined {
-    throw new Error( "Function not implemented." );
-}
 
+// Zod Resolver for react-hook-form
+function zodResolver<FormSchema>( FormSchema: any ) {
+    return async ( data: any ) => {
+        try {
+            // Try validating the form data
+            FormSchema.parse( data );
+            return { values: data, errors: {} };
+        } catch ( e: any ) {
+            return { values: {}, errors: e.errors };
+        }
+    };
+}

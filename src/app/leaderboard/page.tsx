@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import { User } from "@/types";
-import Button from '@/app/components/ui/button';
+import { Button } from '@/app/components/ui/button';
 
 const LeaderboardSelectionPage: React.FC = () => {
     const router = useRouter();
@@ -52,9 +52,11 @@ const LeaderboardSelectionPage: React.FC = () => {
                     quizNames.map( ( quizName, index ) => (
                         <Button
                             key={index}
-                            label={quizName}
                             onClick={() => handleQuizSelection( quizName )}
-                        />
+                            variant={"outline"}
+                        >
+                            {quizName}
+                        </Button>
                     ) )
                 ) : (
                     <p className="text-gray-400 mx-auto">No quizzes found for this user.</p>
