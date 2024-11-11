@@ -1,32 +1,30 @@
 "use client";
 
 import * as React from "react";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "./button";
+import { Button } from "./button"; // Import the Button component
 import { Input } from "./input";
-import { Popover, PopoverTrigger, PopoverContent } from "./popover";
-import { Toast, ToastTitle, ToastDescription, ToastProvider, ToastViewport } from "./toast";
-import { useToast } from "../hooks/use-toast";
-import Link from "./link";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "./form";
+import { Popover, PopoverTrigger, PopoverContent } from "@/app/components/ui/popover"; // Import the Popover component
+import Link from "./link"; // Assuming Link component is created
 
-
+// Generalized form configuration with dynamic schema
 type FieldConfig = {
     name: string;
-    label: string;
-    placeholder: string;
-    validation: z.ZodType<any, any, any>;
+    label?: string;
+    placeholder?: string;
+    validation?: z.ZodType<any, any, any>;
     description?: string;
     inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
     linkProps?: { href: string; text: string; icon?: React.ReactNode; };
 };
 
-
 function createFormSchema( fields: FieldConfig[] ) {
     const schema: { [key: string]: z.ZodType<any, any, any>; } = {};
     fields.forEach( ( field ) => {
-        schema[field.name] = field.validation;
+        if ( field.validation ) {
+            schema[field.name] = field.validation;
+        }
     } );
     return z.object( schema );
 }
@@ -51,80 +49,52 @@ export function GeneralizedForm( { fields, onSubmit, buttonProps }: GeneralizedF
         }, {} as Record<string, any> ),
     } );
 
-    const { toast } = useToast();
-
     const handleSubmit = ( data: any ) => {
-        toast( {
-            title: "Form Submitted!",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify( data, null, 2 )}</code>
-                </pre>
-            ),
-        } );
-
-
         onSubmit( data );
     };
 
     return (
-        <>
-            <ToastProvider>
-                <ToastViewport />
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit( handleSubmit )} className="space-y-6">
-                        {fields.map( ( field, index ) => (
-                            <FormField
-                                key={index}
-                                control={form.control}
-                                name={field.name as any}
-                                render={( { field: formField } ) => (
-                                    <FormItem>
-                                        <FormLabel>{field.label}</FormLabel>
-                                        <FormControl>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Input
-                                                        placeholder={field.placeholder}
-                                                        {...formField}
-                                                        {...field.inputProps}
-                                                    />
-                                                </PopoverTrigger>
-
-                                                {field.description && (
-                                                    <PopoverContent>
-                                                        <div>{field.description}</div>
-                                                    </PopoverContent>
-                                                )}
-                                            </Popover>
-                                        </FormControl>
-                                        <FormMessage />
-                                        {field.linkProps && (
-                                            <Link
-                                                href={field.linkProps.href}
-                                                text={field.linkProps.text}
-                                                icon={field.linkProps.icon}
-                                            />
-                                        )}
-                                    </FormItem>
-                                )}
-                            />
-                        ) )}
-                        <Button type="submit" {...buttonProps}>
-                            Submit
-                        </Button>
-                    </form>
-                </Form>
-            </ToastProvider>
-        </>
+        <form onSubmit={form.handleSubmit( handleSubmit )} className="space-y-6">
+            {fields.map( ( field, index ) => (
+                <div key={field.name} className="space-y-4">
+                    {field.label && (
+                        <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                    )}
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <div className="relative">
+                                <Input
+                                    placeholder={field.placeholder}
+                                    {...form.register( field.name )} // Use the `register` method for input field registration
+                                    {...field.inputProps}
+                                />
+                            </div>
+                        </PopoverTrigger>
+                        {field.description && (
+                            <PopoverContent className="w-72">
+                                <div>{field.description}</div>
+                            </PopoverContent>
+                        )}
+                    </Popover>
+                    {field.linkProps && (
+                        <Link
+                            href={field.linkProps.href}
+                            text={field.linkProps.text}
+                            icon={field.linkProps.icon}
+                        />
+                    )}
+                </div>
+            ) )}
+            <Button type="submit" {...buttonProps}>
+                Submit
+            </Button>
+        </form>
     );
 }
-
 
 function zodResolver<FormSchema>( FormSchema: any ) {
     return async ( data: any ) => {
         try {
-
             FormSchema.parse( data );
             return { values: data, errors: {} };
         } catch ( e: any ) {
