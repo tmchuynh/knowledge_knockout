@@ -1,28 +1,37 @@
 import SequelizeAdapter from "@auth/sequelize-adapter";
+import mysql2 from 'mysql2';
 import dotenv from 'dotenv';
 import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import GitHub from "next-auth/providers/github";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
 import { DataTypes, Sequelize } from "sequelize";
+import sequelize from "@/backend/config/db";
 
 dotenv.config();
 
-const sequelize = new Sequelize( `${ process.env.DATABASE_URL }` );
-const adapter = SequelizeAdapter( sequelize, {
+// Define the models
+export const adapter = SequelizeAdapter( sequelize, {
     models: {
         User: sequelize.define( "user", {
             id: { type: DataTypes.STRING, primaryKey: true },
             name: DataTypes.STRING,
-            username: DataTypes.STRING,
-            firstName: DataTypes.STRING,
-            lastName: DataTypes.STRING,
+            username: {
+                type: DataTypes.STRING,
+                field: 'username',
+            },
+            firstName: {
+                type: DataTypes.STRING,
+                field: 'first_name',
+            },
+            lastName: {
+                type: DataTypes.STRING,
+                field: 'last_name',
+            },
             password: DataTypes.STRING,
             email: DataTypes.STRING,
             emailVerified: DataTypes.BOOLEAN,
             phoneNumber: DataTypes.STRING,
             image: DataTypes.STRING,
-            createdAt: DataTypes.TIME,
-            updatedAt: DataTypes.TIME
         } ),
         Account: sequelize.define( "account", {
             id: { type: DataTypes.STRING, primaryKey: true },
@@ -33,25 +42,27 @@ const adapter = SequelizeAdapter( sequelize, {
             accessTokenExpires: DataTypes.DATE,
             refreshToken: DataTypes.STRING,
             refreshTokenExpires: DataTypes.DATE,
-            createdAt: DataTypes.TIME,
-            updatedAt: DataTypes.TIME
         } ),
         Session: sequelize.define( "session", {
             id: { type: DataTypes.STRING, primaryKey: true },
             userId: DataTypes.STRING,
             expires: DataTypes.DATE,
             sessionToken: DataTypes.STRING,
-            createdAt: DataTypes.TIME,
-            updatedAt: DataTypes.TIME
         } )
     },
 } );
 
+// Sync the models (you can add options like `force: false` or `alter: true`)
+sequelize.sync( { force: false, alter: true } ).then( () => {
+    console.log( "Database & tables created!" );
+} );
+
+// Define the authentication providers
 export const providers = [
-    Credentials( {
+    CredentialsProvider( {
         credentials: { password: { label: "Password", type: "password" } },
-        authorize( c ) {
-            if ( c.password !== "password" ) return null;
+        async authorize( credentials ) {
+            if ( credentials?.password !== "password" ) return null;
             return {
                 id: "test",
                 name: "Test User",
@@ -59,17 +70,19 @@ export const providers = [
             };
         },
     } ),
-    GitHub,
+    GitHubProvider( {
+        clientId: process.env.GITHUB_CLIENT_ID!,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    } ),
 ];
 
-sequelize.sync( { force: false, alter: true } );
-
+// Configure NextAuth
 export const { handlers, auth, signIn, signOut } = NextAuth( {
     providers,
     pages: {
         signIn: "/signin",
         error: "/error",
-        signOut: "/signout"
+        signOut: "/signout",
     },
     adapter,
 } );

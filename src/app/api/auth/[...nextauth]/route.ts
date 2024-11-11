@@ -12,7 +12,8 @@ import SequelizeAdapter from "@auth/sequelize-adapter";
 import { uuid } from "@/app/utils/regUtils";
 import { NextRequest } from "next/server";
 import { Awaitable } from "@auth/core/types";
-import User from "@/backend/models/User";
+import { User } from "@/backend/models";
+import { adapter } from "../../../../../auth";
 
 export default NextAuth( {
     providers: [
@@ -71,7 +72,7 @@ export default NextAuth( {
         // } ),
     ],
 
-    adapter: SequelizeAdapter( sequelize ),
+    adapter: adapter,
 
     callbacks: {
         async jwt( { token, user } ) {
@@ -114,12 +115,8 @@ export default NextAuth( {
 
 
                     user.id = existingUser.id;
-                    user.name = existingUser.username;
-                    user.username = existingUser.username;
+                    user.name = existingUser.name;
                     user.email = existingUser.email;
-                    user.password = existingUser.password;
-                    user.first_name = existingUser.first_name;
-                    user.last_name = existingUser.last_name;
                     await existingUser.save(); // Save user to database
 
                     return "/complete-profile"; // Redirect to profile completion

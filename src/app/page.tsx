@@ -80,6 +80,35 @@ const LoginPage: React.FC = () => {
             label: "Last Name",
             placeholder: "Enter your last name",
             validation: z.string().min( 2, "Last name must be at least 2 characters." ),
+        },
+        {
+            name: "email",
+            label: "Email",
+            placeholder: "Enter your email",
+            validation: z.string().email( "Invalid email address." ),
+            description: "Please enter a valid email address.",
+        },
+        {
+            name: "password",
+            label: "Password",
+            placeholder: "Enter your password",
+            validation: z.string().min( 6, "Password must be at least 6 characters." ),
+            inputProps: { type: "password" },
+            description: "Password must be at least 6 characters long.",
+        },
+        {
+            name: "confirm_password",
+            label: "Confirm Password",
+            placeholder: "Confirm your password",
+            validation: z.string().min( 6, "Password must be at least 6 characters." ),
+            inputProps: { type: "password" },
+            description: "Password must be at least 6 characters long.",
+        },
+        {
+            name: "terms_of_service",
+            label: "I agree to the Terms of Service",
+            validation: z.boolean(),
+            description: "Please accept the Terms of Service to proceed.",
         }
     ];
 

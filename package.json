@@ -51,6 +51,7 @@
     "react-tweet": "^3.2.1",
     "request": "^2.88.2",
     "sequelize": "^6.37.5",
+    "sequelize-cli": "^6.6.2",
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
