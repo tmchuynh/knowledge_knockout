@@ -38,7 +38,10 @@ export const adapter = SequelizeAdapter( sequelize, {
         } ),
         Account: sequelize.define( "account", {
             id: { type: DataTypes.STRING, primaryKey: true },
-            userId: DataTypes.STRING,
+            user_id: {
+                type: DataTypes.STRING,
+                field: 'user_id',
+            },
             providerType: DataTypes.STRING,
             providerId: DataTypes.STRING,
             accessToken: DataTypes.STRING,
@@ -48,7 +51,10 @@ export const adapter = SequelizeAdapter( sequelize, {
         } ),
         Session: sequelize.define( "session", {
             id: { type: DataTypes.STRING, primaryKey: true },
-            userId: DataTypes.STRING,
+            user_id: {
+                type: DataTypes.STRING,
+                field: 'user_id',
+            },
             expires: DataTypes.DATE,
             sessionToken: DataTypes.STRING,
         } )
@@ -73,18 +79,19 @@ export const providers = [
             };
         },
     } ),
-    GitHubProvider( {
-        clientId: process.env.GITHUB_CLIENT_ID!,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    } ),
+    // GitHubProvider( {
+    //     clientId: process.env.GITHUB_CLIENT_ID!,
+    //     clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    // } ),
 ];
 
 // Configure NextAuth
 export const { handlers, auth, signIn, signOut } = NextAuth( {
     providers,
     pages: {
-        signIn: "/signin",
+        newUser: "/complete-profile",
         error: "/error",
+        signIn: "/",
         signOut: "/signout",
     },
     adapter,

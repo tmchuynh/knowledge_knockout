@@ -26,7 +26,7 @@ Account.init(
             allowNull: false,
         },
         user_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING( 255 ),
             allowNull: false,
             references: {
                 model: User,

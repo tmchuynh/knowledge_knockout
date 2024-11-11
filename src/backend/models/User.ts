@@ -64,6 +64,16 @@ User.init(
         paranoid: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at',
+        indexes: [
+            {
+                unique: true,
+                fields: ['email'],
+            },
+            {
+                unique: true,
+                fields: ['username'],
+            }
+        ]
     }
 );
 

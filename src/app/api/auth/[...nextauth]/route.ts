@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { User } from "@/backend/models"; // Import your Sequelize model
+import { User } from "@/backend/models";
 import bcrypt from "bcrypt";
 import { Op } from "sequelize";
 
@@ -15,7 +15,6 @@ export default NextAuth( {
             async authorize( credentials ) {
                 const { emailOrUsername, password } = credentials;
 
-                // Find user by email or username
                 const user = await User.findOne( {
                     where: {
                         [Op.or]: [
@@ -29,16 +28,14 @@ export default NextAuth( {
                     throw new Error( "No user found with the given email or username" );
                 }
 
-                // Compare passwords
                 const isValid = await bcrypt.compare( JSON.stringify( password ), user.password );
                 if ( !isValid ) {
                     throw new Error( "Invalid password" );
                 }
 
-                // Return the user object with id as a string, name, and email
                 return {
-                    id: user.id, // Ensure id is returned as a string
-                    name: user.username, // Make sure these fields exist in the User model
+                    id: user.id,
+                    name: user.username,
                     email: user.email,
                 };
             },
@@ -66,7 +63,8 @@ export default NextAuth( {
     },
 
     pages: {
-        signIn: "/signin",
+        signIn: "/",
+        signOut: "/signout",
         newUser: "/complete-profile",
         error: "/error",
     },

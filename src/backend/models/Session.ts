@@ -19,7 +19,7 @@ Session.init(
             primaryKey: true,
         },
         user_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING( 250 ),
             allowNull: false,
             references: {
                 model: User,
