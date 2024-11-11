@@ -3,7 +3,7 @@ import sequelize from '../config/db';
 import { Quiz, User } from '.';
 
 class Score extends Model<InferAttributes<Score>, InferCreationAttributes<Score>> {
-    declare score_id: string;
+    declare id: string;
     declare user_id: string;
     declare quiz_id: string;
     declare level: number;
@@ -16,7 +16,7 @@ class Score extends Model<InferAttributes<Score>, InferCreationAttributes<Score>
 
 Score.init(
     {
-        score_id: {
+        id: {
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },
