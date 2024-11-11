@@ -16,23 +16,25 @@ const adapter = SequelizeAdapter( sequelize, {
         } ),
     },
 } );
+
+export const providers = [
+    Credentials( {
+        credentials: { password: { label: "Password", type: "password" } },
+        authorize( c ) {
+            if ( c.password !== "password" ) return null;
+            return {
+                id: "test",
+                name: "Test User",
+                email: "test@example.com",
+            };
+        },
+    } ),
+    GitHub,
+];
 sequelize.sync();
 
 export const { handlers, auth, signIn, signOut } = NextAuth( {
-    providers: [
-        Credentials( {
-            credentials: { password: { label: "Password", type: "password" } },
-            authorize( c ) {
-                if ( c.password !== "password" ) return null;
-                return {
-                    id: "test",
-                    name: "Test User",
-                    email: "test@example.com",
-                };
-            },
-        } ),
-        GitHub,
-    ],
+    providers,
     pages: {
         signIn: "/signin",
         error: "/error",

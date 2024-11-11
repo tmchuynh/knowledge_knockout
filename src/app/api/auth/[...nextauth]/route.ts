@@ -44,7 +44,7 @@ export default NextAuth( {
                 }
 
                 return {
-                    id: user.user_id,
+                    id: user.id,
                     name: user.username,
                     email: user.email,
                 };
@@ -109,7 +109,7 @@ export default NextAuth( {
 
                 if ( !existingUser ) {
                     existingUser = await User.create( {
-                        user_id: uuidv4(),
+                        id: uuidv4(),
                         username: '',
                         password: '',
                         email: email || '',
@@ -119,13 +119,13 @@ export default NextAuth( {
                         lastName: ""
                     } );
 
-                    user.id = existingUser.user_id;
+                    user.id = existingUser.id;
                     user.name = existingUser.username;
                     user.email = existingUser.email;
 
                     return '/complete-profile';
                 } else {
-                    user.id = existingUser.user_id;
+                    user.id = existingUser.id;
                     user.name = existingUser.username;
                     user.email = existingUser.email;
                 }

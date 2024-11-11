@@ -1,14 +1,13 @@
 "use client";
 
+import { Popover, PopoverContent, PopoverTrigger } from "@/app/components/ui/popover";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "./button"; // Import the Button component
+import { Button } from "./button";
 import { Input } from "./input";
-import { Popover, PopoverTrigger, PopoverContent } from "@/app/components/ui/popover"; // Import the Popover component
-import Link from "./link"; // Assuming Link component is created
+import Link from "./link";
 
-// Generalized form configuration with dynamic schema
 type FieldConfig = {
     name: string;
     label?: string;
@@ -54,18 +53,18 @@ export function GeneralizedForm( { fields, onSubmit, buttonProps }: GeneralizedF
     };
 
     return (
-        <form onSubmit={form.handleSubmit( handleSubmit )} className="space-y-6">
-            {fields.map( ( field, index ) => (
+        <form onSubmit={form.handleSubmit( handleSubmit )} className="mx-auto w-full p-10 space-y-6" autoComplete="off">
+            {fields.map( ( field, _index ) => (
                 <div key={field.name} className="space-y-4">
                     {field.label && (
-                        <label className="block text-sm font-medium text-gray-700">{field.label}</label>
+                        <label className="block text-md font-medium text-gray-700">{field.label}</label>
                     )}
                     <Popover>
                         <PopoverTrigger asChild>
                             <div className="relative">
                                 <Input
                                     placeholder={field.placeholder}
-                                    {...form.register( field.name )} // Use the `register` method for input field registration
+                                    {...form.register( field.name )}
                                     {...field.inputProps}
                                 />
                             </div>

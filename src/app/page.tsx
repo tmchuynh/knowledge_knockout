@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import React from "react";
 import { z } from "zod";
 import { GeneralizedForm } from "./components/ui/form-input";
 
@@ -11,7 +11,6 @@ const LoginPage: React.FC = () => {
     const handleLogin = ( data: any ) => {
         const { email, password } = data;
 
-        // Assuming a login API endpoint
         fetch( '/api/auth/login', {
             method: 'POST',
             headers: {
@@ -22,11 +21,9 @@ const LoginPage: React.FC = () => {
             .then( response => response.json() )
             .then( data => {
                 if ( data.token ) {
-                    // Store the token in local storage
                     localStorage.setItem( 'token', data.token );
-                    router.push( '/' );
+                    router.push( '/signin' );
                 } else {
-                    // Handle login failure
                     alert( 'Invalid username or password' );
                 }
             } );
@@ -58,7 +55,7 @@ const LoginPage: React.FC = () => {
                     fields={fields}
                     onSubmit={handleLogin}
                     buttonProps={{
-                        variant: "default", // Customize button style
+                        variant: "default",
                         size: "lg",
                     }}
                 />
