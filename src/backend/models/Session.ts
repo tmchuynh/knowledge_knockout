@@ -8,8 +8,8 @@ class Session extends Model<InferAttributes<Session>, InferCreationAttributes<Se
     declare expires: Date;
     declare session_token: string;
     declare access_token: string;
-    declare createdAt: CreationOptional<Date>;
-    declare updatedAt: CreationOptional<Date>;
+    declare created_at: CreationOptional<Date>;
+    declare updated_at: CreationOptional<Date>;
 }
 
 Session.init(
@@ -38,11 +38,11 @@ Session.init(
             type: DataTypes.STRING( 255 ),
             allowNull: false,
         },
-        createdAt: {
+        created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        updatedAt: {
+        updated_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },

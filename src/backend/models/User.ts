@@ -9,9 +9,10 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
     declare last_name?: string;
     declare username: string;
     declare password: string;
+    declare phone_number: string;
     declare email: string;
-    declare createdAt?: CreationOptional<Date>;
-    declare updatedAt?: CreationOptional<Date>;
+    declare created_at?: CreationOptional<Date>;
+    declare updated_at?: CreationOptional<Date>;
 }
 
 User.init(
@@ -42,16 +43,21 @@ User.init(
             type: DataTypes.STRING( 250 ),
             allowNull: false,
         },
+        phone_number: {
+            type: DataTypes.STRING( 250 ),
+            allowNull: false,
+            unique: true,
+        },
         email: {
             type: DataTypes.STRING( 250 ),
             allowNull: false,
             unique: true,
         },
-        createdAt: {
+        created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        updatedAt: {
+        updated_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },

@@ -37,7 +37,7 @@ Question.init(
         sequelize,
         modelName: 'Question',
         tableName: 'questions',
-        timestamps: true,
+        timestamps: false,
     }
 );
 
