@@ -72,50 +72,34 @@ sequelize.sync( { force: false, alter: true } ).then( () => {
 } );
 
 // Configure NextAuth
-export const { handlers, auth } = NextAuth( {
+export const { handlers, signIn, signOut, auth } = NextAuth( {
     providers: [
         Credentials( {
+            // e.g. domain, username, password, 2FA token, etc.
             credentials: {
                 email: {},
                 password: {},
             },
             authorize: async ( credentials ) => {
-                try {
-                    let user = null;
-
-                    const { email, password } = await signInSchema.parseAsync( credentials );
-
-                    // logic to salt and hash password
-                    const pwHash = hashPassword( password );
-
-                    // logic to verify if the user exists
-                    user = await getUserByEmail( email );
-
-                    if ( !user ) {
-                        throw new Error( "Invalid credentials." );
-                    }
-
-                    // return JSON object with the user data
-                    return user;
-                } catch ( error ) {
-                    if ( error instanceof ZodError ) {
-                        // Return `null` to indicate that the credentials are invalid
-                        return null;
-                    }
+                if ( !credentials || typeof credentials.email !== 'string' || typeof credentials.password !== 'string' ) {
+                    throw new Error( "Invalid credentials." );
                 }
-            },
 
+                let user = null;
+
+                // Hash the password
+                const pwHash = hashPassword( credentials.password );
+
+                // Verify if the user exists
+                user = await getUserByEmail( credentials.email );
+
+                if ( !user ) {
+                    throw new Error( "Invalid credentials." );
+                }
+
+                // Return user object with their profile data
+                return user;
+            },
         } ),
-        // GitHubProvider( {
-        //     clientId: process.env.GITHUB_CLIENT_ID!,
-        //     clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-        // } ),
     ],
-    pages: {
-        newUser: "/complete-profile",
-        error: "/error",
-        signIn: "/",
-        signOut: "/signout",
-    },
-    adapter,
 } );
