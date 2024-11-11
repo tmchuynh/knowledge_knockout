@@ -4,6 +4,14 @@ CREATE DATABASE IF NOT EXISTS knowledge_knockout_db;
 -- Use the newly created database
 USE knowledge_knockout_db;
 
+-- Drop tables
+DROP TABLE IF EXISTS progress;
+DROP TABLE IF EXISTS answers;
+DROP TABLE IF EXISTS questions;
+DROP TABLE IF EXISTS quizzes;
+DROP TABLE IF EXISTS scores;
+DROP TABLE IF EXISTS users;
+
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(250) NOT NULL PRIMARY KEY,

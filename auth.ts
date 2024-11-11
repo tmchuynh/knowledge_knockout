@@ -13,6 +13,13 @@ const adapter = SequelizeAdapter( sequelize, {
         User: sequelize.define( "user", {
             ...models.User,
             phoneNumber: DataTypes.STRING,
+            firstName: DataTypes.STRING,
+            lastName: DataTypes.STRING,
+            username: DataTypes.STRING,
+            password: DataTypes.STRING,
+            email: DataTypes.STRING,
+            createdAt: DataTypes.TIME,
+            updatedAt: DataTypes.TIME
         } ),
     },
 } );
