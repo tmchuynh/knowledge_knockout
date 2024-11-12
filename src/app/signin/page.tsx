@@ -16,8 +16,10 @@ const LoginPage: React.FC = () => {
         firstName: '',
         lastName: '',
         email: '',
+        username: '',
+        phone_number: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
     } );
     const [toastMessage, setToastMessage] = useState<{ type: "error" | "success"; message: string; } | null>( null );
 
@@ -52,42 +54,33 @@ const LoginPage: React.FC = () => {
                 } ),
             } );
 
-            const result = await response.json();
-
-            if ( response.ok ) {
-                showToast( "success", "Registration successful! Redirecting to login page..." );
-                router.push( '/signin' );
-            } else {
-
-                showToast( "error", result.message || 'Registration failed. Please try again.' );
+            if ( !response.ok ) {
+                throw new Error( `Request failed with status ${ response.status }` );
             }
-        } catch ( error ) {
 
+            const data = await response.json();
+            console.log( 'Registration successful:', data );
+        } catch ( error ) {
             console.error( 'Error during registration:', error );
-            showToast( "error", 'An error occurred while registering. Please try again later.' );
         }
     };
 
 
     const handleLogin = async ( email: string, password: string ) => {
         try {
-
             const response = await fetch( '/api/auth/signin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify( { email, password } ),
+                credentials: 'include', // Ensure cookies are included for session management
             } );
 
             const result = await response.json();
 
-            if ( response.ok && result.token ) {
-
+            if ( response.ok ) {
                 showToast( "success", "Login successful! Redirecting..." );
-
-                localStorage.setItem( 'token', result.token );
-                localStorage.setItem( 'user', JSON.stringify( result.user ) );
                 router.push( '/dashboard' );
             } else {
                 showToast( "error", result.message || 'Invalid email or password.' );
@@ -102,7 +95,7 @@ const LoginPage: React.FC = () => {
         const { name, value } = e.target;
         setUserData( ( prevData ) => ( {
             ...prevData,
-            [name]: value
+            [name]: value,
         } ) );
     };
 
@@ -122,17 +115,18 @@ const LoginPage: React.FC = () => {
                     <form className="mx-auto w-full p-10" onSubmit={( e ) => {
                         e.preventDefault();
                         const formData = new FormData( e.currentTarget );
-                        handleLogin( formData.get( 'login_email' ) as string, formData.get( 'login_password' ) as string );
+                        handleLogin( formData.get( 'login_username' ) as string, formData.get( 'login_password' ) as string );
                     }}>
-                        {/* Email Input */}
+                        {/* Username Input */}
                         <div className="relative z-0 w-full mb-5 group">
-                            <Label htmlFor="login_email">Email address</Label>
+                            <Label htmlFor="login_username">Username</Label>
                             <Input
                                 type="email"
-                                name="login_email"
-                                id="login_email"
-                                placeholder="Enter your email"
+                                name="login_username"
+                                id="login_username"
+                                placeholder="Enter your username"
                                 required
+                                autoComplete="username"
                             />
                         </div>
                         {/* Password Input */}
@@ -144,6 +138,7 @@ const LoginPage: React.FC = () => {
                                 id="login_password"
                                 placeholder="Enter your password"
                                 required
+                                autoComplete="current-password"
                             />
                         </div>
                         <Link href="#" text="Forgot Password" />
@@ -187,6 +182,34 @@ const LoginPage: React.FC = () => {
                                 />
                             </div>
                         </div>
+                        {/* Username */}
+                        <div className="relative z-0 w-full mb-5 group">
+                            <Label htmlFor="register_username">Username</Label>
+                            <Input
+                                id="register_username"
+                                type="text"
+                                name="username"
+                                value={userData.username}
+                                onChange={handleInputChange}
+                                placeholder="Username"
+                                required
+                                autoComplete="username"
+                            />
+                        </div>
+                        {/* Phone Number
+                        <div className="relative z-0 w-full mb-5 group">
+                            <Label htmlFor="register_phone">Phone Number</Label>
+                            <Input
+                                id="register_phone"
+                                type="text"
+                                name="phone"
+                                value={userData.phone_number}
+                                onChange={handleInputChange}
+                                placeholder="Phone number"
+                                required
+                                autoComplete="phone-number"
+                            />
+                        </div> */}
                         {/* Email */}
                         <div className="relative z-0 w-full mb-5 group">
                             <Label htmlFor="register_email">Email Address</Label>
@@ -198,6 +221,7 @@ const LoginPage: React.FC = () => {
                                 onChange={handleInputChange}
                                 placeholder="Email address"
                                 required
+                                autoComplete="email"
                             />
                         </div>
                         {/* Password and Confirm Password */}
@@ -212,6 +236,7 @@ const LoginPage: React.FC = () => {
                                     onChange={handleInputChange}
                                     placeholder="Password"
                                     required
+                                    autoComplete="new-password"
                                 />
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
@@ -224,6 +249,7 @@ const LoginPage: React.FC = () => {
                                     onChange={handleInputChange}
                                     placeholder="Confirm password"
                                     required
+                                    autoComplete="new-password"
                                 />
                             </div>
                         </div>

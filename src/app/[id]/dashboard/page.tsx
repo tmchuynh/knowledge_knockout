@@ -1,41 +1,44 @@
 'use client';
 
-import { User } from '@/types';
-import { useSession } from "next-auth/react";
-import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ColorPickerComponent from '@/app/components/ColorPicker';
 import ContributionsGrid from '@/app/components/ContributionsGrid';
+import { GetServerSideProps } from 'next';
 
-const DashboardPage: React.FC = () => {
-    const [userProfile, setUserProfile] = useState<User | null>( null );
-    const [baseColor, setBaseColor] = useState( '#6a40d4' );
-    const { data: session, status } = useSession();
-    const { id } = useParams();
-    const router = useRouter();
 
-    useEffect( () => {
-        if ( !session?.user || session?.user.name !== id ) {
-            router.push( '/api/auth/signin' );
-        } else {
-            console.log( session?.user.name );
-            loadUserProfile( session?.user.name );
-        }
-    }, [session?.user, id] );
+// Fetch user data server-side with Passport.js authentication
+export const getServerSideProps: GetServerSideProps = async ( context ) => {
+    const req = context.req as any; // Cast req to any to access Passport.js methods
+    const res = context.res;
 
-    const loadUserProfile = async ( userId: string | undefined ) => {
-        try {
-            const response = await fetch( `/api/users/${ userId }` );
-            if ( !response.ok ) {
-                console.error( 'Failed to load user profile' );
-                return;
-            }
-            const data = await response.json();
-            setUserProfile( data );
-        } catch ( error ) {
-            console.error( 'Error fetching user profile:', error );
-        }
+    // Check if user is authenticated using Passport.js
+    if ( !req.isAuthenticated() ) {
+        return {
+            redirect: {
+                destination: '/api/auth/signin',
+                permanent: false,
+            },
+        };
+    }
+
+    // Pass user data to the component as props
+    return {
+        props: {
+            user: req.user, // This will include user data from the Passport.js session
+        },
     };
+};
+
+type DashboardPageProps = {
+    user: {
+        id: string;
+        username: string;
+        createdAt: string;
+    };
+};
+
+const DashboardPage: React.FC<DashboardPageProps> = ( { user } ) => {
+    const [baseColor, setBaseColor] = useState( '#6a40d4' );
 
     return (
         <>
@@ -57,14 +60,13 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <p className="mt-3 text-sm/6 text-gray-600">Write a few sentences about yourself.</p>
                 </div>
-                {userProfile && (
-                    <div className="profile-info space-y-4">
-                        <p>ID: {userProfile.user_id}</p>
-                        <p>Created At: {new Date( userProfile.created_at ).toLocaleDateString()}</p>
-                    </div>
-                )}
+                <div className="profile-info space-y-4">
+                    <p>ID: {user.id}</p>
+                    <p>Username: {user.username}</p>
+                    <p>Created At: {new Date( user.createdAt ).toLocaleDateString()}</p>
+                </div>
                 <ColorPickerComponent onColorChange={setBaseColor} />
-                <ContributionsGrid baseColor={baseColor} />
+                <ContributionsGrid baseColor={baseColor} userId={user.id} />
             </div>
         </>
     );

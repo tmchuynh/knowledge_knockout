@@ -1,6 +1,6 @@
 "use client";
 
-import { Progress, Score } from '@/types';
+import { Progress, Score } from '@/types/interface';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 

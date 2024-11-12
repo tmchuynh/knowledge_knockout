@@ -1,22 +1,35 @@
 'use client';
 
-import { Progress } from '@/types';
+import { Progress } from '@/types/interface';
 import React, { useEffect, useState } from 'react';
 import { Quiz, User } from '@/backend/models';
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { Button, buttonVariants } from '../components/ui/button';
+import { Button } from '../components/ui/button';
 
 const QuizSelectionPage: React.FC = () => {
     const [quizProgress] = useState<Progress[]>( [] );
     const [quizNames, setQuizNames] = useState<string[]>( [] );
     const [progress, setProgress] = useState<Progress>();
-    const [user, setUser] = useState<User>();
+    const [user, setUser] = useState<User | null>( null );
     const [quizzes, setQuizzes] = useState<Quiz[]>( [] );
     const router = useRouter();
-    const session = useSession();
 
     useEffect( () => {
+        // Fetch the current user's information
+        const fetchUser = async () => {
+            try {
+                const response = await fetch( '/api/auth/session' );
+                if ( !response.ok ) {
+                    throw new Error( `Failed to fetch user data, status: ${ response.status }` );
+                }
+                const data = await response.json();
+                console.log( 'User data:', data );
+            } catch ( error ) {
+                console.error( 'Error fetching user data:', error );
+            }
+        };
+
+
         const fetchQuizNames = async () => {
             try {
                 const response = await fetch( "/api/quiz" );
@@ -30,7 +43,7 @@ const QuizSelectionPage: React.FC = () => {
 
                     setQuizzes( uniqueData );
                     setQuizNames( uniqueQuizzes );
-                    console.log( "Quizzes", quizzes );
+                    console.log( "Quizzes", uniqueData );
                 } else {
                     console.error( 'Failed to fetch quiz names: HTTP status', response.status );
                 }
@@ -38,49 +51,39 @@ const QuizSelectionPage: React.FC = () => {
                 console.error( 'Error fetching quiz names:', error );
             }
         };
+        fetchUser();
 
         fetchQuizNames();
-    }, [user] );
+    }, [] );
 
-    const handleQuizSelection = async ( id: string, name: string, index: number ) => {
-        const quiz_id = quizzes.find( ( quiz ) => quiz.id === id ) || '';
+    const handleQuizSelection = async ( quizName: Quiz ) => {
+        if ( !user || !user.id ) {
+            console.error( 'User not found' );
+            return;
+        }
 
-        if ( session.data?.user || !name ) {
-            console.error( 'User ID or quiz title is missing' );
-            router.push( '/api/auth/signin' );
+        const quiz = quizzes.find( ( quiz ) => quiz.id === quizName.id );
+        if ( !quiz ) {
+            console.error( 'Quiz not found' );
             return;
         }
 
         try {
-            const response = await fetch( `/api/users/progress/${ name }/${ index }`, {
+            const response = await fetch( `/api/users/${ user.id }/progress/${ quizName.name }/${ quizName.level }`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify( {
-                    userId: user,
-                    quizId: quiz_id,
-                    current_question_index: 0,
-                    score: 0,
-                    completed: false,
-                } ),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify( { quizName } ),
             } );
+            if ( !response.ok ) throw new Error( `Request failed with status ${ response.status }` );
 
-            if ( !response.ok ) {
-                const errorData = await response.json();
-                console.error( 'Server responded with error:', errorData );
-
-                throw new Error( 'Failed to update quiz progress' );
-            }
-
-            router.push( `/quiz/${ name }/difficulty/` );
+            const data = await response.json();
+            console.log( 'Progress updated:', data );
         } catch ( error ) {
             console.error( 'Error updating quiz progress:', error );
         }
     };
 
-
-    const getButtonClass = ( quizId: string ): string => {
+    const getButtonClass = ( _quizId: string ): string => {
         const inProgress = quizProgress.some( ( item ) => item.progress_id === progress?.progress_id );
         return inProgress ? 'bg-amber-700 hover:bg-amber-600' : 'bg-zinc-700 hover:bg-zinc-600';
     };
@@ -92,7 +95,7 @@ const QuizSelectionPage: React.FC = () => {
                 {quizzes.map( ( quizName, index ) => (
                     <Button
                         key={index}
-                        onClick={() => handleQuizSelection( quizName.id, quizName.name, index )}
+                        onClick={() => handleQuizSelection( quizName )}
                         className={`${ getButtonClass( quizName.id ) }`}
                     >
                         {`${ quizName.name }`}

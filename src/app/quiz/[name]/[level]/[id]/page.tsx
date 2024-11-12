@@ -2,7 +2,7 @@
 
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
-import { Answer, Question, Score } from '@/types';
+import { Answer, Question, Score } from '@/types/interface';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

@@ -1,5 +1,5 @@
 "use client";
-import { Score } from '@/types';
+import { Score } from '@/types/interface';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
