@@ -31,7 +31,7 @@ const CompleteProfile = () => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <h1>Complete Your Profile</h1>
+            <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Complete Your Profile</h1>
             <input
                 type="text"
                 placeholder="First Name"
