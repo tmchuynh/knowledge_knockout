@@ -68,8 +68,6 @@ User.init(
         tableName: 'users',
         timestamps: true,
         paranoid: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
         indexes: [
             {
                 unique: true,

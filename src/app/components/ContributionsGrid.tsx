@@ -1,14 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { formatDate } from '../utils/formatUtils';
+import { Score } from '@/types';
 
 interface ContributionsGridProps {
     baseColor: string;
+    userId: string;
 }
 
-const ContributionsGrid: React.FC<ContributionsGridProps> = ( { baseColor } ) => {
+const ContributionsGrid: React.FC<ContributionsGridProps> = ( { baseColor, userId } ) => {
+    const [scores, setScores] = useState<Score[]>( [] );
+
     useEffect( () => {
-        createContributionGrid( baseColor );
-    }, [baseColor] );
+        const fetchScores = async () => {
+            try {
+                const response = await fetch( `/api/score/${ userId }` );
+                const data = await response.json();
+                setScores( data );
+            } catch ( error ) {
+                console.error( 'Error fetching scores:', error );
+            }
+        };
+
+        fetchScores();
+    }, [userId] );
+
+    useEffect( () => {
+        if ( scores.length > 0 ) {
+            createContributionGrid( baseColor, scores );
+        }
+    }, [baseColor, scores] );
 
     return (
         <>
@@ -17,7 +37,7 @@ const ContributionsGrid: React.FC<ContributionsGridProps> = ( { baseColor } ) =>
     );
 };
 
-export const createContributionGrid = ( baseColor: string ) => {
+export const createContributionGrid = ( baseColor: string, userScores: Score[] ) => {
     const gridContainer = document.getElementById( 'contributionGrid' );
     if ( !gridContainer ) return;
 
@@ -37,6 +57,9 @@ export const createContributionGrid = ( baseColor: string ) => {
         dateForCell.setDate( currentDate.getDate() - ( 364 - i ) );
         const dateString = formatDate( dateForCell );
 
+        const scoresForDate = userScores.filter( score => formatDate( score.quiz_date ) === dateString );
+        const level = Math.min( scoresForDate.length, shades.length - 1 );
+
         const monthYear = `${ dateForCell.getFullYear() }-${ dateForCell.getMonth() + 1 }`;
 
         const cell = document.createElement( 'div' );
@@ -44,7 +67,7 @@ export const createContributionGrid = ( baseColor: string ) => {
             'w-4', 'h-4', 'm-1', 'aspect-square', 'rounded',
             'transition-transform', 'duration-200', 'ease-in-out', 'transform'
         );
-        const level = Math.floor( Math.random() * shades.length );
+
         cell.style.backgroundColor = level > 0 ? shades[level] : '#e0e0e0';
         cell.classList.add( `date-${ dateString }`, `level-${ level }` );
         cell.addEventListener( 'mouseenter', () => showPopover( cell, level ) );

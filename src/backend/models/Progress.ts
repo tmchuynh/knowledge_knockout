@@ -9,8 +9,8 @@ class Progress extends Model<InferAttributes<Progress>, InferCreationAttributes<
     declare level: number;
     declare total_questions: number;
     declare completed: boolean;
-    declare createdAt: CreationOptional<Date>;
-    declare updatedAt: CreationOptional<Date>;
+    declare created_at: CreationOptional<Date>;
+    declare updated_at: CreationOptional<Date>;
 }
 
 Progress.init(
@@ -49,11 +49,11 @@ Progress.init(
             allowNull: false,
             defaultValue: false,
         },
-        createdAt: {
+        created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        updatedAt: {
+        updated_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
@@ -63,8 +63,6 @@ Progress.init(
         modelName: 'Progress',
         tableName: 'progress',
         timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
     }
 );
 

@@ -10,8 +10,8 @@ class Score extends Model<InferAttributes<Score>, InferCreationAttributes<Score>
     declare score: number;
     declare total_questions: number;
     declare quiz_date: Date;
-    declare createdAt: CreationOptional<Date>;
-    declare updatedAt: CreationOptional<Date>;
+    declare created_at: CreationOptional<Date>;
+    declare updated_at: CreationOptional<Date>;
 }
 
 Score.init(
@@ -54,11 +54,11 @@ Score.init(
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        createdAt: {
+        created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        updatedAt: {
+        updated_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
@@ -68,8 +68,6 @@ Score.init(
         modelName: 'Score',
         tableName: 'scores',
         timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
     }
 );
 

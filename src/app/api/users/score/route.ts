@@ -7,7 +7,7 @@ export async function GET( request: Request, props: { params: Promise<{ id: stri
         console.log( 'Fetching score with ID:', params );
 
         const score = await Score.findAll( {
-            where: { score_id: params.id },
+            where: { id: params.id },
         } );
 
         if ( !score ) {
@@ -35,14 +35,14 @@ export async function POST( request: Request ) {
         } else {
             const scoreId = `score-${ user_id }-${ quiz_id }-${ level }`;
             const newScore = await Score.create( {
-                score_id: scoreId,
+                id: scoreId,
                 user_id,
                 quiz_id,
                 total_questions,
                 level,
                 score,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                created_at: new Date(),
+                updated_at: new Date(),
                 quiz_date: new Date(),
             } );
 
