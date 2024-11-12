@@ -71,7 +71,7 @@ const ScoresPage: React.FC = () => {
 
     return (
         <div className="container mx-auto p-6">
-            <h1 className="text-4xl font-bold text-center mb-8">Past Scores</h1>
+            <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Past Scores</h1>
             <div className="flex flex-wrap justify-center gap-4 mb-4">
                 <button onClick={sortByQuiz} className="btn-primary">Sort by Quiz</button>
                 <button onClick={sortByDate} className="btn-primary">Sort by Date</button>

@@ -5,7 +5,7 @@ import User from './User';
 class Account extends Model<InferAttributes<Account>, InferCreationAttributes<Account>> {
     declare id: string;
     declare compound_id: string;
-    declare user_id: string;
+    declare userId: string;
     declare provider_type: string;
     declare provider_id: string;
     declare provider_account_id: string;
@@ -25,7 +25,7 @@ Account.init(
             type: DataTypes.STRING( 255 ),
             allowNull: false,
         },
-        user_id: {
+        userId: {
             type: DataTypes.STRING( 255 ),
             allowNull: false,
             references: {

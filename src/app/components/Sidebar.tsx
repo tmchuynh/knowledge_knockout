@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Home, BookOpenCheck, Settings, LayoutDashboard, Trophy, LogOut } from "lucide-react";
+import { Home, BookOpenCheck, Settings, LayoutDashboard, Trophy, LogOut, Medal } from "lucide-react";
 import {
     Sidebar,
     SidebarContent,
@@ -14,7 +14,7 @@ import {
 const items = [
     {
         title: "Home",
-        url: "#",
+        url: "/",
         icon: Home,
         authenticated: false,
     },
@@ -22,25 +22,31 @@ const items = [
         title: "Quizzes",
         url: "/quiz",
         icon: BookOpenCheck,
-        authenticated: true,
+        authenticated: false,
+    },
+    {
+        title: "Badges",
+        url: "/badges",
+        icon: Medal,
+        authenticated: false,
     },
     {
         title: "Dashboard",
         url: "/dashboard",
         icon: LayoutDashboard,
-        authenticated: true,
+        authenticated: false,
     },
     {
         title: "Leaderboard",
         url: "/leaderboard",
         icon: Trophy,
-        authenticated: true,
+        authenticated: false,
     },
     {
         title: "Settings",
-        url: "#",
+        url: "/settings",
         icon: Settings,
-        authenticated: true,
+        authenticated: false,
     },
     {
         title: "Logout",
