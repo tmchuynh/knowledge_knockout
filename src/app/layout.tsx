@@ -5,7 +5,6 @@ import Head from "next/head";
 import React from "react";
 import { NotFoundProvider, useNotFound } from "../context/NotFoundContext";
 import "./styles.css";
-import { SessionProvider } from 'next-auth/react';
 import { SidebarProvider, SidebarTrigger } from './components/ui/sidebar';
 import { AppSidebar } from './components/Sidebar';
 
@@ -31,13 +30,11 @@ export default function RootLayout( {
                 <title>Knowledge Knockout</title>
             </Head>
             <body>
-                <SessionProvider>
-                    <NotFoundProvider>
-                        <SidebarProvider>
-                            <MainContent>{children}</MainContent>
-                        </SidebarProvider>
-                    </NotFoundProvider>
-                </SessionProvider>
+                <NotFoundProvider>
+                    <SidebarProvider>
+                        <MainContent>{children}</MainContent>
+                    </SidebarProvider>
+                </NotFoundProvider>
             </body>
         </html>
     );

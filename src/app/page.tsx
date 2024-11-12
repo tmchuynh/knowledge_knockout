@@ -53,7 +53,7 @@ const WelcomePage = () => {
                                 Repetition strengthens neural connections, making information easier to recall and apply. Each review activates the same pathways, embedding knowledge more deeply into long-term memory and allowing for quicker, more confident retrieval over time.
                             </p>
                             <button
-                                onClick={() => handleNavigation( '/memory-techniques' )}
+                                onClick={() => handleNavigation( '/' )}
                                 className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-300"
                             >
                                 Learn Memory Techniques
@@ -67,7 +67,7 @@ const WelcomePage = () => {
                                 Repetition fosters familiarity, which in turn builds confidence and reduces stress during tests and practical applications. By reinforcing material through repeated exposure, you become more comfortable with the content, leading to a more assured and composed approach when it matters most.
                             </p>
                             <button
-                                onClick={() => handleNavigation( '/confidence-boost' )}
+                                onClick={() => handleNavigation( '/' )}
                                 className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-300"
                             >
                                 Boost Your Confidence
@@ -81,7 +81,7 @@ const WelcomePage = () => {
                                 Learning through repetition cultivates a deep-rooted understanding, enabling you to master complex topics with greater ease. Repeated exposure reinforces foundational knowledge, providing a solid base for tackling more advanced concepts confidently and effectively.
                             </p>
                             <button
-                                onClick={() => handleNavigation( '/master-topics' )}
+                                onClick={() => handleNavigation( '/' )}
                                 className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors duration-300"
                             >
                                 Master Complex Topics
@@ -95,7 +95,7 @@ const WelcomePage = () => {
                                 Consistent review and practice establish a structured path toward continuous improvement. This steady reinforcement helps solidify knowledge, enhances skills over time, and fosters progressive mastery, enabling sustained growth and development.
                             </p>
                             <button
-                                onClick={() => handleNavigation( '/track-progress' )}
+                                onClick={() => handleNavigation( '/' )}
                                 className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
                             >
                                 Track Your Progress
@@ -234,7 +234,7 @@ const WelcomePage = () => {
                                 </div>
                             </div>
                             <button
-                                onClick={() => handleNavigation( '/monthly-challenge' )}
+                                onClick={() => handleNavigation( '/' )}
                                 className="mt-4 px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors duration-300">
                                 View Available Challenges
                             </button>
@@ -290,7 +290,7 @@ const WelcomePage = () => {
                                 </div>
                             </div>
                             <button
-                                onClick={() => handleNavigation( '/monthly-challenge' )}
+                                onClick={() => handleNavigation( '/' )}
                                 className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-teal-700 transition-colors duration-300">
                                 Explore Progress Reports
                             </button>
