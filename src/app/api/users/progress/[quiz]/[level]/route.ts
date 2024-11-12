@@ -1,11 +1,11 @@
-import { addUserToDatabase } from '@/backend/controllers/userController';
+import { addUserToDatabase, processUser } from '@/backend/controllers/userController';
 import { Progress, User } from '@/backend/models';
 import { NextResponse } from 'next/server';
 
 export async function POST( request: Request ) {
     try {
         const body = await request.json();
-        const { userId, first_name, last_name, username, password, email, provider, providerId, quizId, updated_at, questionId, index, scoreId, completed } = body;
+        const { userId, first_name, last_name, username, password, email, quizId, updated_at, questionId, index, scoreId, completed } = body;
 
         if ( !quizId ) {
             return NextResponse.json( { error: 'User ID and quiz ID are required' }, { status: 400 } );
@@ -16,7 +16,7 @@ export async function POST( request: Request ) {
         } );
 
         if ( !userExists ) {
-            userExists = await addUserToDatabase( userId, first_name, last_name, username, password, email, provider, providerId );
+            userExists = await processUser( userId, first_name, last_name, username, password, email ) ?? null;
             if ( !userExists ) {
                 return NextResponse.json( { error: 'User could not be created' }, { status: 500 } );
             }
@@ -30,7 +30,7 @@ export async function POST( request: Request ) {
             await progress.update( {
                 score_id: scoreId,
                 completed,
-                updatedAt: updated_at
+                updated_at: updated_at
             } );
             return NextResponse.json( { message: 'Progress updated successfully', progress } );
         } else {
@@ -42,8 +42,8 @@ export async function POST( request: Request ) {
                 level: index,
                 total_questions: 1,
                 completed: completed,
-                createdAt: new Date(),
-                updatedAt: new Date()
+                created_at: new Date(),
+                updated_at: new Date()
             } );
             return NextResponse.json( { message: 'Progress created successfully', progress: newProgress } );
         }

@@ -2,7 +2,7 @@
 
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
-import { Answer, Question } from '@/types';
+import { Answer, Question, Score } from '@/types';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -17,7 +17,8 @@ const QuizPage = () => {
     const [questions, setQuestions] = useState<Question[]>( [] );
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState( 0 );
     const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>( [] );
-    const [scoreId, setScoreId] = useState<number | null>( null );
+    const [scoreId, setScoreId] = useState<Score>();
+    const [score, setScore] = useState<number>( 0 );
     const [userInput, setUserInput] = useState<string>( '' );
     const [result, setResult] = useState<string | null>( null );
 
@@ -25,7 +26,7 @@ const QuizPage = () => {
         const fetchQuestionData = async () => {
             if ( currentTitle ) {
                 try {
-                    const quizRes = await fetch( `/api/quizzes/${ encodeURIComponent( currentTitle ) }` );
+                    const quizRes = await fetch( `/api/quiz/${ encodeURIComponent( currentTitle ) }` );
                     const quizData = await quizRes.json();
 
                     if ( quizData.error ) {
@@ -34,7 +35,7 @@ const QuizPage = () => {
                     }
 
                     const questionsRes = await fetch(
-                        `/api/quizzes/${ encodeURIComponent( currentTitle ) }/difficulty/${ level }/questions`
+                        `/api/quiz/${ encodeURIComponent( currentTitle ) }/${ level }`
                     );
                     const questionsData = await questionsRes.json();
 
@@ -47,7 +48,7 @@ const QuizPage = () => {
 
                     const questionsWithAnswers = await Promise.all(
                         questionsShuffled.map( async ( question: Question ) => {
-                            const answersRes = await fetch( `/api/questions/${ question.question_id }/answers` );
+                            const answersRes = await fetch( `/api/quiz/${ encodeURIComponent( currentTitle ) }/${ level }/${ question.question_id }` );
                             const answersData = await answersRes.json();
 
                             if ( answersData.error ) {
@@ -73,30 +74,31 @@ const QuizPage = () => {
         };
 
         const initializeScore = async ( quizId: number, totalQuestions: number ) => {
-            // try {
-            //     const userId = user?.sub;
+            try {
+                const user = localStorage.getItem( 'user' );
+                const userId = user ? JSON.parse( user ).id : null;
 
-            //     if ( !userId ) {
-            //         console.error( 'User ID is undefined.' );
-            //         return;
-            //     }
+                if ( !userId ) {
+                    console.error( 'User ID is undefined.' );
+                    return;
+                }
 
-            //     const res = await fetch( '/api/scores/init', {
-            //         method: 'POST',
-            //         headers: { 'Content-Type': 'application/json' },
-            //         body: JSON.stringify( { user_id: userId, level, quiz_id: quizId, total_questions: totalQuestions } ),
-            //     } );
+                const res = await fetch( '/api/users/score', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify( { user_id: userId, level, quiz_id: quizId, total_questions: totalQuestions, score } ),
+                } );
 
-            //     const data = await res.json();
+                const data = await res.json();
 
-            //     if ( res.ok ) {
-            //         setScoreId( data.score_id );
-            //     } else {
-            //         console.error( 'Failed to initialize score:', data.error );
-            //     }
-            // } catch ( error ) {
-            //     console.error( 'Failed to initialize score:', error );
-            // }
+                if ( res.ok ) {
+                    setScoreId( data.score_id );
+                } else {
+                    console.error( 'Failed to initialize score:', data.error );
+                }
+            } catch ( error ) {
+                console.error( 'Failed to initialize score:', error );
+            }
         };
 
         fetchQuestionData();
@@ -117,6 +119,7 @@ const QuizPage = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify( { score_id: scoreId, increment: 1 } ),
             } );
+            setScore( score + 1 );
         }
 
         goToNextQuestion();

@@ -3,10 +3,6 @@ import Quiz from "./models/Quiz";
 import Score from "./models/Score";
 
 export default function setupAssociations() {
-    // Association between User and Quiz
-    User.hasMany( Quiz, { foreignKey: 'user_id' } );
-    Quiz.belongsTo( User, { foreignKey: 'user_id' } );
-
     // Association between Quiz and Question
     Quiz.hasMany( Question, { foreignKey: 'quiz_id' } );
     Question.belongsTo( Quiz, { foreignKey: 'quiz_id' } );
@@ -17,10 +13,10 @@ export default function setupAssociations() {
 
     // Association between Quiz and Score
     Quiz.hasMany( Score, { foreignKey: 'quiz_id' } );
-    Score.belongsTo( Quiz, { foreignKey: 'quiz_id' } );
+    Score.belongsTo( Quiz, { as: 'quiz', foreignKey: 'quiz_id' } );
 
     // Association between Score and User
-    Score.belongsTo( User, { foreignKey: 'user_id' } );
+    Score.belongsTo( User, { as: 'user', foreignKey: 'user_id' } );
     User.hasMany( Score, { foreignKey: 'user_id' } );
 
     // Association between Progress and User

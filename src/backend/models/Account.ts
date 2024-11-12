@@ -12,8 +12,8 @@ class Account extends Model<InferAttributes<Account>, InferCreationAttributes<Ac
     declare refresh_token: string;
     declare access_token: string;
     declare access_token_expires: Date;
-    declare createdAt: CreationOptional<Date>;
-    declare updatedAt: CreationOptional<Date>;
+    declare created_at: CreationOptional<Date>;
+    declare updated_at: CreationOptional<Date>;
 }
 Account.init(
     {
@@ -57,11 +57,11 @@ Account.init(
             type: DataTypes.DATE,
             allowNull: true,
         },
-        createdAt: {
+        created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
-        updatedAt: {
+        updated_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
         },
@@ -70,7 +70,7 @@ Account.init(
         sequelize,
         modelName: 'Account',
         tableName: 'accounts',
-        timestamps: true,
+        timestamps: false,
         paranoid: true,
         indexes: [
             {

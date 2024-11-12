@@ -1,6 +1,7 @@
 import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
 import bcrypt from 'bcryptjs';
+import Score from './Score';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
     declare id?: string;
@@ -27,11 +28,11 @@ User.init(
             allowNull: false,
         },
         first_name: {
-            type: DataTypes.STRING( 100 ),
+            type: DataTypes.STRING( 250 ),
             allowNull: false,
         },
         last_name: {
-            type: DataTypes.STRING( 100 ),
+            type: DataTypes.STRING( 250 ),
             allowNull: false,
         },
         username: {
@@ -66,7 +67,7 @@ User.init(
         sequelize,
         modelName: 'User',
         tableName: 'users',
-        timestamps: true,
+        timestamps: false,
         paranoid: true,
         indexes: [
             {

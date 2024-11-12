@@ -51,7 +51,7 @@ Session.init(
         sequelize,
         modelName: 'Session',
         tableName: 'sessions',
-        timestamps: true,
+        timestamps: false,
         paranoid: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at',

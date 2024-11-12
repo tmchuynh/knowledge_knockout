@@ -2,10 +2,10 @@ import { hashPassword } from "@/app/utils/passwordUtils";
 import { getUserByEmail } from "@/backend/controllers/userController";
 import SequelizeAdapter from "@auth/sequelize-adapter";
 import dotenv from 'dotenv';
-import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { DataTypes } from "sequelize";
-
+import NextAuth, { AuthOptions, Session } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 
 const sequelize = require( '@/backend/config/db' ).default;
 
@@ -37,6 +37,16 @@ export const adapter = SequelizeAdapter( sequelize, {
             emailVerified: DataTypes.BOOLEAN,
             phoneNumber: DataTypes.STRING,
             image: DataTypes.STRING,
+            created_at: {
+                type: DataTypes.DATE,
+                defaultValue: DataTypes.NOW,
+                allowNull: false,
+            },
+            updated_at: {
+                type: DataTypes.DATE,
+                defaultValue: DataTypes.NOW,
+                allowNull: false,
+            },
         } ),
         Account: sequelize.define( "account", {
             id: { type: DataTypes.STRING, primaryKey: true },
@@ -59,12 +69,12 @@ export const adapter = SequelizeAdapter( sequelize, {
             },
             expires: DataTypes.DATE,
             sessionToken: DataTypes.STRING,
-        } )
+        } ),
     },
 } );
 
 // Sync the models (you can add options like `force: false` or `alter: true`)
-sequelize.sync( { force: false, alter: true } ).then( () => {
+sequelize.sync( { alter: true } ).then( () => {
     console.log( "Database & tables created!" );
 } );
 
@@ -99,5 +109,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth( {
             },
         } ),
     ],
+    callbacks: {
+        async session( { session, token }: { session: Session; token: JWT; } ) {
+            if ( token ) {
+                session.user = {
+                    ...session.user,
+                    id: token.sub,
+                };
+            }
+            return session;
+        },
+    }
 } );
-

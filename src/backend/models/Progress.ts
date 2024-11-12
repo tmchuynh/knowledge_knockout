@@ -1,6 +1,6 @@
 import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
 import sequelize from '../config/db';
-import { Question, Score } from '.';
+import { Question, Quiz, Score, User } from '.';
 
 class Progress extends Model<InferAttributes<Progress>, InferCreationAttributes<Progress>> {
     declare id: string;
@@ -62,7 +62,7 @@ Progress.init(
         sequelize,
         modelName: 'Progress',
         tableName: 'progress',
-        timestamps: true,
+        timestamps: false,
     }
 );
 

@@ -52,9 +52,13 @@ const MainContent = ( {
     const { isNotFound } = useNotFound();
     return (
         <>
-            {!isNotFound && <AppSidebar />}
+            {!isNotFound &&
+                <>
+                    <AppSidebar />
+                    <SidebarTrigger className='p-10' />
+                </>}
             <main className='w-full h-full'>
-                <SidebarTrigger className='p-10' />
+
                 {children}
             </main>
         </>

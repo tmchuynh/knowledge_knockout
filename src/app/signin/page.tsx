@@ -80,15 +80,14 @@ const LoginPage: React.FC = () => {
                 body: JSON.stringify( { email, password } ),
             } );
 
-
             const result = await response.json();
 
             if ( response.ok && result.token ) {
 
                 showToast( "success", "Login successful! Redirecting..." );
 
-
                 localStorage.setItem( 'token', result.token );
+                localStorage.setItem( 'user', JSON.stringify( result.user ) );
                 router.push( '/dashboard' );
             } else {
                 showToast( "error", result.message || 'Invalid email or password.' );
