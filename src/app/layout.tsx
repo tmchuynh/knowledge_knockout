@@ -57,7 +57,7 @@ const MainContent = ( {
                     <AppSidebar />
                     <SidebarTrigger className='p-10' />
                 </>}
-            <main className='w-full h-full'>
+            <main className='w-full h-full py-16'>
 
                 {children}
             </main>
