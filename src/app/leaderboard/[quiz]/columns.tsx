@@ -1,6 +1,6 @@
 "use client";
 
-import { LeaderboardEntry } from "@/types";
+import { LeaderboardEntry } from "@/types/interface";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<LeaderboardEntry>[] = [

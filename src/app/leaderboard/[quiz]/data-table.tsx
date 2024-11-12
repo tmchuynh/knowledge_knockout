@@ -1,7 +1,7 @@
 "use client";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
-import { LeaderboardEntry } from "@/types";
+import { LeaderboardEntry } from "@/types/interface";
 import {
     ColumnDef,
     flexRender,

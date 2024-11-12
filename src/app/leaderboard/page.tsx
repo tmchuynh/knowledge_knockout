@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useSession } from "next-auth/react";
 import { Button } from '@/app/components/ui/button';
 import { Quiz } from '@/backend/models';
 
@@ -10,7 +9,6 @@ const LeaderboardSelectionPage: React.FC = () => {
     const router = useRouter();
     const [quizNames, setQuizNames] = useState<string[]>( [] );
     const [quizzes, setQuizzes] = useState<Quiz[]>( [] );
-    const { data: session, status } = useSession();
 
     function uniqByKeepLast( data: any[], key: string ) {
         return [

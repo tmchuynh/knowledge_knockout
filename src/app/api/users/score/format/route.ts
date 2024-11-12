@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 import { fn, col, literal } from 'sequelize';
 import { Score } from '@/backend/models';
 
-// API route handler
-export async function GET( request: Request, response: Response ) {
+export async function GET( request: Request ) {
     try {
-        // Fetch and format data from the scores table using Sequelize
         const scoresData = await Score.findAll( {
             attributes: [
                 [fn( 'DATE_FORMAT', col( 'created_at' ), '%Y%m%d' ), 'DATEID'],
@@ -21,8 +19,10 @@ export async function GET( request: Request, response: Response ) {
                 [fn( 'COUNT', col( 'id' ) ), 'score_count']
             ],
             group: ['DB_DATE'],
-            order: [[col( 'DB_DATE' ), 'ASC']]
+            order: [[col( 'DB_DATE' ), 'ASC']],
+            raw: true // Ensure plain objects are returned
         } );
+
         console.log( 'Fetched scores data:', scoresData );
 
         return NextResponse.json( scoresData );

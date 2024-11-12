@@ -1,35 +1,46 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
+import { Score } from '@/backend/models';
 
-interface ScoreData {
-    DB_DATE: string; // 'YYYY-MM-DD' format
+interface FormattedScoreData {
+    DB_DATE: string;
     WEEKDAYNO: number;
     WEEK_OF_MONTH: number;
-    MONTHID: number;
+    MONTHID: string;
     M_NAME: string;
     DAY_NAME_SHORT: string;
     score_count: number;
 }
 
 const ContributionHeatmap: React.FC = () => {
-    const [scores, setScores] = useState<ScoreData[]>( [] );
+    const [scores, setScores] = useState<FormattedScoreData[]>( [] );
     const containerRef = useRef<HTMLDivElement | null>( null );
     const box = 12; // Cell size
 
     useEffect( () => {
         const fetchScores = async () => {
             try {
-                const response = await fetch( '/api/users/score/format' );
+                const response = await fetch( '/api/users/score' );
                 if ( !response.ok ) {
-                    throw new Error( 'Failed to fetch scores' );
+                    throw new Error( `Failed to fetch scores, status: ${ response.status }` );
                 }
-                const data = await response.json();
-                const formattedData = data.map( ( item: ScoreData ) => ( {
-                    ...item,
+                const rawData: Score[] = await response.json();
+
+                // Format the data on the client side
+                const formattedData = rawData.map( score => ( {
+                    DB_DATE: d3.timeFormat( '%Y-%m-%d' )( new Date( score.created_at! ) ),
+                    WEEKDAYNO: new Date( score.created_at! ).getDay(),
+                    WEEK_OF_MONTH: Math.floor( ( new Date( score.created_at! ).getDate() - 1 ) / 7 ),
+                    MONTHID: d3.timeFormat( '%Y%m' )( new Date( score.created_at! ) ),
+                    M_NAME: d3.timeFormat( '%b-%y' )( new Date( score.created_at! ) ),
+                    DAY_NAME_SHORT: d3.timeFormat( '%a' )( new Date( score.created_at! ) ),
+                    score_count: 1 // Assuming each record is one score, adjust as needed
                 } ) );
+
+                console.log( 'Formatted data:', formattedData );
                 setScores( formattedData );
             } catch ( error ) {
-                console.error( 'Error fetching scores:', error );
+                console.error( 'Error fetching or formatting scores:', error );
             }
         };
 
@@ -38,7 +49,6 @@ const ContributionHeatmap: React.FC = () => {
 
     useEffect( () => {
         if ( scores.length > 0 && containerRef.current ) {
-            // Render the heatmap when scores are loaded
             renderHeatmap();
         }
     }, [scores] );

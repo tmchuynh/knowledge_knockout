@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { formatDate } from '../utils/formatUtils';
-import { Score } from '@/types';
+import { Score } from '@/types/interface';
 
 interface ContributionsGridProps {
     baseColor: string;

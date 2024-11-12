@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, usePathname } from 'next/navigation';
-import { LeaderboardEntry } from '@/types';
+import { LeaderboardEntry } from '@/types/interface';
 import { DataTable } from './data-table';
 import { columns } from './columns';
 
