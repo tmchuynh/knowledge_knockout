@@ -1,49 +1,52 @@
-import { addUserToDatabase, processUser } from '@/backend/controllers/userController';
+import { processUser } from '@/backend/controllers/userController';
 import { Progress, User } from '@/backend/models';
 import { NextResponse } from 'next/server';
 
 export async function POST( request: Request ) {
     try {
         const body = await request.json();
-        const { userId, first_name, last_name, username, password, email, quizId, updated_at, questionId, index, scoreId, completed } = body;
+        const { quizName } = body; // Extract quizName from request body
+        const { userId, questionId, index, scoreId, completed, updated_at } = quizName;
 
-        if ( !quizId ) {
-            return NextResponse.json( { error: 'User ID and quiz ID are required' }, { status: 400 } );
+        if ( !quizName || !quizName.name || !quizName.level ) {
+            return NextResponse.json( { error: 'Quiz name and level are required' }, { status: 400 } );
         }
 
-        let userExists = await User.findOne( {
-            where: { id: userId },
-        } );
-
+        // Validate the user
+        let userExists = await User.findOne( { where: { id: userId } } );
         if ( !userExists ) {
-            userExists = await processUser( userId, first_name, last_name, username, password, email ) ?? null;
+            // Create the user if not found (assuming processUser handles user creation)
+            userExists = await processUser( userId, quizName.first_name, quizName.last_name, quizName.username, quizName.password, quizName.email ) ?? null;
             if ( !userExists ) {
                 return NextResponse.json( { error: 'User could not be created' }, { status: 500 } );
             }
         }
 
+        // Check for existing progress
         const progress = await Progress.findOne( {
             where: { id: userId, score_id: scoreId, question_id: questionId },
         } );
 
         if ( progress ) {
+            // Update existing progress
             await progress.update( {
                 score_id: scoreId,
                 completed,
-                updated_at: updated_at
+                updated_at: updated_at || new Date(),
             } );
             return NextResponse.json( { message: 'Progress updated successfully', progress } );
         } else {
-            const progressId = `progress-${ userId }-${ quizId }`;
+            // Create new progress
+            const progressId = `progress-${ userId }-${ quizName.name }`;
             const newProgress = await Progress.create( {
                 id: progressId,
                 question_id: questionId,
                 score_id: scoreId,
                 level: index,
                 total_questions: 1,
-                completed: completed,
+                completed,
                 created_at: new Date(),
-                updated_at: new Date()
+                updated_at: new Date(),
             } );
             return NextResponse.json( { message: 'Progress created successfully', progress: newProgress } );
         }
@@ -57,6 +60,7 @@ export async function POST( request: Request ) {
         return NextResponse.json( { error: 'Internal Server Error' }, { status: 500 } );
     }
 }
+
 
 
 export async function GET( request: Request ) {

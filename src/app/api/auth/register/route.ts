@@ -1,27 +1,60 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { processUser } from '@/backend/controllers/userController';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { createRouter } from 'next-connect';
+import bcrypt from 'bcryptjs';
+import { User } from '@/backend/models';
+import { uuid } from '@/app/utils/regUtils';
+
+// Create the router instance
+const router = createRouter<NextApiRequest, NextApiResponse>();
 
 export default async function handler( req: NextApiRequest, res: NextApiResponse ) {
-    if ( req.method !== 'POST' ) {
-        return res.status( 405 ).json( { message: 'Method not allowed' } );
-    }
-
-    const { first_name, last_name, username, password, email, phone_number } = req.body;
-
-    if ( !first_name || !last_name || !username || !password || !email || !phone_number ) {
-        return res.status( 400 ).json( { message: 'All fields are required' } );
-    }
-
     try {
-        const newUser = await processUser( first_name, last_name, username, password, email, phone_number );
-
-        if ( !newUser ) {
-            return res.status( 400 ).json( { message: 'User could not be created. Possible duplicate email.' } );
+        if ( req.method !== 'POST' ) {
+            return res.status( 405 ).json( { message: 'Method Not Allowed' } );
         }
 
-        res.status( 201 ).json( { message: 'User registered successfully', user: newUser } );
+        const { first_name, last_name, username, password, email, phone_number } = req.body;
+
+        // Check if the user already exists
+        const existingUser = await User.findOne( { where: { email } } );
+        if ( existingUser ) {
+            return res.status( 400 ).json(
+                { message: 'User already exists with this email.' }
+            );
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash( password, 10 );
+        const name = `${ first_name } ${ last_name }`;
+
+        // Create a new user
+        const newUser = await User.create( {
+            id: uuid( 5 ),
+            first_name,
+            last_name,
+            name,
+            image: '',
+            username,
+            email,
+            phone_number,
+            password: hashedPassword,
+        } );
+
+        return res.status( 201 ).json( {
+            message: 'User registered successfully!',
+            user: {
+                id: newUser.id,
+                email: newUser.email,
+                username: newUser.username,
+            }
+        } );
     } catch ( error ) {
-        console.error( 'Error registering user:', error );
-        res.status( 500 ).json( { message: 'Internal server error' } );
+        console.error( 'Error during user registration:', error );
+        return res.status( 500 ).json(
+            { message: 'An error occurred while registering. Please try again later.' }
+        );
     }
-}
+};
+
+// Export the router handler
+export const POST = router.handler();
