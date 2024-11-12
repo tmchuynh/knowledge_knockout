@@ -1,13 +1,24 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/db';
 
-class Quiz extends Model<InferAttributes<Quiz>, InferCreationAttributes<Quiz>> {
-    declare id: string;
-    declare name: string;
-    declare description: string | null;
-    declare total_questions: number;
-    declare category: string;
-    declare level: number;
+interface QuizAttributes {
+    id?: string;
+    name: string;
+    description: string;
+    total_questions: number;
+    category: string;
+    level: number[];
+}
+
+interface QuizCreationAttributes extends Optional<QuizAttributes, 'id'> { }
+
+class Quiz extends Model<QuizAttributes, QuizCreationAttributes> implements QuizAttributes {
+    public id!: string;
+    public name!: string;
+    public description!: string;
+    public total_questions!: number;
+    public category!: string;
+    public level!: number[];
 }
 
 Quiz.init(

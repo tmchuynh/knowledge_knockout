@@ -1,23 +1,46 @@
-import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/db';
-import { Question, Quiz, Score, User } from '.';
+import { Question, Score, User } from '.';
 
-class Progress extends Model<InferAttributes<Progress>, InferCreationAttributes<Progress>> {
-    declare id: string;
-    declare question_id: string;
-    declare score_id: string | null;
-    declare level: number;
-    declare total_questions: number;
-    declare completed: boolean;
-    declare created_at: CreationOptional<Date>;
-    declare updated_at: CreationOptional<Date>;
+interface ProgressAttributes {
+    id?: string;
+    user_id: string;
+    question_id: string;
+    score_id: string;
+    level: number;
+    total_questions: number;
+    completed: boolean;
+    created_at?: Date;
+    updated_at?: Date;
 }
+interface ProgressCreationAttributes extends Optional<ProgressAttributes, 'id'> { }
+
+class Progress extends Model<ProgressAttributes, ProgressCreationAttributes> implements ProgressAttributes {
+    public id!: string;
+    public user_id!: string;
+    public question_id!: string;
+    public score_id!: string;
+    public level!: number;
+    public total_questions!: number;
+    public completed!: boolean;
+    public created_at?: Date;
+    public updated_at?: Date;
+}
+
 
 Progress.init(
     {
         id: {
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
+        },
+        user_id: {
+            type: DataTypes.STRING( 250 ),
+            allowNull: false,
+            references: {
+                model: User,
+                key: 'id',
+            },
         },
         question_id: {
             type: DataTypes.STRING( 250 ),

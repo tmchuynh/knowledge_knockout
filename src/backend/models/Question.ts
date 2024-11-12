@@ -1,12 +1,24 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/db';
 import { Quiz } from '.';
 
-class Question extends Model<InferAttributes<Question>, InferCreationAttributes<Question>> {
-    declare id: string;
-    declare quiz_id: string;
-    declare content: string;
-    declare question_type: 'multiple_choice' | 'true_false' | 'written';
+interface QuestionAttributes {
+    id?: string;
+    quiz_id: string;
+    content: string;
+    question_type: 'multiple_choice' | 'true_false' | 'written';
+}
+
+// Define the type for creation (id is optional)
+interface QuestionCreationAttributes extends Optional<QuestionAttributes, 'id'> { }
+
+// Extend Model class with attributes and creation attributes
+class Question extends Model<QuestionAttributes, QuestionCreationAttributes> implements QuestionAttributes {
+    public id!: string;
+    public quiz_id!: string;
+    public content!: string;
+    public question_type!: 'multiple_choice' | 'true_false' | 'written';
+
 }
 
 Question.init(

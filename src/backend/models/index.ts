@@ -24,10 +24,6 @@ Answer.belongsTo( Question, { foreignKey: 'id' } );
 Quiz.hasMany( Score, { foreignKey: 'id' } );
 Score.belongsTo( Quiz, { foreignKey: 'id' } );
 
-// Association between Score and User
-Score.belongsTo( User, { foreignKey: 'id' } );
-User.hasMany( Score, { foreignKey: 'id' } );
-
 // Association between Progress and User
 Progress.belongsTo( User, { foreignKey: 'id' } );
 User.hasMany( Progress, { foreignKey: 'id' } );
@@ -39,6 +35,10 @@ Quiz.hasMany( Progress, { foreignKey: 'id' } );
 // Association between Progress and Score
 Progress.belongsTo( Score, { foreignKey: 'id' } );
 Score.hasMany( Progress, { foreignKey: 'id' } );
+
+// Association between Progress and User
+Progress.belongsTo( User, { foreignKey: 'id' } );
+User.hasMany( Progress, { foreignKey: 'id' } );
 
 sequelize.sync( { force: false } ).then( () => {
     console.log( 'Database & tables created!' );

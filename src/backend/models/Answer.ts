@@ -1,12 +1,24 @@
-import { Model, DataTypes, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/db';
 import { Question } from '.';
 
-class Answer extends Model<InferAttributes<Answer>, InferCreationAttributes<Answer>> {
-    declare id: string;
-    declare question_id: string;
-    declare content: string;
-    declare is_correct: boolean;
+
+interface AnswerAttributes {
+    id?: string;
+    question_id: string;
+    content: string;
+    is_correct: boolean;
+
+}
+
+interface AnswerCreationAttributes extends Optional<AnswerAttributes, 'id'> { }
+
+
+class Answer extends Model<AnswerAttributes, AnswerCreationAttributes> implements AnswerAttributes {
+    public id?: string;
+    public question_id!: string;
+    public content!: string;
+    public is_correct!: boolean;
 }
 
 Answer.init(

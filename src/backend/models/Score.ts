@@ -1,26 +1,32 @@
-import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes, Association } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/db';
-import { Progress, Quiz, User } from '.';
+import { Progress, Quiz } from '.';
 
-class Score extends Model<InferAttributes<Score>, InferCreationAttributes<Score>> {
-    [x: string]: any;
-    declare id?: string;
-    declare user_id: string;
-    declare quiz_id: string;
-    declare level: number;
-    declare score: number;
-    declare total_questions: number;
-    declare quiz_date: Date;
-    declare created_at?: CreationOptional<Date>;
-    declare updated_at?: CreationOptional<Date>;
+interface ScoreAttributes {
+    id?: string;
+    progress_id: string;
+    quiz_id: string;
+    level: number;
+    score: number;
+    total_questions: number;
+    quiz_date: Date;
+    created_at?: Date;
+    updated_at?: Date;
+}
 
-    declare user?: User;
-    declare quiz?: Quiz;
+interface ScoreCreationAttributes extends Optional<ScoreAttributes, 'id'> { }
 
-    public static associations: {
-        user: Association<Score, User>;
-        quiz: Association<Score, Quiz>;
-    };
+class Score extends Model<ScoreAttributes, ScoreCreationAttributes> implements ScoreAttributes {
+    public id!: string;
+    public progress_id!: string;
+    public quiz_id!: string;
+    public level!: number;
+    public score!: number;
+    public total_questions!: number;
+    public quiz_date!: Date;
+    public created_at?: Date;
+    public updated_at?: Date;
+
 }
 
 Score.init(
@@ -29,11 +35,11 @@ Score.init(
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
         },
-        user_id: {
-            type: DataTypes.INTEGER,
+        progress_id: {
+            type: DataTypes.STRING( 250 ),
             allowNull: false,
             references: {
-                model: User,
+                model: Progress,
                 key: 'id',
             },
         },
