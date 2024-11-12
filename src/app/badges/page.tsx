@@ -54,14 +54,14 @@ const BadgesPage: React.FC = () => {
     return (
         <div className="p-6 min-h-screen">
             <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Available Badges</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {badgesData.map( ( category, index ) => (
                     <div key={index} className="p-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700 hover:shadow-xl">
                         <div className="flex flex-col items-center mb-4 text-white">
                             <h2 className="text-2xl font-semibold text-center mt-2">{category.category}</h2>
                         </div>
                         <p className="text-gray-400 text-sm mb-4">{category.description}</p>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-3 gap-4">
                             {category.badges.map( ( badge, badgeIndex ) => {
                                 return (
                                     <div key={badgeIndex} className="flex flex-col items-center mb-2">
