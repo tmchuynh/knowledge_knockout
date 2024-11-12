@@ -1,14 +1,9 @@
 import { NextResponse } from 'next/server';
 import { Score } from '../../../../backend/models';
 
-export async function GET( request: Request, props: { params: Promise<{ id: string; }>; } ) {
-    const params = await props.params;
+export async function GET( request: Request ) {
     try {
-        console.log( 'Fetching score with ID:', params );
-
-        const score = await Score.findAll( {
-            where: { id: params.id },
-        } );
+        const score = await Score.findAll();
 
         if ( !score ) {
             return NextResponse.json( { error: 'Score not found.' }, { status: 404 } );

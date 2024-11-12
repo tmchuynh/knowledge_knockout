@@ -30,6 +30,9 @@ app.prepare().then( () => {
     // Attach custom routes
     server.use( '/api/users', userRoutes );
 
+    server.use( express.json( { limit: '1mb' } ) );
+    server.use( express.urlencoded( { extended: true } ) );
+
     // Next.js page handling
     server.all( '*', ( req, res ) => {
         return handle( req, res );

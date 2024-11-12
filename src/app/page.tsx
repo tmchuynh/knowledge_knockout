@@ -229,14 +229,14 @@ const WelcomePage = () => {
                                     <Flame className="text-rose-700 w-8 h-8" />
                                 </div>
                                 <div>
-                                    <h4 className="text-rose-700 font-semibold">Weekly Challenge</h4>
+                                    <h4 className="text-rose-700 font-semibold">Month Challenges</h4>
                                     <p className="text-gray-500 text-sm">Commit to a month-long challenge and see your progress soar.</p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => handleNavigation( '/monthly-challenge' )}
                                 className="mt-4 px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors duration-300">
-                                Join a Challenge
+                                View Available Challenges
                             </button>
                         </div>
                     </div>
@@ -263,9 +263,9 @@ const WelcomePage = () => {
                                 <li>Weekly and monthly progress summaries</li>
                             </ul>
                             <button
-                                onClick={() => handleNavigation( '/monthly-challenge' )}
+                                onClick={() => handleNavigation( '/mock_data' )}
                                 className="mt-4 px-4 py-2 bg-fuchsia-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-300">
-                                View Insights Dashboard
+                                View Insights
                             </button>
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">

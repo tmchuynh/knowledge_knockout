@@ -3,15 +3,16 @@ import sequelize from '../config/db';
 import { Progress, Quiz, User } from '.';
 
 class Score extends Model<InferAttributes<Score>, InferCreationAttributes<Score>> {
-    declare id: string;
+    [x: string]: any;
+    declare id?: string;
     declare user_id: string;
     declare quiz_id: string;
     declare level: number;
     declare score: number;
     declare total_questions: number;
     declare quiz_date: Date;
-    declare created_at: CreationOptional<Date>;
-    declare updated_at: CreationOptional<Date>;
+    declare created_at?: CreationOptional<Date>;
+    declare updated_at?: CreationOptional<Date>;
 
     declare user?: User;
     declare quiz?: Quiz;

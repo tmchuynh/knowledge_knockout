@@ -19,15 +19,15 @@ export interface Progress {
 
 }
 export interface Score {
-    score_id: string;
+    id?: string;
     user_id: string;
     quiz_id: string;
     level: number;
     score: number;
     total_questions: number;
     quiz_date: Date;
-    created_at: Date;
-    updated_at: Date;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export interface LeaderboardEntry {

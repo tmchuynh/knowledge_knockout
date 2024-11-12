@@ -1,9 +1,8 @@
-import { Model, DataTypes, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/db';
 import bcrypt from 'bcryptjs';
-import Score from './Score';
 
-class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+class User extends Model {
     declare id?: string;
     declare name?: string;
     declare first_name?: string;
@@ -12,8 +11,6 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
     declare password: string;
     declare phone_number: string;
     declare email: string;
-    declare created_at?: CreationOptional<Date>;
-    declare updated_at?: CreationOptional<Date>;
 }
 
 User.init(
@@ -68,7 +65,6 @@ User.init(
         modelName: 'User',
         tableName: 'users',
         timestamps: false,
-        paranoid: true,
         indexes: [
             {
                 unique: true,

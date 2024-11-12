@@ -34,18 +34,18 @@ export const adapter = SequelizeAdapter( sequelize, {
             },
             password: DataTypes.STRING,
             email: DataTypes.STRING,
-            emailVerified: DataTypes.BOOLEAN,
-            phoneNumber: DataTypes.STRING,
             image: DataTypes.STRING,
             created_at: {
                 type: DataTypes.DATE,
                 defaultValue: DataTypes.NOW,
                 allowNull: false,
+                field: 'created_at',
             },
             updated_at: {
                 type: DataTypes.DATE,
                 defaultValue: DataTypes.NOW,
                 allowNull: false,
+                field: 'updated_at',
             },
         } ),
         Account: sequelize.define( "account", {

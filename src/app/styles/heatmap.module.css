@@ -1,0 +1,15 @@
+.color-empty {
+	background-color: #e5e5e5;
+}
+
+.color-low {
+	background-color: #a1d6e2; /* Light shade */
+}
+
+.color-medium {
+	background-color: #1995ad; /* Medium shade */
+}
+
+.color-high {
+	background-color: #03396c; /* Darkest shade */
+}
