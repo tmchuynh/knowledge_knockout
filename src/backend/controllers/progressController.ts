@@ -13,32 +13,25 @@ export const addOrUpdateQuizProgress = async (
     try {
         const existingProgress = await Progress.findOne( {
             where: {
-                user_id: userId,
-                quiz_id: quizId,
+                question_id: questionId,
             },
         } );
 
         if ( existingProgress ) {
             await existingProgress.update( {
-                quiz_id: quizId,
                 score_id: scoreId,
                 question_id: questionId,
                 completed,
-                updatedAt: updated_at,
             } );
         } else {
             const progress_id = `${ userId }-${ quizId }-${ level }`;
             await Progress.create( {
-                progress_id,
-                level,
-                user_id: userId,
-                quiz_id: quizId,
-                score_id: scoreId,
+                id: progress_id,
                 question_id: questionId,
+                score_id: scoreId,
+                level,
                 total_questions,
                 completed,
-                createdAt: new Date(),
-                updatedAt: new Date(),
             } );
         }
     } catch ( error ) {

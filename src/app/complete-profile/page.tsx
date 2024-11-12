@@ -1,19 +1,11 @@
-import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 const CompleteProfile = () => {
-    const { data: session } = useSession();
     const router = useRouter();
     const [firstName, setFirstName] = useState( '' );
     const [lastName, setLastName] = useState( '' );
     const [username, setUsername] = useState( '' );
-
-    useEffect( () => {
-        if ( !session ) {
-            router.push( '/auth/signin' );
-        }
-    }, [session, router] );
 
     const handleSubmit = async ( e: React.FormEvent ) => {
         e.preventDefault();

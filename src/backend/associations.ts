@@ -15,10 +15,6 @@ export default function setupAssociations() {
     Quiz.hasMany( Score, { foreignKey: 'quiz_id' } );
     Score.belongsTo( Quiz, { as: 'quiz', foreignKey: 'quiz_id' } );
 
-    // Association between Score and User
-    Score.belongsTo( User, { as: 'user', foreignKey: 'user_id' } );
-    User.hasMany( Score, { foreignKey: 'user_id' } );
-
     // Association between Progress and User
     Progress.belongsTo( User, { foreignKey: 'user_id' } );
     User.hasMany( Progress, { foreignKey: 'user_id' } );
@@ -31,3 +27,6 @@ export default function setupAssociations() {
     Progress.belongsTo( Score, { foreignKey: 'score_id' } );
     Score.hasMany( Progress, { foreignKey: 'score_id' } );
 }
+
+
+export { User, Question, Answer, Progress, Quiz, Score };
