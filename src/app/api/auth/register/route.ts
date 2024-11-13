@@ -3,24 +3,31 @@ import { createRouter } from 'next-connect';
 import bcrypt from 'bcryptjs';
 import { User } from '@/backend/models';
 import { uuid } from '@/app/utils/regUtils';
+import sessionConfig from '@/lib/sessionConfig'; // Import reusable session configuration
+import passport from 'passport';
+
+// Utility function to wrap middleware for Next.js compatibility
+function wrapMiddleware( middleware: any ) {
+    return ( req: NextApiRequest, res: NextApiResponse, next: ( err?: any ) => void ) =>
+        middleware( req, res, next );
+}
 
 // Create the router instance
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-export default async function handler( req: NextApiRequest, res: NextApiResponse ) {
-    try {
-        if ( req.method !== 'POST' ) {
-            return res.status( 405 ).json( { message: 'Method Not Allowed' } );
-        }
+// Use the reusable session configuration and passport middleware
+router.use( wrapMiddleware( sessionConfig ) );
+router.use( wrapMiddleware( passport.initialize() ) );
+router.use( wrapMiddleware( passport.session() ) );
 
+router.post( async ( req, res ) => {
+    try {
         const { first_name, last_name, username, password, email, phone_number } = req.body;
 
         // Check if the user already exists
         const existingUser = await User.findOne( { where: { email } } );
         if ( existingUser ) {
-            return res.status( 400 ).json(
-                { message: 'User already exists with this email.' }
-            );
+            return res.status( 400 ).json( { message: 'User already exists with this email.' } );
         }
 
         // Hash the password
@@ -46,15 +53,13 @@ export default async function handler( req: NextApiRequest, res: NextApiResponse
                 id: newUser.id,
                 email: newUser.email,
                 username: newUser.username,
-            }
+            },
         } );
     } catch ( error ) {
         console.error( 'Error during user registration:', error );
-        return res.status( 500 ).json(
-            { message: 'An error occurred while registering. Please try again later.' }
-        );
+        return res.status( 500 ).json( { message: 'An error occurred while registering. Please try again later.' } );
     }
-};
+} );
 
 // Export the router handler
 export const POST = router.handler();

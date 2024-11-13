@@ -4,7 +4,6 @@ import { Progress, Quiz } from '.';
 
 interface ScoreAttributes {
     id?: string;
-    progress_id: string;
     quiz_id: string;
     level: number;
     score: number;
@@ -18,7 +17,6 @@ interface ScoreCreationAttributes extends Optional<ScoreAttributes, 'id'> { }
 
 class Score extends Model<ScoreAttributes, ScoreCreationAttributes> implements ScoreAttributes {
     public id!: string;
-    public progress_id!: string;
     public quiz_id!: string;
     public level!: number;
     public score!: number;
@@ -34,14 +32,6 @@ Score.init(
         id: {
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
-        },
-        progress_id: {
-            type: DataTypes.STRING( 250 ),
-            allowNull: false,
-            references: {
-                model: Progress,
-                key: 'id',
-            },
         },
         quiz_id: {
             type: DataTypes.STRING( 250 ),

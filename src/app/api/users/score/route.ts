@@ -22,7 +22,7 @@ export async function POST( request: Request ) {
         const { user_id, quiz_id, total_questions, score, level } = await request.json();
 
         const existingScore = await Score.findOne( {
-            where: { user_id, quiz_id, level },
+            where: { quiz_id, level },
         } );
 
         if ( existingScore ) {
@@ -31,7 +31,6 @@ export async function POST( request: Request ) {
             const scoreId = `score-${ user_id }-${ quiz_id }-${ level }`;
             const newScore = await Score.create( {
                 id: scoreId,
-                user_id,
                 quiz_id,
                 total_questions,
                 level,

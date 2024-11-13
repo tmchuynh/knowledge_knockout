@@ -2,14 +2,15 @@ import express from 'express';
 import next from 'next';
 import dotenv from 'dotenv';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import sequelize from './config/db';
 import setupPassport from './config/passport';
 import userRouter from './routes/userRoutes';
 import leaderboardRouter from './routes/leaderboardRoute';
 import quizRouter from './routes/quizRoutes';
-import setupAssociations, { Quiz, User } from './associations';
-
+import setupAssociations from './associations';
+import sessionConfig from '@/lib/sessionConfig';
 dotenv.config();
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -29,21 +30,12 @@ app.prepare().then( () => {
     server.use( express.urlencoded( { extended: true, limit: '1mb' } ) );
 
     // Setup session middleware
-    server.use(
-        session( {
-            secret: process.env.SESSION_SECRET || 'your-secret-key',
-            resave: false,
-            saveUninitialized: false,
-            cookie: {
-                secure: !dev, // Use secure cookies in production
-                httpOnly: true,
-            },
-        } )
-    );
+    server.use( sessionConfig );
 
     // Initialize Passport.js middleware
     server.use( passport.initialize() );
     server.use( passport.session() );
+    server.use( cookieParser() );
 
     // Database connection test
     sequelize.authenticate()
@@ -58,9 +50,6 @@ app.prepare().then( () => {
     server.all( '*', ( req, res ) => {
         return handle( req, res );
     } );
-
-    console.log( 'User model:', User );
-    console.log( 'Quiz model:', Quiz );
 
     setupAssociations();
 

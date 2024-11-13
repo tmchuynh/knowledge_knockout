@@ -1,7 +1,7 @@
 import { createRouter } from 'next-connect';
-import passport from 'passport';
-import sessionConfig from '@/lib/sessionConfig'; // Adjust the path as needed
 import { NextApiRequest, NextApiResponse } from 'next';
+import sessionConfig from '@/lib/sessionConfig'; // Import the reusable session configuration
+import passport from 'passport';
 
 // Utility function to wrap middleware for Next.js compatibility
 function wrapMiddleware( middleware: any ) {
@@ -16,20 +16,16 @@ router.use( wrapMiddleware( sessionConfig ) );
 router.use( wrapMiddleware( passport.initialize() ) );
 router.use( wrapMiddleware( passport.session() ) );
 
-// Handle login POST request
-router.post(
-    passport.authenticate( 'local', {
-        failureRedirect: '/signin', // Redirect on authentication failure
-    } ),
-    ( req, res ) => {
-        if ( req.user && req.user.id ) {
-            res.redirect( `/app/${ req.user.id }/dashboard` ); // Redirect to the dashboard on success
-        } else {
-            res.status( 500 ).json( { message: 'User ID not found' } );
+// Handle logout GET request
+router.get( ( req, res ) => {
+    req.logout( ( err ) => {
+        if ( err ) {
+            console.error( 'Error during logout:', err );
+            return res.status( 500 ).json( { message: 'Error during logout' } );
         }
-    }
-);
+        res.status( 200 ).json( { message: 'Logged out successfully' } ); // Return a success message or redirect as needed
+    } );
+} );
 
-// Export the router handler for both GET and POST
-export const POST = router.handler();
+// Export the router handler
 export const GET = router.handler();

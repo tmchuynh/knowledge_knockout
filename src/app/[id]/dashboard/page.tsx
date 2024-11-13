@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ColorPickerComponent from '@/app/components/ColorPicker';
 import ContributionsGrid from '@/app/components/ContributionsGrid';
 import { GetServerSideProps } from 'next';
@@ -10,6 +10,13 @@ import { GetServerSideProps } from 'next';
 export const getServerSideProps: GetServerSideProps = async ( context ) => {
     const req = context.req as any; // Cast req to any to access Passport.js methods
     const res = context.res;
+    const [isAuthenticated, setIsAuthenticated] = useState( false );
+
+    useEffect( () => {
+        const token = localStorage.getItem( 'auth_token' );
+        setIsAuthenticated( !!token );
+    }, [] );
+
 
     // Check if user is authenticated using Passport.js
     if ( !req.isAuthenticated() ) {
