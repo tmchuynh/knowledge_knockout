@@ -1,26 +1,16 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/db';
 
-interface QuizAttributes {
-    id?: string;
-    name: string;
-    description: string;
-    total_questions: number;
-    category: string;
-    level: number[];
-}
-
-interface QuizCreationAttributes extends Optional<QuizAttributes, 'id'> { }
-
-class Quiz extends Model<QuizAttributes, QuizCreationAttributes> implements QuizAttributes {
-    public id!: string;
-    public name!: string;
-    public description!: string;
+class Quiz extends Model {
+    public id?: string;
+    public subject!: string;
+    public description?: string;
     public total_questions!: number;
     public category!: string;
-    public level!: number[];
+    public level!: number;
+    public created_at!: Date;
+    public updated_at?: Date;
 }
-
 Quiz.init(
     {
         id: {
@@ -28,7 +18,7 @@ Quiz.init(
             primaryKey: true,
             allowNull: false,
         },
-        name: {
+        subject: {
             type: DataTypes.STRING( 100 ),
             allowNull: false,
         },
@@ -49,6 +39,16 @@ Quiz.init(
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 1,
+        },
+        created_at: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+            allowNull: false,
+        },
+        updated_at: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+            allowNull: false,
         }
     },
     {

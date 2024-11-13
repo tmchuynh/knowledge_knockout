@@ -1,30 +1,15 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/db';
-import { Quiz } from '.';
+import { Quiz, User } from '.';
 
-interface ScoreAttributes {
-    id?: string;
-    quiz_id: string;
-    level: number;
-    score: number;
-    total_questions: number;
-    quiz_date: Date;
-    created_at?: Date;
-    updated_at?: Date;
-}
-
-interface ScoreCreationAttributes extends Optional<ScoreAttributes, 'id'> { }
-
-class Score extends Model<ScoreAttributes, ScoreCreationAttributes> implements ScoreAttributes {
-    public id!: string;
+class Score extends Model {
+    public id?: string;
     public quiz_id!: string;
-    public level!: number;
+    public username!: string;
     public score!: number;
-    public total_questions!: number;
     public quiz_date!: Date;
     public created_at?: Date;
     public updated_at?: Date;
-
 }
 
 Score.init(
@@ -41,19 +26,18 @@ Score.init(
                 key: 'id',
             },
         },
-        level: {
-            type: DataTypes.INTEGER,
+        username: {
+            type: DataTypes.STRING( 100 ),
             allowNull: false,
-            defaultValue: 1,
+            references: {
+                model: User,
+                key: 'username',
+            },
         },
         score: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
-        },
-        total_questions: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
         },
         quiz_date: {
             type: DataTypes.DATE,

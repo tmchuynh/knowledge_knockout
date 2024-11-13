@@ -1,24 +1,12 @@
-import { Model, DataTypes, Optional } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/db';
 import { Quiz } from '.';
 
-interface QuestionAttributes {
-    id?: string;
-    quiz_id: string;
-    content: string;
-    question_type: 'multiple_choice' | 'true_false' | 'written';
-}
-
-// Define the type for creation (id is optional)
-interface QuestionCreationAttributes extends Optional<QuestionAttributes, 'id'> { }
-
-// Extend Model class with attributes and creation attributes
-class Question extends Model<QuestionAttributes, QuestionCreationAttributes> implements QuestionAttributes {
-    public id!: string;
+class Question extends Model {
+    public id?: string;
     public quiz_id!: string;
     public content!: string;
-    public question_type!: 'multiple_choice' | 'true_false' | 'written';
-
+    public question_type!: 'multiple_choice' | 'true_false';
 }
 
 Question.init(
@@ -40,7 +28,7 @@ Question.init(
             allowNull: false,
         },
         question_type: {
-            type: DataTypes.ENUM( 'multiple_choice', 'true_false', 'written' ),
+            type: DataTypes.ENUM( 'multiple_choice', 'true_false' ),
             allowNull: false,
             defaultValue: 'multiple_choice',
         }

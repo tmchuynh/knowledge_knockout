@@ -3,18 +3,7 @@ import sequelize from '../config/db';
 import { Question } from '.';
 
 
-interface AnswerAttributes {
-    id?: string;
-    question_id: string;
-    content: string;
-    is_correct: boolean;
-
-}
-
-interface AnswerCreationAttributes extends Optional<AnswerAttributes, 'id'> { }
-
-
-class Answer extends Model<AnswerAttributes, AnswerCreationAttributes> implements AnswerAttributes {
+class Answer extends Model {
     public id?: string;
     public question_id!: string;
     public content!: string;
