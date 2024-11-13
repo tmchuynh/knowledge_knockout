@@ -24,6 +24,7 @@ const QuizSelectionPage: React.FC = () => {
                 }
                 const data = await response.json();
                 console.log( 'User data:', data );
+                setUser( data.user );
             } catch ( error ) {
                 console.error( 'Error fetching user data:', error );
             }

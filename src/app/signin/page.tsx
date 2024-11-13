@@ -66,6 +66,7 @@ const LoginPage: React.FC = () => {
     };
 
     const handleLogin = async ( username: string, password: string ) => {
+        console.log( 'Logging in:', username, password );
         try {
             const response = await fetch( '/api/auth/login', {
                 method: 'POST',
