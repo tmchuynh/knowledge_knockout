@@ -69,8 +69,10 @@ const ScoresPage: React.FC = () => {
                     className="btn-secondary"
                 >
                     <option value="">Filter by Quiz</option>
-                    {[...new Set( pastScores.map( score => score.quiz_id ) )].map( quizName => (
-                        <option key={quizName} value={quizName}>{quizName}</option>
+                    {[...new Set( pastScores.map( score => score.quiz_id ) )].map( ( quizName, index ) => (
+                        <option
+                            key={`${ quizName }__${ index }`}
+                            value={quizName}>{quizName}</option>
                     ) )}
                 </select>
                 <button onClick={clearFilters} className="btn-danger">Clear Filters</button>

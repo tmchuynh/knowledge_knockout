@@ -180,14 +180,14 @@ const QuizPage = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-full justify-center items-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
+        <div className="flex flex-col  justify-center items-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
             <h1 className="text-5xl font-extrabold text-stone text-center mb-5">{currentQuestion.content}</h1>
             {currentQuestion.question_type === 'multiple_choice' || currentQuestion.question_type == "true_false" ? (
                 <div className='w-full flex flex-col'>
                     <div className="grid grid-cols-2 gap-4 p-3">
-                        {currentQuestion.answers.map( ( answers: Answer ) => (
+                        {currentQuestion.answers.map( ( answers: Answer, index ) => (
                             <Button
-                                key={answers.answer_id}
+                                key={`${ answers.answer_id }__${ index }`}
                                 onClick={() => handleSubmitAnswer( answers.is_correct )}
                             >
                                 {answers.content}

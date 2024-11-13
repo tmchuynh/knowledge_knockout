@@ -54,7 +54,7 @@ const LeaderboardPage: React.FC = () => {
     }
 
     return (
-        <div className="leaderboard-page flex flex-col justify-center items-center min-h-screen px-6 py-4 lg:px-8 bg-gray-800 text-white">
+        <div className="leaderboard-page flex flex-col justify-center items-center  px-6 py-4 lg:px-8 bg-gray-800 text-white">
             <h2 className="text-4xl font-extrabold mb-5 text-center">Leaderboard for {quizName}</h2>
             <div className="w-full mb-6">
                 <DataTable columns={columns} data={data} quiz={currentTitle} />

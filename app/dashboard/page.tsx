@@ -17,7 +17,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ( { user } ) => {
 
     return (
         <>
-            <div className="dashboard-container flex flex-col items-center min-h-screen px-6 py-4 lg:px-8 bg-gray-800 text-white w-full">
+            <div className="dashboard-container flex flex-col items-center  px-6 py-4 lg:px-8 bg-gray-800 text-white w-full">
                 <h2 className="text-4xl font-extrabold mb-5">User Profile</h2>
                 <div className="col-span-full">
                     <label htmlFor="photo" className="block text-sm/6 font-medium text-gray-900">Photo</label>

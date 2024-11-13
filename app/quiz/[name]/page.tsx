@@ -71,14 +71,15 @@ const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = _props => {
     // };
 
     return (
-        <div className="flex flex-col min-h-full justify-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
+        <div className="flex flex-col  justify-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
             <h2 className="text-center text-4xl py-5 font-extrabold dark:text-white">
                 Select Difficulty Level for <br /> {quizData ? quizData.title : 'Loading...'}
             </h2>
             {/* <div id="difficultyOptions" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-3">
-                {difficultyLevels.map( ( level ) => (
+                {difficultyLevels.map( ( level,index ) => (
                     <Button
-                        key={level}
+                                                        key={`${ level }__${ index }`}
+
                         onClick={() => handleDifficultySelection( level )}
                         className={`${ getButtonClass( level ) }`}
                         label={`Level ${level}

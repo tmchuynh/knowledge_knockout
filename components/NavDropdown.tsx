@@ -2,6 +2,8 @@
 
 import {
     Folder,
+    Handshake,
+    Info,
     MoreHorizontal,
     Share,
     Trash2,
@@ -63,17 +65,17 @@ export function NavDropdown( {
                                 align={isMobile ? "end" : "start"}
                             >
                                 <DropdownMenuItem>
-                                    <Folder className="text-muted-foreground" />
-                                    <span>View Project</span>
+                                    <Handshake className="text-muted-foreground" />
+                                    <span>Participate</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Share className="text-muted-foreground" />
-                                    <span>Share Project</span>
+                                    <span>Invite a Friend</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem>
-                                    <Trash2 className="text-muted-foreground" />
-                                    <span>Delete Project</span>
+                                    <Info className="text-muted-foreground" />
+                                    <span>More Details</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

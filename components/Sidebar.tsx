@@ -85,8 +85,8 @@ export function AppSidebar() {
                         <SidebarMenu>
                             {items
                                 .filter( item => isAuthenticated || !item.authenticated )
-                                .map( item => (
-                                    <li key={item.title}>
+                                .map( ( item, index ) => (
+                                    <li key={`${ item.title }__${ index }`}>
                                         {item.action === "logout" ? (
                                             <SidebarMenuButton asChild tooltip={item.title}>
                                                 <button

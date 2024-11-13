@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { LeaderboardEntry } from "../../../types/interface";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
+import { index } from "d3";
 
 
 interface DataTableProps<TData, TValue> {
@@ -92,8 +93,10 @@ export function DataTable<TData, TValue>( {
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
                                 >
-                                    {row.getVisibleCells().map( ( cell ) => (
-                                        <TableCell key={cell.id}>
+                                    {row.getVisibleCells().map( ( cell, index ) => (
+                                        <TableCell
+                                            key={`${ cell.id }__${ index }`}
+                                        >
                                             {flexRender( cell.column.columnDef.cell, cell.getContext() )}
                                         </TableCell>
                                     ) )}

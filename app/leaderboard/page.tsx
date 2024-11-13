@@ -29,7 +29,7 @@ const LeaderboardSelectionPage: React.FC = () => {
 
                     // Extract unique quiz titles
                     const uniqueTitles = data
-                        .map( quiz => quiz.name )
+                        .map( quiz => quiz.subject )
                         .filter( ( name, index, self ) => self.indexOf( name ) === index );
 
                     // Debugging uniqByKeepLast function
@@ -51,30 +51,22 @@ const LeaderboardSelectionPage: React.FC = () => {
     }, [] );
 
 
-    if ( status === 'loading' ) {
-        return <p>Loading...</p>;
-    }
-
-    // if ( !session ) {
-    //     return <p className="text-center mt-10">You must be logged in to view this page.</p>;
-    // }
-
     const handleQuizSelection = ( quizName: string, id: string ) => {
         router.push( `/leaderboard/${ quizName }&id=${ id }` );
     };
 
     return (
-        <div className="flex flex-col min-h-screen justify-center items-center px-6 py-4 lg:px-8 container dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
+        <div className="flex flex-col  justify-center items-center px-6 py-4 lg:p-10 container dark:border-gray-100 shadow-md border hover:shadow-md dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
             <h2 className="text-4xl font-extrabold mb-5 text-center">Select a Quiz to View Leaderboard</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {quizzes.length > 0 ? (
                     quizzes.map( ( quizName, index ) => (
                         <Button
-                            key={quizName.id}
-                            onClick={() => handleQuizSelection( quizName.name, quizName.id )}
+                            key={`${ quizName.id }__${ index }`}
+                            onClick={() => handleQuizSelection( quizName.subject, quizName.id! )}
                             variant={"outline"}
                         >
-                            {quizName.name}
+                            {quizName.subject}
                         </Button>
                     ) )
                 ) : (

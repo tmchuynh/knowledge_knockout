@@ -2,12 +2,22 @@
 
 import * as React from "react";
 import {
+    BookCheck,
     BookOpen,
     Bot,
+    Brain,
+    Calendar1,
+    CalendarRange,
+    ChartSpline,
+    CheckCheck,
+    Cog,
     Command,
+    FileChartColumnIncreasing,
     Frame,
+    Gift,
     LifeBuoy,
     Map,
+    Medal,
     PieChart,
     Send,
     Settings2,
@@ -38,7 +48,7 @@ const data = {
         {
             title: "Quizzes",
             url: "/quiz",
-            icon: SquareTerminal,
+            icon: CheckCheck,
             isActive: true,
             items: [
                 {
@@ -68,93 +78,115 @@ const data = {
             ],
         },
         {
-            title: "Models",
+            title: "Tests",
             url: "#",
-            icon: Bot,
+            icon: BookCheck,
             items: [
                 {
-                    title: "Genesis",
+                    title: "Beginner Tests",
                     url: "#",
                 },
                 {
-                    title: "Explorer",
+                    title: "Expert Tests",
                     url: "#",
                 },
                 {
-                    title: "Quantum",
+                    title: "Multiple Subject Tests",
+                    url: "#",
+                },
+                {
+                    title: "Timed Tests",
                     url: "#",
                 },
             ],
         },
         {
-            title: "Documentation",
+            title: "Learning Paths",
             url: "#",
             icon: BookOpen,
             items: [
                 {
-                    title: "Introduction",
+                    title: "Software Engineering",
                     url: "#",
                 },
                 {
-                    title: "Get Started",
+                    title: "Pre Medical",
                     url: "#",
                 },
                 {
-                    title: "Tutorials",
+                    title: "Business",
                     url: "#",
                 },
                 {
-                    title: "Changelog",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Settings",
-            url: "#",
-            icon: Settings2,
-            items: [
-                {
-                    title: "General",
+                    title: "Law",
                     url: "#",
                 },
                 {
-                    title: "Team",
-                    url: "#",
-                },
-                {
-                    title: "Billing",
-                    url: "#",
-                },
-                {
-                    title: "Limits",
+                    title: "Entrepreneurship",
                     url: "#",
                 },
             ],
         },
     ],
-    projects: [
+    challenges: [
+        {
+            title: "Daily Challenge",
+            url: "#",
+            icon: Gift,
+        },
+        {
+            title: "Weekly Challenge",
+            url: "#",
+            icon: Calendar1,
+        },
+        {
+            title: "Monthly Challenge",
+            url: "#",
+            icon: CalendarRange,
+        },
+    ],
+    examples: [
         {
             title: "Badges",
             url: "/badges",
-            icon: LifeBuoy,
+            icon: Medal,
         },
         {
-            title: "Sales & Marketing",
+            title: "Progress Reports",
             url: "#",
-            icon: PieChart,
+            icon: FileChartColumnIncreasing,
         },
         {
-            title: "Travel",
+            title: "Leaderboards",
+            url: "/leaderboard",
+            icon: ChartSpline,
+        },
+        {
+            title: "Learning Paths",
             url: "#",
-            icon: Map,
+            icon: ChartSpline,
+        },
+        {
+            title: "Learning Paths",
+            url: "#",
+            icon: ChartSpline,
+        },
+        {
+            title: "Learning Paths",
+            url: "#",
+            icon: ChartSpline,
+        },
+        {
+            title: "Learning Paths",
+            url: "#",
+            icon: ChartSpline,
         },
     ],
     navSecondary: [
         {
-            title: "Support",
+            title: "Settings",
             url: "#",
-            icon: LifeBuoy,
+            icon: Cog,
         },
         {
             title: "Feedback",
@@ -166,7 +198,7 @@ const data = {
 
 export function AppSidebar( { ...props }: React.ComponentProps<typeof Sidebar> ) {
     return (
-        <Sidebar variant="inset" {...props}>
+        <Sidebar variant="inset" {...props} className="rounded-3xl shadow-md border hover:shadow-md">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -176,7 +208,7 @@ export function AppSidebar( { ...props }: React.ComponentProps<typeof Sidebar> )
                                     <Command className="size-4" />
                                 </div>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-semibold">Acme Inc</span>
+                                    <span className="truncate font-semibold">Knowledge Knockout</span>
                                     <span className="truncate text-xs">Enterprise</span>
                                 </div>
                             </a>
@@ -186,7 +218,8 @@ export function AppSidebar( { ...props }: React.ComponentProps<typeof Sidebar> )
             </SidebarHeader>
             <SidebarContent>
                 <NavMain title="Platforms" items={data.navMain} />
-                <NavDropdown title="example" projects={data.projects} />
+                <NavDropdown title="Challenges" projects={data.challenges} />
+                <NavMain title="Information" items={data.examples} />
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>

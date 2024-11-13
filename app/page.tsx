@@ -22,7 +22,7 @@ const WelcomePage = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen justify-center items-center dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full">
+        <div className="flex flex-col  justify-center items-center dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full">
             <header className="py-6">
                 <div className="container px-6 text-center">
                     <h1 className="text-5xl font-extrabold text-stone text-center">

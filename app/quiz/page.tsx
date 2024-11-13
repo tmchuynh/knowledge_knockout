@@ -14,36 +14,22 @@ const QuizSelectionPage: React.FC = () => {
     const router = useRouter();
 
     useEffect( () => {
-        // Fetch the current user's information
-        const fetchUser = async () => {
-            try {
-                const response = await fetch( '/api/auth/session' );
-                if ( !response.ok ) {
-                    throw new Error( `Failed to fetch user data, status: ${ response.status }` );
-                }
-                const data = await response.json();
-                console.log( 'User data:', data );
-                setUser( data.user );
-            } catch ( error ) {
-                console.error( 'Error fetching user data:', error );
-            }
-        };
-
-
         const fetchQuizNames = async () => {
             try {
                 const response = await fetch( "/api/quiz" );
                 if ( response.ok ) {
                     const data = await response.json();
 
-                    const uniqueData = data.filter( ( item: { name: string; }, index: number, self: Quiz[] ) =>
-                        index === self.findIndex( ( t ) => t.name === item.name )
+                    const uniqueData = data.filter( ( item: { subject: string; }, index: number, self: Quiz[] ) =>
+                        index === self.findIndex( ( t ) => t.subject === item.subject )
                     );
-                    const uniqueQuizzes = uniqueData.map( ( quiz: { name: any; } ) => quiz.name );
+                    const uniqueQuizzes = uniqueData.map( ( quiz: { subject: any; } ) => quiz.subject );
 
                     setQuizzes( uniqueData );
                     setQuizNames( uniqueQuizzes );
-                    console.log( "Quizzes", uniqueData );
+                    console.log( "data", data );
+                    console.log( "uniqueData", uniqueData );
+                    console.log( "uniqueQuizzes", quizzes );
                 } else {
                     console.error( 'Failed to fetch quiz names: HTTP status', response.status );
                 }
@@ -51,7 +37,6 @@ const QuizSelectionPage: React.FC = () => {
                 console.error( 'Error fetching quiz names:', error );
             }
         };
-        fetchUser();
 
         fetchQuizNames();
     }, [] );
@@ -89,16 +74,16 @@ const QuizSelectionPage: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen justify-center items-center px-6 py-4 lg:px-8 container dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
+        <div className="flex flex-col justify-center items-center px-6 py-4 lg:px-8 container dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-auto align-center w-full lg:w-11/12 shadow-md border hover:shadow-md">
             <h2 className="text-center text-4xl py-5 font-extrabold dark:text-white">Select a Quiz</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-3 w-full">
                 {quizzes.map( ( quizName, index ) => (
                     <Button
-                        key={index}
+                        key={`${ quizName }__${ index }`}
                         onClick={() => handleQuizSelection( quizName )}
-                        className={`${ getButtonClass( quizName.id ) }`}
+                        className={`${ getButtonClass( quizName.subject ) }`}
                     >
-                        {`${ quizName.name }`}
+                        {`${ quizName.subject }`}
                     </Button>
                 ) )}
             </div>
