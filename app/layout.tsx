@@ -4,8 +4,9 @@ import dotenv from 'dotenv';
 import Head from "next/head";
 import React from "react";
 import { NotFoundProvider, useNotFound } from "../context/NotFoundContext";
-import "./styles.css";
+import "../styles/main.css";
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/NavSidebar';
 
 export default function RootLayout( {
     children,

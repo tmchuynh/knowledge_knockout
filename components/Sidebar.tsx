@@ -1,15 +1,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Home, BookOpenCheck, Settings, LayoutDashboard, Trophy, LogOut, Medal } from "lucide-react";
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarMenu,
-    SidebarMenuButton,
-} from "@/app/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton } from "./ui/sidebar";
+
 
 const items = [
     {

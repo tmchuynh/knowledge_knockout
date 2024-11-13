@@ -36,24 +36,41 @@ const data = {
     },
     navMain: [
         {
-            title: "Playground",
-            url: "#",
+            title: "Quizzes",
+            url: "/quiz",
             icon: SquareTerminal,
             isActive: true,
             items: [
                 {
-                    title: "History",
+                    title: "Software Engineering",
                     url: "#",
                 },
                 {
-                    title: "Starred",
+                    title: "Pre Medical",
                     url: "#",
                 },
                 {
-                    title: "Settings",
+                    title: "Business",
+                    url: "#",
+                },
+                {
+                    title: "Law",
+                    url: "#",
+                },
+                {
+                    title: "Entrepreneurship",
+                    url: "#",
+                },
+                {
+                    title: "Miscellaneous",
                     url: "#",
                 },
             ],
+        },
+        {
+            title: "Badges",
+            url: "/badges",
+            icon: LifeBuoy,
         },
         {
             title: "Models",
@@ -159,7 +176,7 @@ export function AppSidebar( { ...props }: React.ComponentProps<typeof Sidebar> )
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <a href="#">
+                            <a href="/">
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                                     <Command className="size-4" />
                                 </div>

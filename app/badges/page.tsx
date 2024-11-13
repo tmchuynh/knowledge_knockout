@@ -1,6 +1,6 @@
 import React from 'react';
 import badgesData from './badgesData';
-import '../styles.css';
+import '../../styles/main.css';
 
 const getBgColorClass = ( color: string ) => {
     switch ( color ) {
