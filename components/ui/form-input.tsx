@@ -55,10 +55,8 @@ export function GeneralizedForm( { fields, onSubmit, buttonProps }: GeneralizedF
 
     return (
         <form onSubmit={form.handleSubmit( handleSubmit )} className="mx-auto w-full p-10 space-y-6" autoComplete="off">
-            {fields.map( ( field, index ) => (
-                <div
-                    key={`${ field.name }__${ index }`}
-                    className="space-y-4">
+            {fields.map( ( field, _index ) => (
+                <div key={field.name} className="space-y-4">
                     {field.label && (
                         <label className="block font-sans text-md font-medium text-gray-700">{field.label}</label>
                     )}

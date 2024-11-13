@@ -22,16 +22,13 @@ export async function GET(
             attributes: ['id'],
         } );
 
+        const questions = quiz?.total_questions;
+
         console.log( 'Quiz found:', quiz );
 
         const scores = await Score.findAll( {
             where: {
                 quiz_id: quizId!,
-                include: [{
-                    model: Quiz,
-                    as: 'quiz',
-                    attributes: ['subject', 'total_questions'],
-                }]
             },
         } );
 
@@ -39,7 +36,7 @@ export async function GET(
 
         const leaderboardData = scores.map( ( score ) => ( {
             quiz_id: quizId,
-            score: ( score.score! / score.quiz.total_questions ) * 100,
+            score: ( score.score! / questions! ) * 100,
             date: score.quiz_date,
         } ) );
 
