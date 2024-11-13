@@ -63,15 +63,27 @@ User.init(
 
 // Hash the password before creating or updating the user
 User.beforeCreate( async ( user ) => {
-    if ( user.password ) {
+    if ( user.password && isValid( user.password ) ) {
         user.password = await bcrypt.hash( user.password, 10 );
     }
 } );
 
 User.beforeUpdate( async ( user ) => {
-    if ( user.changed( 'password' ) ) {
+    if ( user.changed( 'password' ) && isValid( user.password ) ) {
         user.password = await bcrypt.hash( user.password, 10 );
     }
 } );
+
+function isValid( value: string ) {
+    if ( value.length < 8 ) {
+        throw new Error( 'Value must have a minimum of 8 characters!' );
+    }
+    if ( !/[A-Z]/.test( value ) ) {
+        throw new Error( 'Value must contain at least one uppercase letter!' );
+    }
+    if ( !/\d/.test( value ) ) {
+        throw new Error( 'Value must contain at least one number!' );
+    }
+}
 
 export default User;

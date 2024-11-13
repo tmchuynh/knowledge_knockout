@@ -18,7 +18,7 @@ export async function GET(
         }
 
         const quiz = await Quiz.findOne( {
-            where: { name: title },
+            where: { subject: title },
             attributes: ['id'],
         } );
 
@@ -27,15 +27,19 @@ export async function GET(
         const scores = await Score.findAll( {
             where: {
                 quiz_id: quizId!,
+                include: [{
+                    model: Quiz,
+                    as: 'quiz',
+                    attributes: ['subject', 'total_questions'],
+                }]
             },
         } );
 
         console.log( 'Scores fetched:', scores );
 
-        const leaderboardData = scores.map( score => ( {
+        const leaderboardData = scores.map( ( score ) => ( {
             quiz_id: quizId,
-            level: score.level,
-            score: ( score.score! / score.total_questions! ) * 100,
+            score: ( score.score! / score.quiz.total_questions ) * 100,
             date: score.quiz_date,
         } ) );
 

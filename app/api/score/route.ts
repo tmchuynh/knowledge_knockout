@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { Score } from '../../../../backend/models';
+import { Score, User } from '../../../backend/models';
 
 export async function GET( _request: Request ) {
     try {
         const score = await Score.findAll();
 
         if ( !score ) {
-            return NextResponse.json( { error: 'Score not found.' }, { status: 404 } );
+            return NextResponse.json( { error: 'There are no scores in the database.' }, { status: 404 } );
         }
 
         return NextResponse.json( score );
@@ -19,25 +19,26 @@ export async function GET( _request: Request ) {
 
 export async function POST( request: Request ) {
     try {
-        const { user_id, quiz_id, total_questions, score, level } = await request.json();
+        const { username, quiz_id, score, level } = await request.json();
 
         const existingScore = await Score.findOne( {
-            where: { quiz_id, level },
+            where: { quiz_id, username },
         } );
 
         if ( existingScore ) {
             return NextResponse.json( { existingScore } );
         } else {
-            const scoreId = `score-${ user_id }-${ quiz_id }-${ level }`;
+            const user = await User.findOne( { where: { username } } );
+
+            const scoreId = `score-${ user!.id }-${ quiz_id }-${ level }`;
             const newScore = await Score.create( {
                 id: scoreId,
                 quiz_id,
-                total_questions,
-                level,
+                username,
                 score,
+                quiz_date: new Date(),
                 created_at: new Date(),
                 updated_at: new Date(),
-                quiz_date: new Date(),
             } );
 
             return NextResponse.json( { newScore } );
