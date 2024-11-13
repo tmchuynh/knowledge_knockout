@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 import { NavMain } from "@/components/NavMain";
-import { NavProjects } from "@/components/NavProjects";
+import { NavDropdown } from "@/components/NavDropdown";
 import { NavSecondary } from "@/components/NavSecondary";
 import { NavUser } from "@/components/NavUser";
 import {
@@ -66,11 +66,6 @@ const data = {
                     url: "#",
                 },
             ],
-        },
-        {
-            title: "Badges",
-            url: "/badges",
-            icon: LifeBuoy,
         },
         {
             title: "Models",
@@ -138,6 +133,23 @@ const data = {
             ],
         },
     ],
+    projects: [
+        {
+            title: "Badges",
+            url: "/badges",
+            icon: LifeBuoy,
+        },
+        {
+            title: "Sales & Marketing",
+            url: "#",
+            icon: PieChart,
+        },
+        {
+            title: "Travel",
+            url: "#",
+            icon: Map,
+        },
+    ],
     navSecondary: [
         {
             title: "Support",
@@ -148,23 +160,6 @@ const data = {
             title: "Feedback",
             url: "#",
             icon: Send,
-        },
-    ],
-    projects: [
-        {
-            name: "Design Engineering",
-            url: "#",
-            icon: Frame,
-        },
-        {
-            name: "Sales & Marketing",
-            url: "#",
-            icon: PieChart,
-        },
-        {
-            name: "Travel",
-            url: "#",
-            icon: Map,
         },
     ],
 };
@@ -190,8 +185,8 @@ export function AppSidebar( { ...props }: React.ComponentProps<typeof Sidebar> )
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navMain} />
-                <NavProjects projects={data.projects} />
+                <NavMain title="Platforms" items={data.navMain} />
+                <NavDropdown title="example" projects={data.projects} />
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>

@@ -25,11 +25,13 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 
-export function NavProjects( {
+export function NavDropdown( {
     projects,
+    title
 }: {
+    title: string;
     projects: {
-        name: string;
+        title: string;
         url: string;
         icon: LucideIcon;
     }[];
@@ -38,14 +40,14 @@ export function NavProjects( {
 
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Projects</SidebarGroupLabel>
+            <SidebarGroupLabel>{title}</SidebarGroupLabel>
             <SidebarMenu>
-                {projects.map( ( item ) => (
-                    <SidebarMenuItem key={item.name}>
+                {projects.map( ( item, index ) => (
+                    <SidebarMenuItem key={`${ item.title }__${ index }`}>
                         <SidebarMenuButton asChild>
                             <a href={item.url}>
                                 <item.icon />
-                                <span>{item.name}</span>
+                                <span>{item.title}</span>
                             </a>
                         </SidebarMenuButton>
                         <DropdownMenu>
