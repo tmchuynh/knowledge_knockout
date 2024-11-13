@@ -5,41 +5,39 @@ import bcrypt from 'bcryptjs';
 import { User } from '@/backend/models';
 
 passport.use(
-    new LocalStrategy(
-        {
-            usernameField: 'username',
-            passwordField: 'password',
-        },
-        async ( username: string, password: string, done: ( error: any, user?: any, options?: { message: string; } ) => void ) => {
-            try {
-                const user = await User.findOne( { where: { username } } );
-                if ( !user ) {
-                    return done( null, false, { message: 'Incorrect username.' } );
-                }
-
-                const isPasswordValid = await bcrypt.compare( password, user.password );
-                if ( !isPasswordValid ) {
-                    return done( null, false, { message: 'Incorrect password.' } );
-                }
-
-                return done( null, user );
-            } catch ( error ) {
-                return done( error );
+    new LocalStrategy( async ( username, password, done ) => {
+        try {
+            const user = await User.findOne( { where: { username } } );
+            if ( !user ) {
+                return done( null, false, { message: 'Incorrect username.' } );
             }
+
+            const isValid = await bcrypt.compare( password, user.password );
+            if ( !isValid ) {
+                return done( null, false, { message: 'Incorrect password.' } );
+            }
+
+            return done( null, user );
+        } catch ( err ) {
+            return done( err );
         }
-    )
+    } )
 );
 
 passport.serializeUser( ( user: any, done ) => {
     done( null, user.id );
 } );
 
-passport.deserializeUser( async ( id: string, done ) => {
+passport.deserializeUser( async ( id: number, done ) => {
     try {
         const user = await User.findByPk( id );
-        done( null, user );
-    } catch ( error ) {
-        done( error );
+        if ( user ) {
+            done( null, user );
+        } else {
+            done( new Error( 'User not found' ), null );
+        }
+    } catch ( err ) {
+        done( err, null );
     }
 } );
 

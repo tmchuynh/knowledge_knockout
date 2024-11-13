@@ -50,19 +50,6 @@ const ScoresPage: React.FC = () => {
         }
     };
 
-    // Filter scores by selected date range
-    const applyDateFilter = () => {
-        if ( selectedDates.length === 2 ) {
-            const [startDate, endDate] = selectedDates;
-            setFilteredScores(
-                pastScores.filter( score => {
-                    const scoreDate = new Date( score.quiz_date );
-                    return scoreDate >= startDate && scoreDate <= endDate;
-                } )
-            );
-        }
-    };
-
     const clearFilters = () => {
         setFilteredScores( pastScores );
         setFilterQuiz( '' );

@@ -1,6 +1,6 @@
 import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/db';
-import { Progress, Quiz } from '.';
+import { Quiz } from '.';
 
 interface ScoreAttributes {
     id?: string;

@@ -5,6 +5,7 @@ import { User } from '@/backend/models';
 import { uuid } from '@/app/utils/regUtils';
 import sessionConfig from '@/lib/sessionConfig'; // Import reusable session configuration
 import passport from 'passport';
+import { NextResponse } from 'next/server';
 
 // Utility function to wrap middleware for Next.js compatibility
 function wrapMiddleware( middleware: any ) {
@@ -27,7 +28,7 @@ router.post( async ( req, res ) => {
         // Check if the user already exists
         const existingUser = await User.findOne( { where: { email } } );
         if ( existingUser ) {
-            return res.status( 400 ).json( { message: 'User already exists with this email.' } );
+            return NextResponse.json( { message: 'User already exists with this email.' } );
         }
 
         // Hash the password
@@ -47,7 +48,7 @@ router.post( async ( req, res ) => {
             password: hashedPassword,
         } );
 
-        return res.status( 201 ).json( {
+        return NextResponse.json( {
             message: 'User registered successfully!',
             user: {
                 id: newUser.id,
@@ -57,7 +58,7 @@ router.post( async ( req, res ) => {
         } );
     } catch ( error ) {
         console.error( 'Error during user registration:', error );
-        return res.status( 500 ).json( { message: 'An error occurred while registering. Please try again later.' } );
+        return NextResponse.json( { message: 'An error occurred while registering. Please try again later.' } );
     }
 } );
 

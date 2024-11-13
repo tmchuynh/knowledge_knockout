@@ -10,7 +10,7 @@ interface QuizDifficultyPageProps {
     };
 }
 
-const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = props => {
+const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = _props => {
     // const { slug: quizId } = params;
     const router = useRouter();
     const [progress, setProgress] = useState<Progress[]>( [] );

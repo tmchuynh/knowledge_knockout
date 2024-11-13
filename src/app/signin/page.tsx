@@ -65,31 +65,32 @@ const LoginPage: React.FC = () => {
         }
     };
 
-
-    const handleLogin = async ( email: string, password: string ) => {
+    const handleLogin = async ( username: string, password: string ) => {
         try {
-            const response = await fetch( '/api/auth/signin', {
+            const response = await fetch( '/api/auth/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'content-type': 'application/json',
                 },
-                body: JSON.stringify( { email, password } ),
-                credentials: 'include', // Ensure cookies are included for session management
+                body: JSON.stringify( { username, password } ),
             } );
 
             const result = await response.json();
+
+            console.log( "RESULT:", result );
 
             if ( response.ok ) {
                 showToast( "success", "Login successful! Redirecting..." );
                 router.push( '/dashboard' );
             } else {
-                showToast( "error", result.message || 'Invalid email or password.' );
+                showToast( "error", result.error || 'Invalid username or password.' );
             }
         } catch ( error ) {
             console.error( 'Error during login:', error );
             showToast( "error", 'An error occurred while logging in. Please try again later.' );
         }
     };
+
 
     const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
         const { name, value } = e.target;
@@ -121,7 +122,7 @@ const LoginPage: React.FC = () => {
                         <div className="relative z-0 w-full mb-5 group">
                             <Label htmlFor="login_username">Username</Label>
                             <Input
-                                type="email"
+                                type="text"
                                 name="login_username"
                                 id="login_username"
                                 placeholder="Enter your username"

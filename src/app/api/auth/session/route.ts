@@ -1,9 +1,9 @@
 import { createRouter } from 'next-connect';
 import passport from 'passport';
-import sessionConfig from '@/lib/sessionConfig'; // Adjust the path as needed
+import sessionConfig from '@/lib/sessionConfig';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 
-// Utility to wrap express middleware for Next.js compatibility
 function wrapMiddleware( middleware: any ) {
     return ( req: NextApiRequest, res: NextApiResponse, next: ( err?: any ) => void ) =>
         middleware( req, res, next );
@@ -17,9 +17,9 @@ router.use( wrapMiddleware( passport.session() ) );
 
 router.get( ( req, res ) => {
     if ( req.isAuthenticated() ) {
-        res.status( 200 ).json( { user: req.user } );
+        return NextResponse.json( { user: req.user } );
     } else {
-        res.status( 401 ).json( { message: 'User not authenticated' } );
+        return NextResponse.json( { message: 'User not authenticated' } );
     }
 } );
 

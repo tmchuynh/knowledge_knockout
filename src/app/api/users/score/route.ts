@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Score } from '../../../../backend/models';
 
-export async function GET( request: Request ) {
+export async function GET( _request: Request ) {
     try {
         const score = await Score.findAll();
 

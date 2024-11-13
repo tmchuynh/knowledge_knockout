@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { fn, col, literal } from 'sequelize';
 import { Score } from '@/backend/models';
 
-export async function GET( request: Request ) {
+export async function GET( _request: Request ) {
     try {
         const scoresData = await Score.findAll( {
             attributes: [

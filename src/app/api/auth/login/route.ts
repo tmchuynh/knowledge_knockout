@@ -1,35 +1,30 @@
-import { createRouter } from 'next-connect';
-import passport from 'passport';
-import sessionConfig from '@/lib/sessionConfig'; // Adjust the path as needed
-import { NextApiRequest, NextApiResponse } from 'next';
+import { User } from "@/backend/models";
+import { NextApiRequest, NextApiResponse } from "next";
+import { createRouter } from "next-connect";
 
-// Utility function to wrap middleware for Next.js compatibility
-function wrapMiddleware( middleware: any ) {
-    return ( req: NextApiRequest, res: NextApiResponse, next: ( err?: any ) => void ) =>
-        middleware( req, res, next );
-}
-
+// Create the router using next-connect
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-// Use the reusable session configuration and passport middleware
-router.use( wrapMiddleware( sessionConfig ) );
-router.use( wrapMiddleware( passport.initialize() ) );
-router.use( wrapMiddleware( passport.session() ) );
-
-// Handle login POST request
-router.post(
-    passport.authenticate( 'local', {
-        failureRedirect: '/signin', // Redirect on authentication failure
-    } ),
-    ( req, res ) => {
-        if ( req.user && req.user.id ) {
-            res.redirect( `/app/${ req.user.id }/dashboard` ); // Redirect to the dashboard on success
-        } else {
-            res.status( 500 ).json( { message: 'User ID not found' } );
+// POST route for finding a user by username
+router.post( async ( req, res ) => {
+    try {
+        const { username } = req.body.username;
+        const user = await User.findOne( { where: { username } } );
+        if ( !user ) {
+            return res.status( 404 ).json( { error: "User not found" } );
         }
+        console.log( "User found:", user );
+        return res.status( 200 ).json( { user } );
+    } catch ( error ) {
+        console.error( "Error during request handling:", error );
+        return res.status( 500 ).json( { error: "Internal Server Error" } );
     }
-);
+} );
 
-// Export the router handler for both GET and POST
-export const POST = router.handler();
-export const GET = router.handler();
+export default router.handler( {
+    onError( err, req, res ) {
+        res.status( 500 ).json( {
+            error: ( err as Error ).message,
+        } );
+    },
+} );

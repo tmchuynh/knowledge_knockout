@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Quiz, Score, User } from '@/backend/models';
+import { Quiz, Score } from '@/backend/models';
 
 export async function GET(
     request: Request,
@@ -33,11 +33,8 @@ export async function GET(
         console.log( 'Scores fetched:', scores );
 
         const leaderboardData = scores.map( score => ( {
-            user_id: score.user_id,
-            username: score.user?.username,
             quiz_id: quizId,
-            quiz: score.quiz?.name,
-            level: score.quiz?.level,
+            level: score.level,
             score: ( score.score! / score.total_questions! ) * 100,
             date: score.quiz_date,
         } ) );

@@ -9,7 +9,7 @@ export async function GET( req: Request, props: { params: { first_name: string, 
         const user = processUser( first_name, last_name, username, password, phone_number, email );
         return NextResponse.json( user );
     }
-    catch ( error ) {
+    catch ( _error ) {
         NextResponse.json( { error: 'User not found' }, { status: 404 } );
         return NextResponse.json( "" );
     }

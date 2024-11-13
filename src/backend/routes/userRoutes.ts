@@ -1,21 +1,29 @@
 import { Router } from 'express';
-import passport from 'passport';
 import UserAttributes from '../models/User';
+import { NextResponse } from 'next/server';
 const userRouter = Router();
 
-// Route for login
-userRouter.post( '/login', passport.authenticate( 'local', {
-    failureRedirect: '/signin',
-} ), ( req, res ) => {
-    console.log( 'Login successful for user:', req.user );
-    const user = req.user as UserAttributes;
-    if ( req.user && user.id ) {
-        res.redirect( `/app/${ user.id }/dashboard` );
-    } else {
-        console.error( 'User ID not found during login' );
-        res.status( 500 ).json( { message: 'User ID not found' } );
-    }
-} );
+// // Route for login
+// userRouter.post(
+//     '/login',
+//     passport.authenticate( 'local', { failureRedirect: '/signin' } ),
+//     ( req: Request, res: Response, next: NextFunction ): void => {
+//         console.log( 'Login successful for user:', req.user );
+//         const user = req.user as UserAttributes;
+
+//         if ( req.user && user.id ) {
+//             // Redirect to the dashboard if user is authenticated
+//             res.redirect( `/app/${ user.id }/dashboard` );
+//         } else {
+//             console.error( 'User ID not found during login' );
+//             // Return a JSON response with an error message
+//             res.status( 500 ).json( { message: 'User ID not found' } );
+//         }
+
+//         // Call next() to end the middleware chain
+//         next();
+//     }
+// );
 
 // Dashboard route
 userRouter.get( '/dashboard', ( req, res ) => {
@@ -34,8 +42,7 @@ userRouter.get( '/logout', ( req, res ) => {
     req.logout( ( err ) => {
         if ( err ) {
             console.error( 'Error during logout:', err );
-            res.status( 500 ).json( { message: 'Error during logout' } );
-            return;
+            return NextResponse.json( { message: 'Error during logout' } );
         }
         console.log( 'User logged out successfully' );
         res.redirect( '/signout' );

@@ -8,7 +8,6 @@ import {
     getCoreRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 
@@ -23,7 +22,6 @@ export function DataTable<TData, TValue>( {
     data,
     quiz,
 }: DataTableProps<TData, TValue> ) {
-    const { quizName } = useParams();
     const quizNameStr = Array.isArray( quiz ) ? quiz[0] : quiz!;
     const [leaderboard, setLeaderboard] = useState<Map<number, LeaderboardEntry[]> | null>( null );
 
