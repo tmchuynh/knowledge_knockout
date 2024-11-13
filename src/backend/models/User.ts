@@ -3,7 +3,7 @@ import sequelize from '../config/db';
 import bcrypt from 'bcryptjs';
 
 // Define User attributes
-interface UserAttributes {
+export interface UserAttributes {
     id?: string;
     name?: string;
     first_name?: string;
