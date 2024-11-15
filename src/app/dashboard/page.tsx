@@ -5,6 +5,8 @@ import ColorPickerComponent from '@/components/ColorPicker';
 import ContributionsGrid from '@/components/ContributionsGrid';
 import React, { useEffect, useState } from 'react';
 import dotenv from 'dotenv';
+import ScoresPage from '../scores/page';
+import ContributionHeatmap from '@/components/ContributionHeatmap';
 
 dotenv.config();
 
@@ -37,10 +39,11 @@ const DashboardPage: React.FC = () => {
 
     useEffect( () => {
         if ( user?.username ) {
+            console.log( "user.username", user.username );
             const fetchScores = async () => {
                 try {
                     // No need to attach Authorization header manually; cookies are sent automatically
-                    const response = await fetch( `/api/score?username=${ user.username }`, {
+                    const response = await fetch( `/api/score/username/${ user.username }`, {
                         credentials: 'include',
                     } );
 
@@ -76,6 +79,7 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <p className="mt-3 text-sm/6 text-gray-600">Write a few sentences about yourself.</p>
                 </div>
+                {scores.length > 0 ? <ScoresPage /> : <></>}
                 {user ? (
                     <>
                         <div className="profile-info space-y-4">
@@ -83,7 +87,7 @@ const DashboardPage: React.FC = () => {
                             <p>Username: {user.username || 'N/A'}</p>
                         </div>
                         <ColorPickerComponent onColorChange={setBaseColor} />
-                        <ContributionsGrid baseColor={baseColor} />
+                        <ContributionHeatmap />
                     </>
                 ) : (
                     <p>Loading user information...</p>

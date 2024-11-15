@@ -1,10 +1,17 @@
 import { Score } from '@/backend/models';
 import { NextResponse } from 'next/server';
 
-export async function GET( request: Request ) {
+export async function GET( request: Request,
+    props: { params: { username: string; }; }
+) {
+    const params = await props.params;
     try {
-        const { searchParams } = new URL( request.url );
-        const username = searchParams.get( 'username' );
+        console.log( request );
+        const { username } = params;
+        const decodedTitle = decodeURIComponent( username );
+
+
+        console.log( "username: " + decodedTitle );
 
         if ( !username ) {
             return NextResponse.json( { error: 'Username query parameter is required.' }, { status: 400 } );
@@ -13,10 +20,6 @@ export async function GET( request: Request ) {
         const scores = await Score.findAll( {
             where: { username }
         } );
-
-        if ( scores.length === 0 ) {
-            return NextResponse.json( { error: 'No scores found for this user.' }, { status: 404 } );
-        }
 
         return NextResponse.json( scores, { status: 200 } );
     } catch ( error ) {
