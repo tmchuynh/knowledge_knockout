@@ -1,11 +1,11 @@
-import { Quiz } from '@//backend/models';
+import { Quiz } from '@/backend/models';
 import { NextResponse } from 'next/server';
 
 export async function GET(
     request: Request,
     { params }: { params: { title: string; }; }
 ) {
-    const title = decodeURIComponent( params.title );
+    const title = params.title;
 
     if ( !title ) {
         return NextResponse.json( { error: 'Quiz title is required' }, { status: 400 } );
@@ -16,13 +16,13 @@ export async function GET(
             where: { name: title },
         } );
 
-        if ( !quiz ) {
+        if ( quiz.length === 0 ) {
             return NextResponse.json( { error: 'Quiz not found' }, { status: 404 } );
         }
 
         console.log( 'Fetched quiz details:', quiz );
 
-        return NextResponse.json( quiz );
+        return NextResponse.json( quiz, { status: 200 } );
 
     } catch ( error ) {
         console.error( 'Error fetching quiz details:', error );

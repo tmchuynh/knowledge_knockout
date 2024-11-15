@@ -11,18 +11,16 @@ export async function GET( request: Request ) {
         }
 
         const scores = await Score.findAll( {
-            where: {
-                username: username
-            }
+            where: { username }
         } );
 
-        if ( !scores || scores.length === 0 ) {
-            return NextResponse.json( { error: 'There are no scores in the database for this user.' }, { status: 404 } );
+        if ( scores.length === 0 ) {
+            return NextResponse.json( { error: 'No scores found for this user.' }, { status: 404 } );
         }
 
-        return NextResponse.json( scores );
+        return NextResponse.json( scores, { status: 200 } );
     } catch ( error ) {
         console.error( 'Error fetching scores:', error );
-        return NextResponse.json( { error: 'Failed to fetch scores.' }, { status: 500 } );
+        return NextResponse.json( { error: 'An internal server error occurred while fetching scores.' }, { status: 500 } );
     }
 }

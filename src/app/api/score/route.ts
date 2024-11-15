@@ -3,16 +3,16 @@ import { Score, User } from '../../../backend/models';
 
 export async function GET( _request: Request ) {
     try {
-        const score = await Score.findAll();
+        const scores = await Score.findAll();
 
-        if ( !score ) {
+        if ( scores.length === 0 ) {
             return NextResponse.json( { error: 'There are no scores in the database.' }, { status: 404 } );
         }
 
-        return NextResponse.json( score );
+        return NextResponse.json( scores );
     } catch ( error ) {
         console.error( 'Error fetching score:', error );
-        return NextResponse.json( { error: 'Failed to fetch score.' }, { status: 500 } );
+        return NextResponse.json( { error: 'Failed to fetch scores.' }, { status: 500 } );
     }
 }
 
@@ -26,11 +26,15 @@ export async function POST( request: Request ) {
         } );
 
         if ( existingScore ) {
-            return NextResponse.json( { existingScore } );
+            return NextResponse.json( { existingScore }, { status: 200 } );
         } else {
             const user = await User.findOne( { where: { username } } );
 
-            const scoreId = `score-${ user!.id }-${ quiz_id }-${ level }`;
+            if ( !user ) {
+                return NextResponse.json( { error: 'User not found.' }, { status: 404 } );
+            }
+
+            const scoreId = `score-${ user.id }-${ quiz_id }-${ level }`;
             const newScore = await Score.create( {
                 id: scoreId,
                 quiz_id,
@@ -41,11 +45,11 @@ export async function POST( request: Request ) {
                 updated_at: new Date(),
             } );
 
-            return NextResponse.json( { newScore } );
+            return NextResponse.json( { newScore }, { status: 201 } );
         }
     } catch ( error ) {
-        console.error( 'Error initializing score:', error );
-        return NextResponse.json( { error } );
+        console.error( 'Error creating score:', error );
+        return NextResponse.json( { error: 'Failed to create score.' }, { status: 500 } );
     }
 }
 
@@ -54,17 +58,23 @@ export async function PUT( request: Request ) {
     try {
         const { score_id, increment } = await request.json();
 
+        if ( typeof increment !== 'number' ) {
+            return NextResponse.json( { error: 'Invalid increment value.' }, { status: 400 } );
+        }
+
         const score = await Score.findByPk( score_id );
         if ( !score ) {
             return NextResponse.json( { error: 'Score not found.' }, { status: 404 } );
         }
 
         score.score += increment;
+        score.updated_at = new Date();
         await score.save();
 
-        return NextResponse.json( score );
+        return NextResponse.json( score, { status: 200 } );
     } catch ( error ) {
         console.error( 'Error updating score:', error );
         return NextResponse.json( { error: 'Failed to update score.' }, { status: 500 } );
     }
 }
+
