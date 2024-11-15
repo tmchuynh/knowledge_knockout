@@ -32,6 +32,7 @@
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
+		"connect-session-sequelize": "^7.1.7",
 		"cors": "^2.8.5",
 		"d3": "^7.3.1",
 		"date-fns": "^3.6.0",
@@ -62,6 +63,7 @@
 		"tailwind-merge": "^2.5.4",
 		"tailwindcss": "3.4.3",
 		"tailwindcss-animate": "^1.0.7",
+		"ts-node": "^10.9.2",
 		"tsx": "^4.19.2",
 		"typescript": "5.6.3",
 		"uuid": "^11.0.2",
@@ -118,12 +120,12 @@
 	"scripts": {
 		"build": "next build",
 		"build-server": "tsc",
-		"db:sync": "ts-node scripts/sync.ts",
+		"db:sync": "ts-node src/backend/sync.ts",
 		"dev": "NODE_OPTIONS='--inspect' next dev",
-		"dev-server": "tsx backend/server.ts",
+		"dev-server": "tsx src/backend/server.ts",
 		"start": "next start",
-		"start-server": "node dist/server.js",
-		"tailwind": "npx tailwindcss -i ./styles/globals.css -o ./styles/main.css --watch"
+		"start-server": "node src/dist/server.js",
+		"tailwind": "npx tailwindcss -i ./src/styles/globals.css -o ./src/styles/main.css --watch"
 	},
 	"type": "module",
 	"version": "2.5.0"
