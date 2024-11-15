@@ -1,3 +1,4 @@
+import { DecodedToken } from '@/types/interface';
 import crypto from 'crypto';
 
 // Base64 URL encoding
@@ -27,9 +28,9 @@ export function signJWT( payload: object, secret: string ): string {
 }
 
 // Verify JWT
-export function verifyJWT( token: string, secret: string ): boolean {
+export function verifyJWT( token: string, secret: string ): DecodedToken | null {
     const [headerBase64, payloadBase64, signature] = token.split( '.' );
-    if ( !headerBase64 || !payloadBase64 || !signature ) return false;
+    if ( !headerBase64 || !payloadBase64 || !signature ) return null;
 
     const expectedSignature = crypto
         .createHmac( 'sha256', secret )
@@ -39,5 +40,14 @@ export function verifyJWT( token: string, secret: string ): boolean {
         .replace( /\//g, '_' )
         .replace( /=+$/, '' );
 
-    return expectedSignature === signature;
+    if ( expectedSignature !== signature ) return null;
+
+    // Decode payload
+    const payload = JSON.parse( Buffer.from( payloadBase64, 'base64' ).toString() );
+
+    if ( !payload.id ) {
+        return null; // Ensure the payload contains an id
+    }
+
+    return payload as DecodedToken;
 }

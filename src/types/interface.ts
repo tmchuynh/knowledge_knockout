@@ -9,6 +9,11 @@ export interface User {
     updated_at?: Date;
 }
 
+export interface DecodedToken {
+    id: string;
+    [key: string]: any;
+}
+
 export interface Progress {
     id: string;
     user_id: string;

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { User } from '@//backend/models';
+import { User } from '@/backend/models';
+import { signJWT } from '@/utils/jwtUtils';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function POST( req: NextRequest ) {
     const { username, password } = await req.json();
@@ -18,15 +23,31 @@ export async function POST( req: NextRequest ) {
             return NextResponse.json( { message: 'Incorrect password' }, { status: 401 } );
         }
 
-        return NextResponse.json( {
-            message: 'Login successful',
-            user: {
-                id: user.id,
-                firstName: user.full_name,
-                username: user.username,
-                email: user.email,
+        // Create JWT payload
+        const payload = {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+        };
+
+        // Sign the JWT
+        const token = signJWT( payload, JWT_SECRET );
+        localStorage.setItem( 'token', token );
+
+        // Return the JWT
+        return NextResponse.json(
+            {
+                message: 'Login successful',
+                token,
+                user: {
+                    id: user.id,
+                    firstName: user.full_name,
+                    username: user.username,
+                    email: user.email,
+                },
             },
-        }, { status: 200 } );
+            { status: 200 }
+        );
 
     } catch ( error ) {
         console.error( 'Error logging in user:', error );

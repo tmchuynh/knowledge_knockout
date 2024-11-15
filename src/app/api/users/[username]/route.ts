@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
-import { User } from '@//backend/models';
+import { User } from '@/backend/models';
 
 export async function GET( request: Request ) {
     try {
         const { searchParams } = new URL( request.url );
         const username = searchParams.get( 'username' );
-
-        console.log( "USERNAME", username );
 
         if ( !username ) {
             return NextResponse.json( { error: 'Username is required' }, { status: 400 } );
@@ -25,30 +23,30 @@ export async function GET( request: Request ) {
     }
 }
 
-
-export async function PUT( _req: Request, props: { params: Promise<{ username?: string, email?: string, image?: string; }>; } ) {
-    const params = await props.params;
+export async function PUT( req: Request ) {
     try {
-        const { username, email, image } = params;
+        const { username, email, image } = await req.json();
+
+        if ( !username ) {
+            return NextResponse.json( { error: 'Username is required to update user information' }, { status: 400 } );
+        }
+
         const user = await User.findOne( { where: { username } } );
 
         if ( !user ) {
             return NextResponse.json( { error: 'User not found' }, { status: 404 } );
         }
 
-        if ( username ) {
-            await user.update( { username: username }, { where: { username } } );
-        }
+        // Update fields only if they are provided
+        const updatedFields: Partial<{ username: string; email: string; image: string; }> = {};
+        if ( email ) updatedFields.email = email;
+        if ( image ) updatedFields.image = image;
 
-        if ( email ) {
-            await user.update( { email: email }, { where: { username } } );
-        }
+        await user.update( updatedFields );
 
-        if ( image ) {
-            await user.update( { image: image }, { where: { username } } );
-        }
-
-    } catch ( _error ) {
+        return NextResponse.json( { message: 'User information updated successfully', user }, { status: 200 } );
+    } catch ( error ) {
+        console.error( 'Error updating user:', error );
         return NextResponse.json( { error: 'Internal server error' }, { status: 500 } );
     }
 }

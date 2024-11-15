@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Quiz } from '../../backend/models';
-import { Button } from '../../../components/ui/button';
+import { Button } from '@/components/ui/button';
 
 const LeaderboardSelectionPage: React.FC = () => {
     const router = useRouter();

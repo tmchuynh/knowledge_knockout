@@ -32,23 +32,30 @@ const LoginPage: React.FC = () => {
         const { firstName, lastName, username, password, email } = data;
 
         try {
-
-
             if ( password !== userData.confirmPassword ) {
                 showToast( "error", "Passwords do not match." );
                 return;
             }
             console.log( data );
 
-            const response = await fetch( `/api/users/${ data.email }` );
-            console.log( response );
+            const fetchUser = async () => {
+                const token = localStorage.getItem( 'token' );
+                const response = await fetch( `/api/users/${ username }`, {
+                    headers: {
+                        Authorization: `Bearer ${ token }`
+                    }
+                } );
 
-            if ( !response.ok ) {
-                showToast( "error", 'Email already exists in the database. Try logging in.' );
-                throw new Error( `Request failed with status ${ response.status }` );
-            } else {
-                handleRegister( data );
-            }
+                if ( !response.ok ) {
+                    showToast( "error", 'Email already exists in the database. Try logging in.' );
+                    throw new Error( `Request failed with status ${ response.status }` );
+                } else {
+                    handleRegister( data );
+                }
+            };
+
+            fetchUser();
+
         } catch ( e ) {
             console.error( e );
             showToast( "error", "An error occurred while checking email availability." );
@@ -108,14 +115,9 @@ const LoginPage: React.FC = () => {
 
             const result = await response.json();
 
-            console.log( JSON.stringify( result.user ) );
-
             if ( response.ok ) {
+                localStorage.setItem( 'token', result.token );
                 showToast( "success", "Login successful! Redirecting..." );
-                sessionStorage.setItem( 'username', result.user.username );
-                sessionStorage.setItem( 'email', result.user.email );
-                sessionStorage.setItem( 'id', result.user.id );
-
                 router.push( '/dashboard' );
             } else {
                 showToast( "error", result.error || 'Invalid username or password.' );
@@ -125,7 +127,6 @@ const LoginPage: React.FC = () => {
             showToast( "error", 'An error occurred while logging in. Please try again later.' );
         }
     };
-
 
     const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
         const { name, value } = e.target;

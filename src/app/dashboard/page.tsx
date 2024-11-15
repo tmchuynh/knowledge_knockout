@@ -4,24 +4,51 @@ import { Score } from '@/backend/models';
 import ColorPickerComponent from '@/components/ColorPicker';
 import ContributionsGrid from '@/components/ContributionsGrid';
 import React, { useEffect, useState } from 'react';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const DashboardPage: React.FC = () => {
     const [baseColor, setBaseColor] = useState( '#6a40d4' );
     const [scores, setScores] = useState<Score[]>( [] );
-    const [userScores, setUserScores] = useState<Score[]>( [] );
-    const [id, setId] = useState( '' );
-    const [username, setUsername] = useState( '' );
-
+    const [user, setUser] = useState<{ id: string; username: string; } | null>( null );
 
     useEffect( () => {
-        if ( typeof window !== 'undefined' ) {
-            const username = sessionStorage.getItem( 'username' );
-            const id = sessionStorage.getItem( 'id' );
-            setUsername( username! );
-            setId( id! );
+        const token = localStorage.getItem( 'token' );
+        if ( !token ) {
+            console.error( 'No token found. User might not be authenticated.' );
+            // Optionally redirect to login or show an unauthenticated message
+            return;
+        }
+
+
+        const fetchUserFromJWT = async ( token: string ) => {
+            try {
+                const response = await fetch( '/api/auth/me', {
+                    headers: {
+                        Authorization: `Bearer ${ token }`,
+                    },
+                } );
+
+                if ( !response.ok ) {
+                    throw new Error( `Failed to fetch user, status: ${ response.status }` );
+                }
+
+                const data = await response.json();
+                setUser( data );
+            } catch ( error ) {
+                console.error( 'Failed to fetch user data:', error );
+            }
+        };
+
+        fetchUserFromJWT( token );
+    }, [] );
+
+    useEffect( () => {
+        if ( user?.username ) {
             const fetchScores = async () => {
                 try {
-                    const response = await fetch( `/api/users/score/${ username }?username=${ username }` );
+                    const response = await fetch( `/api/users/score/${ user.username }` );
                     if ( !response.ok ) {
                         throw new Error( 'Failed to fetch scores' );
                     }
@@ -33,7 +60,7 @@ const DashboardPage: React.FC = () => {
             };
             fetchScores();
         }
-    }, [] );
+    }, [user] );
 
     return (
         <>
@@ -55,12 +82,18 @@ const DashboardPage: React.FC = () => {
                     </div>
                     <p className="mt-3 text-sm/6 text-gray-600">Write a few sentences about yourself.</p>
                 </div>
-                <div className="profile-info space-y-4">
-                    <p>ID: {id || 'N/A'}</p>
-                    <p>Username: {username || 'N/A'}</p>
-                </div>
-                <ColorPickerComponent onColorChange={setBaseColor} />
-                <ContributionsGrid baseColor={baseColor} />
+                {user ? (
+                    <>
+                        <div className="profile-info space-y-4">
+                            <p>ID: {user.id || 'N/A'}</p>
+                            <p>Username: {user.username || 'N/A'}</p>
+                        </div>
+                        <ColorPickerComponent onColorChange={setBaseColor} />
+                        <ContributionsGrid baseColor={baseColor} />
+                    </>
+                ) : (
+                    <p>Loading user information...</p>
+                )}
             </div>
         </>
     );
