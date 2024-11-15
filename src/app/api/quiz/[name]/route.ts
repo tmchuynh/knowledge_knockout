@@ -1,4 +1,4 @@
-import { Quiz } from '@/src/backend/models';
+import { Quiz } from '@//backend/models';
 import { NextResponse } from 'next/server';
 
 export async function GET(

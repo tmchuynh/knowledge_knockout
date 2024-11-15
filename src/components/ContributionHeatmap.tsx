@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
-import { Score } from '@/src/backend/models';
+import { Score } from '@//backend/models';
 
 interface FormattedScoreData {
     DB_DATE: string;

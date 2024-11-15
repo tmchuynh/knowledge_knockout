@@ -1,6 +1,6 @@
 "use client";
 
-import { secret } from "@/src/backend/utils/secretUtils";
+import { secret } from "@//backend/utils/secretUtils";
 import { useSearchParams } from "next/navigation";
 
 enum Error {

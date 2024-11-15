@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { processUser } from '../../../../backend/controllers/userController';
-import { User } from '@/src/backend/models';
+import { User } from '@//backend/models';
 
 export async function POST( _req: Request, props: { params: Promise<{ first_name: string, last_name: string, username: string, password: string, email: string, phone_number: string; }>; } ) {
 

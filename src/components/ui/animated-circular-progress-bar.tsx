@@ -1,4 +1,4 @@
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/lib/utils";
 import NumberTicker from "./number-ticker";
 
 interface Props {

@@ -1,4 +1,4 @@
-import { User } from '@/src/backend/models';
+import { User } from '@//backend/models';
 import { NextResponse } from 'next/server';
 
 export async function GET() {

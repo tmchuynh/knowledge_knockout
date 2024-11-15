@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/lib/utils";
 
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";

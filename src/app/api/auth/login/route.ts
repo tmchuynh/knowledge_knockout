@@ -1,7 +1,7 @@
 // src/app/api/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { User } from '@/src/backend/models';
+import { User } from '@//backend/models';
 
 export async function POST( req: NextRequest ) {
     const { username, password } = await req.json();

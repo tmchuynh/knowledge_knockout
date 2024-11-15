@@ -1,4 +1,4 @@
-import { Progress, Quiz, User } from '@/src/backend/models';
+import { Progress, Quiz, User } from '@//backend/models';
 import { NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
 

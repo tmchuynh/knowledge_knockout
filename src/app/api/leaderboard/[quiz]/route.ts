@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Quiz, Score } from '@/src/backend/models';
+import { Quiz, Score } from '@//backend/models';
 
 export async function GET(
     request: Request,

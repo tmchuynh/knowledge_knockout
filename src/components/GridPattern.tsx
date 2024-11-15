@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/src/lib/utils";
 import GridPattern from "@/components/ui/grid-pattern";
+import { cn } from "@/lib/utils";
 
 export function GridPatternDashed() {
     return (

@@ -1,4 +1,4 @@
-import { Answer, Question } from '@/src/backend/models';
+import { Answer, Question } from '@//backend/models';
 import { NextResponse } from 'next/server';
 
 export async function GET(

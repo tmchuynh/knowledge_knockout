@@ -1,4 +1,4 @@
-import { Answer } from '@/src/backend/models';
+import { Answer } from '@//backend/models';
 import { NextResponse } from 'next/server';
 
 export async function GET( request: Request, props: { params: Promise<{ id: string; }>; } ) {
