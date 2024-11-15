@@ -17,6 +17,7 @@ Score.init(
         id: {
             type: DataTypes.STRING( 250 ),
             primaryKey: true,
+            allowNull: false,
         },
         quiz_id: {
             type: DataTypes.STRING( 250 ),
@@ -61,8 +62,5 @@ Score.init(
         timestamps: false,
     }
 );
-
-Score.belongsTo( Quiz, { foreignKey: 'quiz_id' } );
-Quiz.hasMany( Score, { foreignKey: 'score' } );
 
 export default Score;

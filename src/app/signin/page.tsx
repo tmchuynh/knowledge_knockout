@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@/backend/models";
 import { Button } from "@/components/ui/button";
 import { CoolMode } from "@/components/ui/cool-mode";
 import { Input } from "@/components/ui/input";
@@ -7,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import Link from "@/components/ui/link";
 import { Toast, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const LoginPage: React.FC = () => {
     const router = useRouter();
@@ -20,6 +21,7 @@ const LoginPage: React.FC = () => {
         confirmPassword: '',
     } );
     const [toastMessage, setToastMessage] = useState<{ type: "error" | "success"; message: string; } | null>( null );
+    const [isLoading, setIsLoading] = useState( false );
 
     const showToast = ( type: "error" | "success", message: string ) => {
         setToastMessage( { type, message } );
@@ -52,10 +54,9 @@ const LoginPage: React.FC = () => {
 
         if ( password !== userData.confirmPassword ) {
             showToast( "error", "Passwords do not match." );
-            return;
         }
 
-        const full_name = `${ firstName } ${ lastName }`;
+        setIsLoading( true );
 
         try {
             const response = await fetch( '/api/auth/register', {
@@ -64,7 +65,7 @@ const LoginPage: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify( { full_name, username, password, email, image: '' } ),
+                body: JSON.stringify( { full_name: `${ firstName } ${ lastName }`, username, password, email, image: '' } ),
             } );
 
             if ( !response.ok ) {
@@ -77,33 +78,65 @@ const LoginPage: React.FC = () => {
         } catch ( error ) {
             console.error( 'Error during registration:', error );
             showToast( "error", "An error occurred during registration." );
+        } finally {
+            setIsLoading( false );
         }
     };
 
-
     const handleLogin = async ( username: string, password: string ) => {
+        setIsLoading( true );
         try {
             const response = await fetch( '/api/auth/login', {
                 method: 'POST',
                 headers: {
-                    'content-type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify( { username, password } ),
-                credentials: 'include', // Ensures cookies are sent with the request
+                credentials: 'include',
             } );
 
-            if ( response.ok ) {
-                showToast( "success", "Login successful! Redirecting..." );
-                router.push( '/dashboard' );
-            } else {
-                const result = await response.json();
-                showToast( "error", result.message || 'Invalid username or password.' );
+            if ( !response.ok ) {
+                throw new Error( 'Login failed' );
             }
+
+            // Wait for a brief moment to ensure the token is set as a cookie
+            await new Promise( resolve => setTimeout( resolve, 100 ) );
+
+            // Extract the token from cookies (optional, depends on how `/api/auth/me` works)
+            const tokenMatch = document.cookie.match( /token=([^;]+)/ );
+            const token = tokenMatch ? tokenMatch[1] : null;
+
+            if ( !token ) {
+                throw new Error( 'Token not found after login' );
+            }
+
+            // Fetch user data only after successful login and token retrieval
+            const userResponse = await fetch( '/api/auth/me', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${ token }`,
+                },
+                credentials: 'include',
+            } );
+
+            if ( !userResponse.ok ) {
+                throw new Error( 'Failed to fetch user data' );
+            }
+
+            const userData = await userResponse.json();
+            console.log( 'User data:', userData );
+
+            showToast( "success", "Login successful! Redirecting..." );
+            router.push( '/dashboard' );
+
         } catch ( error ) {
-            console.error( 'Error during login:', error );
-            showToast( "error", 'An error occurred while logging in. Please try again later.' );
+            console.error( 'Error during login or fetching user data:', error );
+            showToast( "error", "Login failed. Please check your credentials." );
+        } finally {
+            setIsLoading( false );
         }
     };
+
 
 
     const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
@@ -158,7 +191,7 @@ const LoginPage: React.FC = () => {
                         </div>
                         <Link href="#" text="Forgot Password" />
                         <CoolMode options={{ particleCount: 50 }}>
-                            <Button size="lg">Login</Button>
+                            <Button size="lg" disabled={isLoading}>{isLoading ? 'Logging in...' : 'Login'}</Button>
                         </CoolMode>
                     </form>
                 </div>
@@ -255,7 +288,7 @@ const LoginPage: React.FC = () => {
                             </div>
                         </div>
                         <CoolMode options={{ particleCount: 50 }}>
-                            <Button size="lg">Register</Button>
+                            <Button size="lg">{isLoading ? 'Registering...' : 'Register'}</Button>
                         </CoolMode>
                     </form>
                 </div>

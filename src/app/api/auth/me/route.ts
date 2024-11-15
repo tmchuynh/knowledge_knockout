@@ -13,8 +13,15 @@ export async function GET( req: NextRequest ) {
             return NextResponse.json( { message: 'Token is missing' }, { status: 401 } );
         }
 
-        // Verify the JWT and get the decoded token
-        const decodedToken = verifyJWT( token, `${ process.env.JWT_SECRET }` );
+        // Verify the JWT and decode the token
+        let decodedToken;
+        try {
+            decodedToken = verifyJWT( token, process.env.JWT_SECRET || '' );
+        } catch ( error ) {
+            console.error( 'JWT verification error:', error );
+            return NextResponse.json( { message: 'Invalid token' }, { status: 401 } );
+        }
+
         if ( !decodedToken ) {
             return NextResponse.json( { message: 'Invalid token' }, { status: 401 } );
         }
