@@ -1,6 +1,5 @@
 "use client";
 
-import { User } from "@/backend/models";
 import { Button } from "@/components/ui/button";
 import { CoolMode } from "@/components/ui/cool-mode";
 import { Input } from "@/components/ui/input";
@@ -8,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import Link from "@/components/ui/link";
 import { Toast, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const LoginPage: React.FC = () => {
     const router = useRouter();
@@ -85,6 +84,7 @@ const LoginPage: React.FC = () => {
 
     const handleLogin = async ( username: string, password: string ) => {
         setIsLoading( true );
+
         try {
             const response = await fetch( '/api/auth/login', {
                 method: 'POST',
@@ -99,23 +99,9 @@ const LoginPage: React.FC = () => {
                 throw new Error( 'Login failed' );
             }
 
-            // Wait for a brief moment to ensure the token is set as a cookie
-            await new Promise( resolve => setTimeout( resolve, 100 ) );
-
-            // Extract the token from cookies (optional, depends on how `/api/auth/me` works)
-            const tokenMatch = document.cookie.match( /token=([^;]+)/ );
-            const token = tokenMatch ? tokenMatch[1] : null;
-
-            if ( !token ) {
-                throw new Error( 'Token not found after login' );
-            }
-
-            // Fetch user data only after successful login and token retrieval
+            // Fetch user data after retrieving token
             const userResponse = await fetch( '/api/auth/me', {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${ token }`,
-                },
                 credentials: 'include',
             } );
 
@@ -136,6 +122,7 @@ const LoginPage: React.FC = () => {
             setIsLoading( false );
         }
     };
+
 
 
 
