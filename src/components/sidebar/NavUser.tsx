@@ -48,7 +48,7 @@ export function NavUser() {
         const fetchUser = async () => {
             try {
                 const response = await fetch( '/api/auth/me', {
-                    credentials: 'include', // Ensures cookies are sent with the request
+                    credentials: 'include',
                 } );
 
                 if ( !response.ok ) {

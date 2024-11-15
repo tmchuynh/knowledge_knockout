@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useNotFound } from "../context/NotFoundContext";
-import styles from "./styles/not-found.module.css";
+import styles from "../styles/not-found.module.css";
 import React from "react";
 
 export default function NotFound() {

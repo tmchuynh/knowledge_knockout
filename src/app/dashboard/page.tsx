@@ -41,7 +41,7 @@ const DashboardPage: React.FC = () => {
                 try {
                     // No need to attach Authorization header manually; cookies are sent automatically
                     const response = await fetch( `/api/score?username=${ user.username }`, {
-                        credentials: 'include', // Ensures cookies are sent with the request
+                        credentials: 'include',
                     } );
 
                     if ( !response.ok ) {

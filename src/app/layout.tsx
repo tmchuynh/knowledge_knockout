@@ -7,7 +7,6 @@ import { NotFoundProvider, useNotFound } from "../context/NotFoundContext";
 import "../styles/main.css";
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/NavSidebar';
-import { hydrateRoot } from 'react-dom/client';
 
 
 export default function RootLayout( {
@@ -56,7 +55,7 @@ const MainContent = ( {
                     <AppSidebar />
                     <SidebarTrigger className='p-10' />
                 </>}
-            <main className='w-full h-full py-16'>
+            <main className='w-full m-auto py-16'>
                 {children}
             </main>
         </>
