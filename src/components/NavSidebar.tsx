@@ -24,10 +24,10 @@ import {
     SquareTerminal,
 } from "lucide-react";
 
-import { NavMain } from "@/components/NavMain";
-import { NavDropdown } from "@/components/NavDropdown";
-import { NavSecondary } from "@/components/NavSecondary";
-import { NavUser } from "@/components/NavUser";
+import { NavMain } from "@/components/sidebar/NavMain";
+import { NavDropdown } from "@/components/sidebar/NavDropdown";
+import { NavSecondary } from "@/components/sidebar/NavSecondary";
+import { NavUser } from "@/components/sidebar/NavUser";
 import {
     Sidebar,
     SidebarContent,

@@ -32,8 +32,9 @@ export function formatDate( dateString: Date ): string {
     return `${ year }-${ month }-${ day }`;
 }
 
-
 export function toTitleCase( str: string ): string {
+    str = str.trim();
+
     return str.replace(
         /\w\S*/g,
         ( text ) => text.charAt( 0 ).toUpperCase() + text.substring( 1 ).toLowerCase()

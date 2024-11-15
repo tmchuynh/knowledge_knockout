@@ -3,7 +3,7 @@ import sequelize from '../config/db';
 import bcrypt from 'bcrypt';
 
 class User extends Model {
-    public id?: string;
+    public id!: string;
     public username!: string;
     public full_name!: string;
     public password!: string;
@@ -18,6 +18,8 @@ User.init(
         id: {
             type: DataTypes.STRING( 255 ),
             primaryKey: true,
+            unique: true,
+            allowNull: false,
         },
         username: {
             type: DataTypes.STRING( 100 ),
@@ -64,34 +66,22 @@ User.init(
 // Hash the password before creating or updating the user
 User.beforeCreate( async ( user ) => {
     try {
-        if ( user.password && isValid( user.password ) ) {
+        if ( user.password ) {
             user.password = await bcrypt.hash( user.password, 10 );
         }
     } catch ( error ) {
-        throw new Error( 'Password validation or hashing failed' );
+        throw new Error( 'Password hashing failed' );
     }
 } );
 
 User.beforeUpdate( async ( user ) => {
     try {
-        if ( user.changed( 'password' ) && isValid( user.password ) ) {
+        if ( user.changed( 'password' ) ) {
             user.password = await bcrypt.hash( user.password, 10 );
         }
     } catch ( error ) {
-        throw new Error( 'Password validation or hashing failed' );
+        throw new Error( 'Password hashing failed' );
     }
 } );
-
-function isValid( value: string ) {
-    if ( value.length < 8 ) {
-        throw new Error( 'Value must have a minimum of 8 characters!' );
-    }
-    if ( !/[A-Z]/.test( value ) ) {
-        throw new Error( 'Value must contain at least one uppercase letter!' );
-    }
-    if ( !/\d/.test( value ) ) {
-        throw new Error( 'Value must contain at least one number!' );
-    }
-}
 
 export default User;

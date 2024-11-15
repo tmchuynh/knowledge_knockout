@@ -4,8 +4,10 @@ import {
     BadgeCheck,
     Bell,
     ChevronsUpDown,
+    Command,
     CreditCard,
     LogOut,
+    Sidebar,
     Sparkles,
 } from "lucide-react";
 
@@ -44,7 +46,18 @@ export function NavUser( {
     return (
         <SidebarMenu>
             <SidebarMenuItem>
-                <DropdownMenu>
+                <SidebarMenuButton size="lg" asChild>
+                    <a href="/signin">
+                        <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                            <Command className="size-4" />
+                        </div>
+                        <div className="grid flex-1 text-left text-sm leading-tight">
+                            <span className="truncate font-semibold">Start Learning Today</span>
+                            <span className="truncate text-xs">Sign In / Register</span>
+                        </div>
+                    </a>
+                </SidebarMenuButton>
+                {/* <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton
                             size="lg"
@@ -107,7 +120,7 @@ export function NavUser( {
                             Log out
                         </DropdownMenuItem>
                     </DropdownMenuContent>
-                </DropdownMenu>
+                </DropdownMenu> */}
             </SidebarMenuItem>
         </SidebarMenu>
     );

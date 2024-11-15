@@ -16,7 +16,6 @@ const LoginPage: React.FC = () => {
         lastName: '',
         email: '',
         username: '',
-        phone_number: '',
         password: '',
         confirmPassword: '',
     } );
@@ -30,26 +29,27 @@ const LoginPage: React.FC = () => {
     };
 
     const handleRegister = async ( data: any ) => {
-        const { firstName, lastName, username, password, email, phoneNumber } = data;
-
-        if ( password !== userData.confirmPassword ) {
-            showToast( "error", "Passwords do not match." );
-            return;
-        }
-
         try {
+            const { firstName, lastName, username, password, email } = data;
+
+            if ( password !== userData.confirmPassword ) {
+                showToast( "error", "Passwords do not match." );
+                return;
+            }
+
+            const full_name = firstName + " " + lastName as string;
+
             const response = await fetch( '/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify( {
-                    first_name: firstName,
-                    last_name: lastName,
+                    full_name,
                     username,
                     password,
                     email,
-                    phone_number: phoneNumber,
+                    image: ''
                 } ),
             } );
 
@@ -57,8 +57,6 @@ const LoginPage: React.FC = () => {
                 throw new Error( `Request failed with status ${ response.status }` );
             }
 
-            const data = await response.json();
-            console.log( 'Registration successful:', data );
         } catch ( error ) {
             console.error( 'Error during registration:', error );
         }
@@ -197,20 +195,6 @@ const LoginPage: React.FC = () => {
                                 autoComplete="username"
                             />
                         </div>
-                        {/* Phone Number
-                        <div className="relative z-0 w-full mb-5 group">
-                            <Label htmlFor="register_phone">Phone Number</Label>
-                            <Input
-                                id="register_phone"
-                                type="text"
-                                name="phone"
-                                value={userData.phone_number}
-                                onChange={handleInputChange}
-                                placeholder="Phone number"
-                                required
-                                autoComplete="phone-number"
-                            />
-                        </div> */}
                         {/* Email */}
                         <div className="relative z-0 w-full mb-5 group">
                             <Label htmlFor="register_email">Email Address</Label>

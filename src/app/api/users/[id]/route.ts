@@ -1,19 +1,36 @@
 import { NextResponse } from 'next/server';
-import { processUser } from '../../../../backend/controllers/userController';
 import { User } from '@//backend/models';
+import { hashPassword } from '@/utils/passwordUtils';
+import { uuid } from '@/utils/regUtils';
+import { toTitleCase } from '@/utils/formatUtils';
+import { NextApiResponse } from 'next';
 
-export async function POST( _req: Request, props: { params: Promise<{ first_name: string, last_name: string, username: string, password: string, email: string, phone_number: string; }>; } ) {
+export async function POST( _req: Request, res: NextApiResponse, props: { params: Promise<{ full_name: string, username: string, password: string, email: string; image: string; }>; } ) {
 
     const params = await props.params;
 
     try {
-        const { first_name, last_name, username, password, phone_number, email } = params;
+        const { full_name, username, password, email, image } = params;
 
-        const user = processUser( first_name, last_name, username, password, phone_number, email );
-        return NextResponse.json( user );
+        // Hash the password before storing it
+        const hashedPassword = hashPassword( password );
+
+        // Create a new user in the database
+        const newUser = await User.create( {
+            id: uuid( 5 ),
+            full_name: toTitleCase( full_name ),
+            username,
+            password_hash: hashedPassword,
+            email,
+            image,
+            created_at: new Date(),
+        } );
+
+        res.status( 201 ).json( { message: 'Registration successful', user: newUser } );
     }
-    catch ( _error ) {
-        return NextResponse.json( { error: 'Internal server error' }, { status: 500 } );
+    catch ( error ) {
+        console.error( 'Error registering user:', error );
+        res.status( 500 ).json( { message: 'Error registering user' } );
     }
 }
 

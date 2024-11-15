@@ -1,4 +1,3 @@
-// src/app/api/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { User } from '@//backend/models';
@@ -19,14 +18,10 @@ export async function POST( req: NextRequest ) {
             return NextResponse.json( { message: 'Incorrect password' }, { status: 401 } );
         }
 
-        // Check if profile is complete
-        if ( !user.full_name || !user.password ) {
-            return NextResponse.json( {
-                message: 'Profile incomplete',
-                redirectTo: '/complete-profile',
-            }, { status: 200 } );
-        }
+        // Store user into sessionStorage
+        sessionStorage.setItem( 'user', JSON.stringify( user ) );
 
+        // Return user data with JWT token
         return NextResponse.json( {
             message: 'Login successful',
             user: {
@@ -36,6 +31,7 @@ export async function POST( req: NextRequest ) {
                 email: user.email,
             },
         }, { status: 200 } );
+
     } catch ( error ) {
         console.error( 'Error logging in user:', error );
         return NextResponse.json( { message: 'Internal server error' }, { status: 500 } );

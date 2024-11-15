@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { Progress, Quiz, User } from '../../backend/models';
-import { Button } from '../../../components/ui/button';
+import { Button } from '@/components/ui/button';
 
 const QuizSelectionPage: React.FC = () => {
     const [quizProgress] = useState<Progress[]>( [] );
