@@ -1,44 +1,70 @@
-"use client";
+'use client';
+
 import { Score } from '@/types/interface';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 const ScoresPage: React.FC = () => {
     const searchParams = useSearchParams();
-    const id = searchParams.get( 'id' );
+    const username = searchParams.get( 'username' );
     const [pastScores, setPastScores] = useState<Score[]>( [] );
     const [filteredScores, setFilteredScores] = useState<Score[]>( [] );
     const [filterQuiz, setFilterQuiz] = useState( '' );
-    const [selectedDates, setSelectedDates] = useState<Date[]>( [] );
+    const [loading, setLoading] = useState( true );
+    const [error, setError] = useState<string | null>( null );
 
     useEffect( () => {
-        if ( id ) {
-            const userScoresKey = `quizScores_${ id }`;
-            const scores = JSON.parse( localStorage.getItem( userScoresKey ) || '[]' );
-            setPastScores( scores );
-            setFilteredScores( scores );
-        }
-    }, [id] );
+        if ( username ) {
+            const fetchScoresWithQuizData = async ( id: string ) => {
+                try {
+                    const response = await fetch( `/api/scores?id=${ id }`,
+                        { credentials: 'include' }
+                    );
+                    const scores: Score[] = await response.json();
 
-    // Sort scores by quiz name
+                    // Ensure each Score has an associated Quiz with total_questions
+                    return scores.map( score => ( {
+                        ...score,
+                        quiz: {
+                            total_questions: score.quiz?.total_questions || 0,
+                        }
+                    } ) );
+                } catch ( error ) {
+                    console.error( 'Error fetching scores with quiz data:', error );
+                    return [];
+                }
+            };
+
+            fetchScoresWithQuizData( username );
+        } else {
+            setError( 'Username is missing.' );
+            setLoading( false );
+        }
+    }, [username] );
+
     const sortByQuiz = () => {
         const sorted = [...filteredScores].sort( ( a, b ) => a.quiz_id.localeCompare( b.quiz_id ) );
         setFilteredScores( sorted );
     };
 
-    // Sort scores by date
     const sortByDate = () => {
-        const sorted = [...filteredScores].sort( ( a, b ) => new Date( b.quiz_date ).getTime() - new Date( a.quiz_date ).getTime() );
+        const sorted = [...filteredScores].sort(
+            ( a, b ) => new Date( b.quiz_date ).getTime() - new Date( a.quiz_date ).getTime()
+        );
         setFilteredScores( sorted );
     };
 
-    // Sort scores by percentage
     const sortByScore = () => {
-        const sorted = [...filteredScores].sort( ( a, b ) => ( b.score / b.total_questions ) * 100 - ( a.score / a.total_questions ) * 100 );
+        const sorted = [...filteredScores].sort( ( a, b ) => {
+            const aTotalQuestions = a.quiz?.total_questions || 1; // Fallback to 1 to avoid division by zero
+            const bTotalQuestions = b.quiz?.total_questions || 1;
+
+            return ( ( b.score / bTotalQuestions ) * 100 ) - ( ( a.score / aTotalQuestions ) * 100 );
+        } );
         setFilteredScores( sorted );
     };
 
-    // Filter scores by selected quiz
+
     const handleFilterQuizChange = ( event: React.ChangeEvent<HTMLSelectElement> ) => {
         const selectedQuiz = event.target.value;
         setFilterQuiz( selectedQuiz );
@@ -53,12 +79,19 @@ const ScoresPage: React.FC = () => {
     const clearFilters = () => {
         setFilteredScores( pastScores );
         setFilterQuiz( '' );
-        setSelectedDates( [] );
     };
 
+    if ( loading ) {
+        return <p className="text-center">Loading...</p>;
+    }
+
+    if ( error ) {
+        return <p className="text-center text-red-500">{error}</p>;
+    }
+
     return (
-        <div className="container mx-auto p-6">
-            <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Past Scores</h1>
+        <div className="container mx-auto p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg">
+            <h1 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Past Scores</h1>
             <div className="flex flex-wrap justify-center gap-4 mb-4">
                 <button onClick={sortByQuiz} className="btn-primary">Sort by Quiz</button>
                 <button onClick={sortByDate} className="btn-primary">Sort by Date</button>
@@ -70,15 +103,13 @@ const ScoresPage: React.FC = () => {
                 >
                     <option value="">Filter by Quiz</option>
                     {[...new Set( pastScores.map( score => score.quiz_id ) )].map( ( quizName, index ) => (
-                        <option
-                            key={`${ quizName }__${ index }`}
-                            value={quizName}>{quizName}</option>
+                        <option key={`${ quizName }__${ index }`} value={quizName}>{quizName}</option>
                     ) )}
                 </select>
                 <button onClick={clearFilters} className="btn-danger">Clear Filters</button>
             </div>
 
-            <table className="w-full table-fixed bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-md shadow-lg">
+            <table className="w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md shadow-lg">
                 <thead>
                     <tr>
                         <th className="p-4 border-b">Quiz</th>
@@ -90,14 +121,14 @@ const ScoresPage: React.FC = () => {
                 </thead>
                 <tbody>
                     {filteredScores.map( ( score, index ) => {
-                        const percentage = ( ( score.score / score.total_questions ) * 100 ).toFixed( 2 );
+                        const percentage = ( ( score.score / score.quiz?.total_questions! ) * 100 ).toFixed( 2 );
                         const date = new Date( score.quiz_date );
                         const formattedDate = date.toLocaleDateString();
                         const formattedTime = date.toLocaleTimeString();
                         return (
                             <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <td className="p-4 border-b">{score.quiz_id}</td>
-                                <td className="p-4 border-b">{`${ score.score } / ${ score.total_questions }`}</td>
+                                <td className="p-4 border-b">{`${ score.score } / ${ score.quiz?.total_questions! }`}</td>
                                 <td className="p-4 border-b">{percentage}%</td>
                                 <td className="p-4 border-b">{formattedDate}</td>
                                 <td className="p-4 border-b">{formattedTime}</td>

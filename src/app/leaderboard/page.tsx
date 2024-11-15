@@ -18,11 +18,16 @@ const LeaderboardSelectionPage: React.FC = () => {
         ];
     }
 
-
     useEffect( () => {
         const fetchQuizNames = async () => {
             try {
-                const response = await fetch( "/api/quiz" );
+                const response = await fetch( "/api/quiz", {
+                    credentials: 'include', // Include cookies in the request
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                } );
+
                 if ( response.ok ) {
                     const data: Quiz[] = await response.json();
                     console.log( 'Fetched quiz names:', data );
@@ -50,13 +55,12 @@ const LeaderboardSelectionPage: React.FC = () => {
         fetchQuizNames();
     }, [] );
 
-
     const handleQuizSelection = ( quizName: string, id: string ) => {
         router.push( `/leaderboard/${ quizName }&id=${ id }` );
     };
 
     return (
-        <div className="flex flex-col  justify-center items-center px-6 py-4 lg:p-10 container dark:border-gray-100 shadow-md border hover:shadow-md dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
+        <div className="flex flex-col justify-center items-center px-6 py-4 lg:p-10 container dark:border-gray-100 shadow-md border hover:shadow-md dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
             <h2 className="text-4xl font-extrabold mb-5 text-center">Select a Quiz to View Leaderboard</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {quizzes.length > 0 ? (

@@ -60,6 +60,7 @@ const LoginPage: React.FC = () => {
         try {
             const response = await fetch( '/api/auth/register', {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
