@@ -4,8 +4,6 @@ import * as React from "react";
 import {
     BookCheck,
     BookOpen,
-    Bot,
-    Brain,
     Calendar1,
     CalendarRange,
     ChartSpline,
@@ -13,15 +11,9 @@ import {
     Cog,
     Command,
     FileChartColumnIncreasing,
-    Frame,
     Gift,
-    LifeBuoy,
-    Map,
     Medal,
-    PieChart,
     Send,
-    Settings2,
-    SquareTerminal,
 } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/NavMain";
@@ -157,35 +149,25 @@ const data = {
             icon: FileChartColumnIncreasing,
         },
         {
+            title: "Example Insights",
+            url: "/mock_data",
+            icon: ChartSpline,
+        },
+        {
             title: "Leaderboards",
-            url: "/leaderboard",
+            url: "/leaderboards",
             icon: ChartSpline,
         },
         {
-            title: "Learning Paths",
-            url: "#",
-            icon: ChartSpline,
-        },
-        {
-            title: "Learning Paths",
-            url: "#",
-            icon: ChartSpline,
-        },
-        {
-            title: "Learning Paths",
-            url: "#",
-            icon: ChartSpline,
-        },
-        {
-            title: "Learning Paths",
-            url: "#",
+            title: "Score History",
+            url: "/scores",
             icon: ChartSpline,
         },
     ],
     navSecondary: [
         {
-            title: "Settings",
-            url: "#",
+            title: "Dashboard",
+            url: "/dashboard",
             icon: Cog,
         },
         {

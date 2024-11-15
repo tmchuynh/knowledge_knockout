@@ -1262,6 +1262,14 @@ body {
   height: 100svh;
 }
 
+.h-1\/2 {
+  height: 50%;
+}
+
+.h-1\/4 {
+  height: 25%;
+}
+
 .max-h-64 {
   max-height: 16rem;
 }
@@ -2948,6 +2956,10 @@ body {
 
 .text-end {
   text-align: end;
+}
+
+.align-top {
+  vertical-align: top;
 }
 
 .align-middle {
