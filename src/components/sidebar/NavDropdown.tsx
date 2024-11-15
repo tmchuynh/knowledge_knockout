@@ -66,16 +66,22 @@ export function NavDropdown( {
                             >
                                 <DropdownMenuItem>
                                     <Handshake className="text-muted-foreground" />
-                                    <span>Participate</span>
+                                    <a href="#">
+                                        <span>Participate</span>
+                                    </a>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Share className="text-muted-foreground" />
-                                    <span>Invite a Friend</span>
+                                    <a href="#">
+                                        <span>Invite a Friend</span>
+                                    </a>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem>
                                     <Info className="text-muted-foreground" />
-                                    <span>More Details</span>
+                                    <a href="#">
+                                        <span>More Details</span>
+                                    </a>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -84,7 +90,9 @@ export function NavDropdown( {
                 <SidebarMenuItem>
                     <SidebarMenuButton>
                         <MoreHorizontal />
-                        <span>More</span>
+                        <a href="#">
+                            <span>More</span>
+                        </a>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             </SidebarMenu>

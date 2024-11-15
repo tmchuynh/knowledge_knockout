@@ -4,16 +4,27 @@ import * as React from "react";
 import {
     BookCheck,
     BookOpen,
+    Brain,
     Calendar1,
     CalendarRange,
+    ChartNoAxesCombined,
     ChartSpline,
     CheckCheck,
     Cog,
     Command,
     FileChartColumnIncreasing,
+    FolderClock,
     Gift,
+    GraduationCap,
+    LibraryBig,
     Medal,
+    NotebookPen,
+    Rocket,
     Send,
+    Table2,
+    TableProperties,
+    TrendingUp,
+    UserPen,
 } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/NavMain";
@@ -31,17 +42,16 @@ import {
 } from "@/components/ui/sidebar";
 
 const data = {
-    user: {
-        name: "shadcn",
-        email: "m@example.com",
-        avatar: "/avatars/shadcn.jpg",
-    },
     navMain: [
+        {
+            title: "Flashcards",
+            url: "#",
+            icon: NotebookPen,
+        },
         {
             title: "Quizzes",
             url: "/quiz",
             icon: CheckCheck,
-            isActive: true,
             items: [
                 {
                     title: "Software Engineering",
@@ -95,7 +105,7 @@ const data = {
         {
             title: "Learning Paths",
             url: "#",
-            icon: BookOpen,
+            icon: NotebookPen,
             items: [
                 {
                     title: "Software Engineering",
@@ -137,39 +147,61 @@ const data = {
             icon: CalendarRange,
         },
     ],
-    examples: [
+    information: [
         {
             title: "Badges",
             url: "/badges",
             icon: Medal,
         },
         {
+            title: "Memory Techniques",
+            url: "#",
+            icon: Brain,
+        },
+        {
+            title: "Boost Your Confidence",
+            url: "#",
+            icon: Rocket,
+        },
+        {
+            title: "Study Tips",
+            url: "#",
+            icon: LibraryBig,
+        },
+        {
+            title: "Mastering Complex Topics",
+            url: "#",
+            icon: GraduationCap,
+        },
+        {
             title: "Progress Reports",
             url: "#",
-            icon: FileChartColumnIncreasing,
+            icon: ChartNoAxesCombined,
         },
         {
             title: "Example Insights",
             url: "/mock_data",
-            icon: ChartSpline,
+            icon: TrendingUp,
         },
+    ],
+    foryou: [
         {
             title: "Leaderboards",
             url: "/leaderboards",
-            icon: ChartSpline,
+            icon: Table2,
         },
         {
             title: "Score History",
             url: "/scores",
-            icon: ChartSpline,
+            icon: FolderClock,
         },
-    ],
-    navSecondary: [
         {
             title: "Dashboard",
             url: "/dashboard",
-            icon: Cog,
+            icon: UserPen,
         },
+    ],
+    navSecondary: [
         {
             title: "Feedback",
             url: "#",
@@ -202,7 +234,8 @@ export function AppSidebar( { ...props }: React.ComponentProps<typeof Sidebar> )
             <SidebarContent>
                 <NavMain title="Platforms" items={data.navMain} />
                 <NavDropdown title="Challenges" projects={data.challenges} />
-                <NavMain title="Information" items={data.examples} />
+                <NavMain title="Information" items={data.information} />
+                <NavMain title="For You" items={data.foryou} />
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>

@@ -52,7 +52,7 @@ const MainContent = ( {
             {!isNotFound &&
                 <>
                     <AppSidebar />
-                    <SidebarTrigger className='p-10' />
+                    <SidebarTrigger className='py-10 px-8' />
                 </>}
             <main className='w-full m-auto py-16'>
                 {children}
