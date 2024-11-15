@@ -3,9 +3,8 @@ import { NextResponse } from 'next/server';
 
 export async function GET( request: Request ) {
     try {
-
-        const url = new URL( request.url );
-        const username = url.searchParams.get( 'username' );
+        const { searchParams } = new URL( request.url );
+        const username = searchParams.get( 'username' );
 
         if ( !username ) {
             return NextResponse.json( { error: 'Username query parameter is required.' }, { status: 400 } );

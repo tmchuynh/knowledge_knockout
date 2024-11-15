@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { User } from '@/backend/models';
-import { signJWT } from '@/utils/jwtUtils';
 import dotenv from 'dotenv';
+import { signJWT } from '@/utils/jwtUtils';
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -32,9 +32,8 @@ export async function POST( req: NextRequest ) {
 
         // Sign the JWT
         const token = signJWT( payload, JWT_SECRET );
-        localStorage.setItem( 'token', token );
 
-        // Return the JWT
+        // Return the JWT as part of the response (the client can store it)
         return NextResponse.json(
             {
                 message: 'Login successful',

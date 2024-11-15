@@ -1,15 +1,13 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { User } from '@/backend/models';
 
-export async function GET( request: Request ) {
+export async function GET(
+    request: NextRequest,
+    { params }: { params: { username: string; }; }
+) {
+    const { username } = await params;
+
     try {
-        const { searchParams } = new URL( request.url );
-        const username = searchParams.get( 'username' );
-
-        if ( !username ) {
-            return NextResponse.json( { error: 'Username is required' }, { status: 400 } );
-        }
-
         const user = await User.findOne( { where: { username } } );
 
         if ( !user ) {

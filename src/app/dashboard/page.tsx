@@ -21,7 +21,6 @@ const DashboardPage: React.FC = () => {
             return;
         }
 
-
         const fetchUserFromJWT = async ( token: string ) => {
             try {
                 const response = await fetch( '/api/auth/me', {
@@ -45,22 +44,37 @@ const DashboardPage: React.FC = () => {
     }, [] );
 
     useEffect( () => {
+        const token = localStorage.getItem( 'token' );
+        if ( !token ) {
+            console.error( 'No token found. User might not be authenticated.' );
+            return;
+        }
+
         if ( user?.username ) {
             const fetchScores = async () => {
                 try {
-                    const response = await fetch( `/api/users/score/${ user.username }` );
+                    const response = await fetch( `/api/score?username=${ user.username }`, {
+                        headers: {
+                            Authorization: `Bearer ${ token }`,
+                            'Content-Type': 'application/json',
+                        },
+                    } );
+
                     if ( !response.ok ) {
-                        throw new Error( 'Failed to fetch scores' );
+                        throw new Error( `Failed to fetch scores. Status: ${ response.status }` );
                     }
+
                     const data = await response.json();
                     setScores( data );
                 } catch ( error ) {
                     console.error( 'Error fetching scores:', error );
                 }
             };
+
             fetchScores();
         }
     }, [user] );
+
 
     return (
         <>

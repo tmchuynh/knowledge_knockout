@@ -29,81 +29,60 @@ const LoginPage: React.FC = () => {
     };
 
     const checkAvailability = async ( data: any ) => {
-        const { firstName, lastName, username, password, email } = data;
+        const { username } = data;
 
         try {
-            if ( password !== userData.confirmPassword ) {
-                showToast( "error", "Passwords do not match." );
-                return;
+            const response = await fetch( `/api/users?username=${ username }`, {
+                headers: {
+                    Authorization: `Bearer ${ localStorage.getItem( 'token' ) }`,
+                },
+            } );
+
+            if ( response.ok ) {
+                showToast( "error", 'Username already exists in the database. Try logging in.' );
+            } else {
+                handleRegister( data );
             }
-            console.log( data );
-
-            const fetchUser = async () => {
-                const token = localStorage.getItem( 'token' );
-                const response = await fetch( `/api/users/${ username }`, {
-                    headers: {
-                        Authorization: `Bearer ${ token }`
-                    }
-                } );
-
-                if ( !response.ok ) {
-                    showToast( "error", 'Email already exists in the database. Try logging in.' );
-                    throw new Error( `Request failed with status ${ response.status }` );
-                } else {
-                    handleRegister( data );
-                }
-            };
-
-            fetchUser();
-
         } catch ( e ) {
             console.error( e );
-            showToast( "error", "An error occurred while checking email availability." );
+            showToast( "error", "An error occurred while checking username availability." );
         }
     };
 
     const handleRegister = async ( data: any ) => {
+        const { firstName, lastName, username, password, email } = data;
+
+        if ( password !== userData.confirmPassword ) {
+            showToast( "error", "Passwords do not match." );
+            return;
+        }
+
+        const full_name = `${ firstName } ${ lastName }`;
+
         try {
-            const { firstName, lastName, username, password, email } = data;
-
-            if ( password !== userData.confirmPassword ) {
-                showToast( "error", "Passwords do not match." );
-                return;
-            }
-
-            const full_name = firstName + " " + lastName as string;
-
             const response = await fetch( '/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify( {
-                    full_name,
-                    username,
-                    password,
-                    email,
-                    image: '',
-                } ),
+                body: JSON.stringify( { full_name, username, password, email, image: '' } ),
             } );
 
             if ( !response.ok ) {
                 showToast( "error", 'Registration failed. Please try again later.' );
-                throw new Error( `Request failed with status ${ response.status }` );
             } else {
                 showToast( "success", "Registration successful! Redirecting..." );
-                var registerInputs = document.querySelectorAll( 'input' );
-                registerInputs.forEach( input => input.value = '' );
-                router.push( '/dashboard' );
+                setUserData( { firstName: '', lastName: '', email: '', username: '', password: '', confirmPassword: '' } );
+                router.push( '/signin' );
             }
-
         } catch ( error ) {
             console.error( 'Error during registration:', error );
+            showToast( "error", "An error occurred during registration." );
         }
     };
 
+
     const handleLogin = async ( username: string, password: string ) => {
-        console.log( 'Logging in:', username, password );
         try {
             const response = await fetch( '/api/auth/login', {
                 method: 'POST',
@@ -120,7 +99,7 @@ const LoginPage: React.FC = () => {
                 showToast( "success", "Login successful! Redirecting..." );
                 router.push( '/dashboard' );
             } else {
-                showToast( "error", result.error || 'Invalid username or password.' );
+                showToast( "error", result.message || 'Invalid username or password.' );
             }
         } catch ( error ) {
             console.error( 'Error during login:', error );
