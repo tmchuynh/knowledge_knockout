@@ -90,7 +90,7 @@ const ScoresPage: React.FC = () => {
     }
 
     return (
-        <div className="container mx-auto p-6 bg-gray-50 dark:bg-gray-900 rounded-lg shadow-lg">
+        <div className="container mx-auto bg-gray-50 dark:bg-gray-900 p-6 rounded-lg shadow-md border hover:shadow-md w-11/12">
             <h1 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Past Scores</h1>
             <div className="flex flex-wrap justify-center gap-4 mb-4">
                 <button onClick={sortByQuiz} className="btn-primary">Sort by Quiz</button>

@@ -143,9 +143,9 @@ const LoginPage: React.FC = () => {
                     <ToastDescription>{toastMessage.message}</ToastDescription>
                 </Toast>
             )}
-            <div className="grid md:grid-cols-2 md:gap-6">
+            <div className="grid md:grid-cols-2 md:gap-6 w-11/12 mx-auto">
                 {/* Login Form */}
-                <div>
+                <div className="p-6 rounded-lg shadow-md border hover:shadow-md">
                     <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Login</h1>
                     <form className="mx-auto w-full p-10" onSubmit={( e ) => {
                         e.preventDefault();
@@ -183,7 +183,7 @@ const LoginPage: React.FC = () => {
                     </form>
                 </div>
                 {/* Registration Form */}
-                <div>
+                <div className="p-6 rounded-lg shadow-md border hover:shadow-md">
                     <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Register</h1>
                     <form className="mx-auto w-full p-10" onSubmit={( e ) => {
                         e.preventDefault();

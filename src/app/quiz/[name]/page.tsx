@@ -87,7 +87,7 @@ const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = ( { params } ) => 
     }
 
     return (
-        <div className="flex flex-col justify-center px-4 py-6 md:px-8 lg:px-10 container border dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-10/12 shadow-lg">
+        <div className="flex flex-col justify-center px-4 py-6 md:px-8 lg:px-10 container dark:border-gray-700 dark:bg-gray-800 dark:text-white my-4 p-6 rounded-lg border hover:shadow-md w-11/12 mx-auto lg:w-10/12 shadow-lg">
             <h2 className="text-center text-4xl py-5 font-extrabold dark:text-white">
                 Select Difficulty Level for <br /> {quizData ? quizData.title : 'Loading...'}
             </h2>

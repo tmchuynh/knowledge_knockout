@@ -56,7 +56,7 @@ const LeaderboardPage: React.FC = () => {
     }
 
     return (
-        <div className="leaderboard-page flex flex-col justify-center items-center px-4 py-6 lg:px-8 bg-gray-900 text-white rounded-md shadow-md w-full max-w-screen-xl mx-auto">
+        <div className="leaderboard-page flex flex-col justify-center items-center px-4 py-6 lg:px-8 bg-gray-900 text-white max-w-screen-xl p-6 rounded-lg shadow-md border hover:shadow-md w-11/12 mx-auto">
             <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-center">
                 Leaderboard for {quizName || 'Unknown Quiz'}
             </h2>

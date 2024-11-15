@@ -24,8 +24,8 @@ export default function SignOutPage() {
     };
 
     return (
-        <div className="flex flex-col gap-2 justify-center text-center">
-            <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Are you sure you want to sign out?</h1>
+        <div className="flex flex-col gap-2 justify-center text-center p-6 rounded-lg shadow-md border hover:shadow-md w-11/12 mx-auto">
+            <h1 className="text-5xl p-8 font-extrabold text-stone text-center mb-5">Are you sure you want to sign out?</h1>
             <Button
                 variant={"destructive"}
                 onClick={handleSignOut}

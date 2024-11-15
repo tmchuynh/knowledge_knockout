@@ -93,7 +93,7 @@ const QuizSelectionPage: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center px-4 py-6 md:px-8 container dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-auto align-center w-full lg:w-10/12 shadow-md border hover:shadow-lg">
+        <div className="flex flex-col justify-center items-center px-4 py-6 md:px-8 container dark:border-gray-100 dark:bg-gray-800 dark:text-white my-auto align-center lg:w-10/12 p-6 rounded-lg shadow-md border hover:shadow-md w-11/12 mx-auto">
             <h2 className="text-center text-4xl py-5 font-extrabold dark:text-white">Select a Quiz</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-3 w-full">
                 {quizzes.map( ( quizName, index ) => (

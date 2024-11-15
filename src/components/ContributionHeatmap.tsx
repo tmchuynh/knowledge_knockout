@@ -20,22 +20,24 @@ const ContributionHeatmap: React.FC = () => {
     useEffect( () => {
         const fetchScores = async () => {
             try {
-                // Extract token from cookies
-                const token = document.cookie.match( /token=([^;]+)/ )?.[1] || '';
-                if ( !token ) {
-                    throw new Error( 'No token found' );
-                }
 
-                // Fetch the username from sessionStorage
-                const username = sessionStorage.getItem( 'username' );
-                if ( !username ) {
-                    throw new Error( 'No username found in session storage' );
-                }
-
-                const response = await fetch( `/api/users/score/${ username }?username=${ username }`, {
+                // Fetch user data after retrieving token
+                const userResponse = await fetch( '/api/auth/me', {
                     method: 'GET',
+                    credentials: 'include',
+                } );
+
+                if ( !userResponse.ok ) {
+                    throw new Error( 'Failed to fetch user data' );
+                }
+
+                const userData = await userResponse.json();
+
+                const response = await fetch( `/api/score/username/${ userData.username }?username=${ userData.username }`, {
+                    method: 'GET',
+                    credentials: 'include',
                     headers: {
-                        'Authorization': `Bearer ${ token }`, // Pass token in Authorization header
+                        'Content-Type': 'application/json',
                     },
                 } );
 

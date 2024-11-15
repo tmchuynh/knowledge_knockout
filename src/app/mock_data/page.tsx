@@ -20,7 +20,7 @@ const Page: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-7">
-            <div className="flex flex-col justify-center mx-auto items-center dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl m-4 shadow-md border hover:shadow-md p-7 w-full max-w-5xl">
+            <div className="flex flex-col justify-center mx-auto items-center dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl m-4 shadow-md border hover:shadow-md p-7 w-full">
                 <div className="w-full">
                     <h1 className="text-3xl text-center font-extrabold mb-6">Progress Tracking and Analytics</h1>
                     <p className="text-lg mb-4">
