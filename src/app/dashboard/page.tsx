@@ -21,7 +21,7 @@ const DashboardPage: React.FC = () => {
             setId( id! );
             const fetchScores = async () => {
                 try {
-                    const response = await fetch( `/api/users/score?username=${ username }` );
+                    const response = await fetch( `/api/users/score/${ username }?username=${ username }` );
                     if ( !response.ok ) {
                         throw new Error( 'Failed to fetch scores' );
                     }

@@ -48,11 +48,11 @@ const QuizPage = () => {
 
                     const questionsWithAnswers = await Promise.all(
                         questionsShuffled.map( async ( question: Question ) => {
-                            const answersRes = await fetch( `/api/quiz/${ encodeURIComponent( currentTitle ) }/${ level }/${ question.question_id }` );
+                            const answersRes = await fetch( `/api/quiz/${ encodeURIComponent( currentTitle ) }/${ level }/${ question.id }` );
                             const answersData = await answersRes.json();
 
                             if ( answersData.error ) {
-                                console.error( `Error fetching answers for question ${ question.question_id }:`, answersData.error );
+                                console.error( `Error fetching answers for question ${ question.id }:`, answersData.error );
                                 return { ...question, answers: [] };
                             }
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 import { Score } from '@//backend/models';
 
+
 interface FormattedScoreData {
     DB_DATE: string;
     WEEKDAYNO: number;
@@ -20,7 +21,8 @@ const ContributionHeatmap: React.FC = () => {
     useEffect( () => {
         const fetchScores = async () => {
             try {
-                const response = await fetch( '/api/users/score' );
+                const username = sessionStorage.getItem( 'username' );
+                const response = await fetch( `/api/users/score/${ username }?username=${ username }` );
                 if ( !response.ok ) {
                     throw new Error( `Failed to fetch scores, status: ${ response.status }` );
                 }

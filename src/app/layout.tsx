@@ -7,6 +7,8 @@ import { NotFoundProvider, useNotFound } from "../context/NotFoundContext";
 import "../styles/main.css";
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/NavSidebar';
+import { hydrateRoot } from 'react-dom/client';
+
 
 export default function RootLayout( {
     children,
@@ -60,3 +62,4 @@ const MainContent = ( {
         </>
     );
 };
+
