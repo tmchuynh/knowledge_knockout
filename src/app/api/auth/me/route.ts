@@ -7,12 +7,8 @@ dotenv.config();
 
 export async function GET( req: NextRequest ) {
     try {
-        const authHeader = req.headers.get( 'Authorization' );
-        if ( !authHeader ) {
-            return NextResponse.json( { message: 'Authorization header is missing' }, { status: 401 } );
-        }
-
-        const token = authHeader.split( ' ' )[1];
+        // Extract the token from cookies
+        const token = req.cookies.get( 'token' )?.value;
         if ( !token ) {
             return NextResponse.json( { message: 'Token is missing' }, { status: 401 } );
         }

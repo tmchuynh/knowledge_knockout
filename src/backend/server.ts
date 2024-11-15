@@ -1,46 +1,48 @@
-import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
+import express from 'express';
+import next from 'next';
 import dotenv from 'dotenv';
 import sequelize from './config/db';
-import userRoutes from './routes/userRoutes';
+import userRouter from './routes/userRoutes';
 import setupAssociations from './associations';
-import './models';
-
 dotenv.config();
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+const dev = process.env.NODE_ENV !== 'production';
+const app = next( { dev } );
+const handle = app.getRequestHandler();
 
-app.use( express.json() );
-app.use( express.urlencoded( { extended: true } ) );
-app.use( cors() );
+const PORT = process.env.MYSQL_PORT || 5000;
 
-// Test database connection
-sequelize.authenticate()
-    .then( () => console.log( 'Database connected...' ) )
-    .catch( err => console.error( 'Database connection error:', err ) );
+app.prepare().then( () => {
+    const server = express();
 
-// Initialize model associations
-setupAssociations();
+    // Middleware for parsing JSON and URL-encoded data
+    server.use( express.json( { limit: '1mb' } ) );
+    server.use( express.urlencoded( { extended: true, limit: '1mb' } ) );
 
-// Sync database before starting server
-app.listen( PORT, async () => {
-    try {
-        await sequelize.sync( { alter: true } );
-        console.log( 'Database synced' );
+    // Database connection test
+    sequelize.authenticate()
+        .then( () => console.log( 'Database connected...' ) )
+        .catch( ( err: Error ) => console.error( 'Database connection error:', err ) );
+
+    server.use( '/api/users', userRouter );
+
+    // Handle all other routes with Next.js
+    server.all( '*', ( req, res ) => {
+        return handle( req, res );
+    } );
+
+    setupAssociations();
+
+    // Sync database
+    sequelize.sync( { alter: true } ).then( () => {
+        console.log( 'Database synchronized' );
+    } ).catch( error => {
+        console.error( 'Error during database synchronization:', error );
+    } );
+
+    server.listen( PORT, () => {
         console.log( `Server running on http://localhost:${ PORT }` );
-    } catch ( error ) {
-        console.error( 'Error during sync or server start:', error );
-    }
+    } );
+} ).catch( ( err ) => {
+    console.error( 'Error preparing Next.js:', err );
 } );
-
-// Error handling middleware
-app.use( ( err: Error, req: Request, res: Response, next: NextFunction ) => {
-    console.error( err.stack );
-    res.status( 500 ).send( 'Something broke!' );
-} );
-
-// Routes
-app.use( '/api/users', userRoutes );
-
-export default app;

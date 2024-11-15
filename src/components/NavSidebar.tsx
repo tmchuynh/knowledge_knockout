@@ -197,7 +197,6 @@ const data = {
 };
 
 export function AppSidebar( { ...props }: React.ComponentProps<typeof Sidebar> ) {
-    const token = localStorage.getItem( "token" );
 
     return (
         <Sidebar variant="inset" {...props} className="rounded-3xl shadow-md border hover:shadow-md">
@@ -225,7 +224,7 @@ export function AppSidebar( { ...props }: React.ComponentProps<typeof Sidebar> )
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>
-                <NavUser token={token} />
+                <NavUser />
             </SidebarFooter>
         </Sidebar>
     );

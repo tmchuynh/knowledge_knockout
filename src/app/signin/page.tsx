@@ -33,9 +33,7 @@ const LoginPage: React.FC = () => {
 
         try {
             const response = await fetch( `/api/users?username=${ username }`, {
-                headers: {
-                    Authorization: `Bearer ${ localStorage.getItem( 'token' ) }`,
-                },
+                credentials: 'include',
             } );
 
             if ( response.ok ) {
@@ -90,15 +88,14 @@ const LoginPage: React.FC = () => {
                     'content-type': 'application/json',
                 },
                 body: JSON.stringify( { username, password } ),
+                credentials: 'include', // Ensures cookies are sent with the request
             } );
 
-            const result = await response.json();
-
             if ( response.ok ) {
-                localStorage.setItem( 'token', result.token );
                 showToast( "success", "Login successful! Redirecting..." );
                 router.push( '/dashboard' );
             } else {
+                const result = await response.json();
                 showToast( "error", result.message || 'Invalid username or password.' );
             }
         } catch ( error ) {
@@ -106,6 +103,7 @@ const LoginPage: React.FC = () => {
             showToast( "error", 'An error occurred while logging in. Please try again later.' );
         }
     };
+
 
     const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
         const { name, value } = e.target;

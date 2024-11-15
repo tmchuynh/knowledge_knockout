@@ -11,43 +11,42 @@ export async function POST( req: NextRequest ) {
     const { username, password } = await req.json();
 
     try {
-        // Find the user by username
         const user = await User.findOne( { where: { username } } );
         if ( !user ) {
             return NextResponse.json( { message: 'User not found' }, { status: 404 } );
         }
 
-        // Verify password
         const isPasswordValid = await bcrypt.compare( password, user.password );
         if ( !isPasswordValid ) {
             return NextResponse.json( { message: 'Incorrect password' }, { status: 401 } );
         }
 
-        // Create JWT payload
         const payload = {
             id: user.id,
             username: user.username,
             email: user.email,
         };
 
-        // Sign the JWT
         const token = signJWT( payload, JWT_SECRET );
 
-        // Return the JWT as part of the response (the client can store it)
-        return NextResponse.json(
-            {
-                message: 'Login successful',
-                token,
-                user: {
-                    id: user.id,
-                    firstName: user.full_name,
-                    username: user.username,
-                    email: user.email,
-                },
+        const response = NextResponse.json( {
+            message: 'Login successful',
+            user: {
+                id: user.id,
+                firstName: user.full_name,
+                username: user.username,
+                email: user.email,
             },
-            { status: 200 }
-        );
+        } );
 
+        response.cookies.set( 'token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24, // 1 day
+            path: '/',
+        } );
+
+        return response;
     } catch ( error ) {
         console.error( 'Error logging in user:', error );
         return NextResponse.json( { message: 'Internal server error' }, { status: 500 } );

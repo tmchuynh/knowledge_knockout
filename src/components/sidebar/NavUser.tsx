@@ -32,19 +32,15 @@ import {
 } from "@/components/ui/sidebar";
 import React, { useEffect, useState } from "react";
 
-export function NavUser( { token }: { token: string | null; } ) {
+export function NavUser() {
     const { isMobile } = useSidebar();
     const [user, setUser] = useState<{ full_name: string; email: string; image: string; } | null>( null );
 
     useEffect( () => {
         const fetchUser = async () => {
-            if ( !token ) return;
-
             try {
                 const response = await fetch( '/api/auth/me', {
-                    headers: {
-                        'Authorization': `Bearer ${ token }`,
-                    },
+                    credentials: 'include', // Ensures cookies are sent with the request
                 } );
 
                 if ( !response.ok ) {
@@ -59,7 +55,7 @@ export function NavUser( { token }: { token: string | null; } ) {
         };
 
         fetchUser();
-    }, [token] );
+    }, [] );
 
     return (
         <SidebarMenu>
