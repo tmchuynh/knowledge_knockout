@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import * as d3 from 'd3';
 import { Score } from '@//backend/models';
 
-
 interface FormattedScoreData {
     DB_DATE: string;
     WEEKDAYNO: number;
@@ -21,22 +20,40 @@ const ContributionHeatmap: React.FC = () => {
     useEffect( () => {
         const fetchScores = async () => {
             try {
+                // Extract token from cookies
+                const token = document.cookie.match( /token=([^;]+)/ )?.[1] || '';
+                if ( !token ) {
+                    throw new Error( 'No token found' );
+                }
+
+                // Fetch the username from sessionStorage
                 const username = sessionStorage.getItem( 'username' );
-                const response = await fetch( `/api/users/score/${ username }?username=${ username }` );
+                if ( !username ) {
+                    throw new Error( 'No username found in session storage' );
+                }
+
+                const response = await fetch( `/api/users/score/${ username }?username=${ username }`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${ token }`, // Pass token in Authorization header
+                    },
+                } );
+
                 if ( !response.ok ) {
                     throw new Error( `Failed to fetch scores, status: ${ response.status }` );
                 }
+
                 const rawData: Score[] = await response.json();
 
                 // Format the data on the client side
-                const formattedData = rawData.map( score => ( {
+                const formattedData = rawData.map( ( score ) => ( {
                     DB_DATE: d3.timeFormat( '%Y-%m-%d' )( new Date( score.created_at! ) ),
                     WEEKDAYNO: new Date( score.created_at! ).getDay(),
                     WEEK_OF_MONTH: Math.floor( ( new Date( score.created_at! ).getDate() - 1 ) / 7 ),
                     MONTHID: d3.timeFormat( '%Y%m' )( new Date( score.created_at! ) ),
                     M_NAME: d3.timeFormat( '%b-%y' )( new Date( score.created_at! ) ),
                     DAY_NAME_SHORT: d3.timeFormat( '%a' )( new Date( score.created_at! ) ),
-                    score_count: 1 // Assuming each record is one score, adjust as needed
+                    score_count: 1, // Assuming each record is one score, adjust as needed
                 } ) );
 
                 console.log( 'Formatted data:', formattedData );
@@ -62,7 +79,7 @@ const ContributionHeatmap: React.FC = () => {
         d3.select( containerRef.current ).selectAll( '*' ).remove();
 
         const colorScale = d3.scaleQuantize<string>()
-            .domain( [0, d3.max( scores, d => d.score_count ) || 1] )
+            .domain( [0, d3.max( scores, ( d ) => d.score_count ) || 1] )
             .range( ['#e0f7fa', '#80deea', '#26c6da', '#00acc1', '#00838f'] );
 
         const svg = d3.select( containerRef.current )
@@ -78,8 +95,8 @@ const ContributionHeatmap: React.FC = () => {
             .attr( 'transform', 'translate(50,30)' );
 
         // Render month labels and heatmap
-        const months = d3.groups( scores, d => d.MONTHID );
-        const months_name = d3.groups( scores, d => d.M_NAME );
+        const months = d3.groups( scores, ( d ) => d.MONTHID );
+        const months_name = d3.groups( scores, ( d ) => d.M_NAME );
         for ( let j = 0; j < months.length; j++ ) {
             heatMapCtr.append( 'g' )
                 .attr( 'transform', `translate(${ j * ( box * 6 + 20 ) }, 10)` )
@@ -95,9 +112,9 @@ const ContributionHeatmap: React.FC = () => {
                 .join( 'rect' )
                 .attr( 'width', box )
                 .attr( 'height', box )
-                .attr( 'y', d => ( box + 1 ) * ( d.WEEKDAYNO % 7 ) )
-                .attr( 'x', d => ( box + 1 ) * d.WEEK_OF_MONTH )
-                .attr( 'fill', d => colorScale( d.score_count ) )
+                .attr( 'y', ( d ) => ( box + 1 ) * ( d.WEEKDAYNO % 7 ) )
+                .attr( 'x', ( d ) => ( box + 1 ) * d.WEEK_OF_MONTH )
+                .attr( 'fill', ( d ) => colorScale( d.score_count ) )
                 .on( 'mouseenter', function ( event, d ) {
                     d3.select( this ).attr( 'stroke', 'black' ).attr( 'stroke-width', 2 );
                     const tooltip = d3.select( '#tooltip' );

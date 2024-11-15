@@ -22,7 +22,7 @@ const LeaderboardSelectionPage: React.FC = () => {
         const fetchQuizNames = async () => {
             try {
                 const response = await fetch( "/api/quiz", {
-                    credentials: 'include', // Include cookies in the request
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                     },
