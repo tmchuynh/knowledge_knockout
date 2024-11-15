@@ -3,7 +3,10 @@ import next from 'next';
 import dotenv from 'dotenv';
 import sequelize from './config/db';
 import userRouter from './routes/userRoutes';
+import progressRouter from './routes/progressRoutes';
+import scoreRouter from './routes/scoreRoutes';
 import setupAssociations from './associations';
+
 dotenv.config();
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -24,7 +27,10 @@ app.prepare().then( () => {
         .then( () => console.log( 'Database connected...' ) )
         .catch( ( err: Error ) => console.error( 'Database connection error:', err ) );
 
+    // Use routers for different API routes
     server.use( '/api/users', userRouter );
+    server.use( '/api/progress', progressRouter );
+    server.use( '/api/scores', scoreRouter );
 
     // Handle all other routes with Next.js
     server.all( '*', ( req, res ) => {

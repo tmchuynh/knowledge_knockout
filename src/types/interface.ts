@@ -26,6 +26,7 @@ export interface Progress {
 
 }
 export interface Score {
+    quiz?: Quiz;
     id?: string;
     username: string;
     quiz_id: string;

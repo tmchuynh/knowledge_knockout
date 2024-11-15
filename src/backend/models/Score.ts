@@ -62,4 +62,7 @@ Score.init(
     }
 );
 
+Score.belongsTo( Quiz, { foreignKey: 'quiz_id' } );
+Quiz.hasMany( Score, { foreignKey: 'score' } );
+
 export default Score;
