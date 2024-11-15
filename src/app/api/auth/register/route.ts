@@ -1,6 +1,6 @@
+import { User } from '@/backend/models';
 import { toTitleCase } from '@/utils/formatUtils';
 import { uuid } from '@/utils/regUtils';
-import { User } from '@/backend/models';
 import { NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
 

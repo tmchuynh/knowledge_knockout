@@ -1,29 +1,49 @@
 'use client';
 
-import React, { useState } from 'react';
-import ColorPickerComponent from '../../../components/ColorPicker';
-import ContributionsGrid from '../../../components/ContributionsGrid';
+import { Score } from '@/backend/models';
+import ColorPickerComponent from '@/components/ColorPicker';
+import ContributionsGrid from '@/components/ContributionsGrid';
+import React, { useEffect, useState } from 'react';
 
-type DashboardPageProps = {
-    user: {
-        id: string;
-        username: string;
-        createdAt: string;
-    };
-};
-
-const DashboardPage: React.FC<DashboardPageProps> = ( { user } ) => {
+const DashboardPage: React.FC = () => {
     const [baseColor, setBaseColor] = useState( '#6a40d4' );
+    const [scores, setScores] = useState<Score[]>( [] );
+    const [userScores, setUserScores] = useState<Score[]>( [] );
+    const [id, setId] = useState( '' );
+    const [username, setUsername] = useState( '' );
+
+
+    useEffect( () => {
+        if ( typeof window !== 'undefined' ) {
+            const username = sessionStorage.getItem( 'username' );
+            const id = sessionStorage.getItem( 'id' );
+            setUsername( username! );
+            setId( id! );
+            const fetchScores = async () => {
+                try {
+                    const response = await fetch( `/api/users/score?username=${ username }` );
+                    if ( !response.ok ) {
+                        throw new Error( 'Failed to fetch scores' );
+                    }
+                    const data = await response.json();
+                    setScores( data );
+                } catch ( error ) {
+                    console.error( 'Error fetching scores:', error );
+                }
+            };
+            fetchScores();
+        }
+    }, [] );
 
     return (
         <>
-            <div className="dashboard-container flex flex-col items-center  px-6 py-4 lg:px-8 bg-gray-800 text-white w-full">
+            <div className="dashboard-container flex flex-col items-center  px-6 py-4 lg:px-8  w-full">
                 <h2 className="text-4xl font-extrabold mb-5">User Profile</h2>
                 <div className="col-span-full">
                     <label htmlFor="photo" className="block text-sm/6 font-medium text-gray-900">Photo</label>
                     <div className="mt-2 flex items-center gap-x-3">
                         <svg className="h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                            <path fill-rule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clip-rule="evenodd" />
+                            <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clipRule="evenodd" />
                         </svg>
                         <button type="button" className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Change</button>
                     </div>
@@ -36,12 +56,11 @@ const DashboardPage: React.FC<DashboardPageProps> = ( { user } ) => {
                     <p className="mt-3 text-sm/6 text-gray-600">Write a few sentences about yourself.</p>
                 </div>
                 <div className="profile-info space-y-4">
-                    <p>ID: {user.id}</p>
-                    <p>Username: {user.username}</p>
-                    <p>Created At: {new Date( user.createdAt ).toLocaleDateString()}</p>
+                    <p>ID: {id || 'N/A'}</p>
+                    <p>Username: {username || 'N/A'}</p>
                 </div>
                 <ColorPickerComponent onColorChange={setBaseColor} />
-                <ContributionsGrid baseColor={baseColor} userId={user.id} />
+                <ContributionsGrid baseColor={baseColor} />
             </div>
         </>
     );

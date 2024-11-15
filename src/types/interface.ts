@@ -1,30 +1,30 @@
 export interface User {
-    user_id: string;
+    id: string;
+    full_name?: string;
     username: string;
     password: string;
     email: string;
-    created_at: Date;
-    updated_at: Date;
+    image?: string;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export interface Progress {
-    progress_id: string;
+    id: string;
     user_id: string;
     quiz_id: string;
     question_id: string;
-    score_id: string;
-    level: number;
     total_questions: number;
-    date_completed: Date;
+    completed: boolean;
+    created_at?: Date;
+    updated_at?: Date;
 
 }
 export interface Score {
     id?: string;
-    user_id: string;
+    username: string;
     quiz_id: string;
-    level: number;
     score: number;
-    total_questions: number;
     quiz_date: Date;
     created_at?: Date;
     updated_at?: Date;
@@ -39,7 +39,7 @@ export interface LeaderboardEntry {
 }
 
 export interface Answer {
-    answer_id: number;
+    id: number;
     question_id: number;
     content: string;
     is_correct: boolean;
@@ -47,18 +47,20 @@ export interface Answer {
 
 export interface Question {
     answers: Answer[];
-    question_id: number;
+    id: number;
     quiz_id: string;
     content: string;
     question_type: "multiple_choice" | "true_false" | "written";
 }
 
 export interface Quiz {
-    quiz_id: string;
-    name: string;
+    id: string;
+    subject: string;
     description: string;
     total_questions: number;
     category: string;
     level: number[];
+    created_at?: Date;
+    updated_at?: Date;
 }
 

@@ -18,10 +18,6 @@ export async function POST( req: NextRequest ) {
             return NextResponse.json( { message: 'Incorrect password' }, { status: 401 } );
         }
 
-        // Store user into sessionStorage
-        sessionStorage.setItem( 'user', JSON.stringify( user ) );
-
-        // Return user data with JWT token
         return NextResponse.json( {
             message: 'Login successful',
             user: {

@@ -1,34 +1,15 @@
-import React, { useEffect, useState } from 'react';
+// components/ContributionsGrid.tsx
+import React, { useEffect } from 'react';
 import { formatDate } from '../utils/formatUtils';
-import { Score } from '@/types/interface';
 
 interface ContributionsGridProps {
     baseColor: string;
-    userId: string;
 }
 
-const ContributionsGrid: React.FC<ContributionsGridProps> = ( { baseColor, userId } ) => {
-    const [scores, setScores] = useState<Score[]>( [] );
-
+const ContributionsGrid: React.FC<ContributionsGridProps> = ( { baseColor } ) => {
     useEffect( () => {
-        const fetchScores = async () => {
-            try {
-                const response = await fetch( `/api/score/${ userId }` );
-                const data = await response.json();
-                setScores( data );
-            } catch ( error ) {
-                console.error( 'Error fetching scores:', error );
-            }
-        };
-
-        fetchScores();
-    }, [userId] );
-
-    useEffect( () => {
-        if ( scores.length > 0 ) {
-            createContributionGrid( baseColor, scores );
-        }
-    }, [baseColor, scores] );
+        createContributionGrid( baseColor );
+    }, [baseColor] );
 
     return (
         <>
@@ -37,15 +18,17 @@ const ContributionsGrid: React.FC<ContributionsGridProps> = ( { baseColor, userI
     );
 };
 
-export const createContributionGrid = ( baseColor: string, userScores: Score[] ) => {
+// Function to create the contribution grid
+export const createContributionGrid = ( baseColor: string ) => {
     const gridContainer = document.getElementById( 'contributionGrid' );
     if ( !gridContainer ) return;
 
     const shades = generateColorShades( baseColor, 5 );
-    gridContainer.innerHTML = '';
-    const currentDate = new Date();
+    gridContainer.innerHTML = ''; // Clear previous grid
+    const currentDate = new Date(); // Get the current date
     currentDate.setDate( currentDate.getDate() + 7 );
 
+    // Create a map to hold months and their respective weeks
     const months: { [key: string]: HTMLElement; } = {};
     const monthNames = [
         'January', 'February', 'March', 'April', 'May', 'June',
@@ -54,12 +37,10 @@ export const createContributionGrid = ( baseColor: string, userScores: Score[] )
 
     for ( let i = 0; i < 365; i++ ) {
         const dateForCell = new Date( currentDate );
-        dateForCell.setDate( currentDate.getDate() - ( 364 - i ) );
-        const dateString = formatDate( dateForCell );
+        dateForCell.setDate( currentDate.getDate() - ( 364 - i ) ); // Calculate date
+        const dateString = formatDate( dateForCell ); // Format: mm/dd/yyyy
 
-        const scoresForDate = userScores.filter( score => formatDate( score.quiz_date ) === dateString );
-        const level = Math.min( scoresForDate.length, shades.length - 1 );
-
+        // Calculate month-year key for grouping
         const monthYear = `${ dateForCell.getFullYear() }-${ dateForCell.getMonth() + 1 }`;
 
         const cell = document.createElement( 'div' );
@@ -67,12 +48,13 @@ export const createContributionGrid = ( baseColor: string, userScores: Score[] )
             'w-4', 'h-4', 'm-1', 'aspect-square', 'rounded',
             'transition-transform', 'duration-200', 'ease-in-out', 'transform'
         );
-
-        cell.style.backgroundColor = level > 0 ? shades[level] : '#e0e0e0';
+        const level = Math.floor( Math.random() * shades.length );
+        cell.style.backgroundColor = level > 0 ? shades[level] : '#e0e0e0'; // Use appropriate shade or default color
         cell.classList.add( `date-${ dateString }`, `level-${ level }` );
         cell.addEventListener( 'mouseenter', () => showPopover( cell, level ) );
         cell.addEventListener( 'mouseleave', hidePopover );
 
+        // Check if the month container already exists
         if ( !months[monthYear] ) {
             const monthContainer = document.createElement( 'div' );
             monthContainer.classList.add( 'month-container', 'flex', 'flex-col', 'm-5', 'align-center' );

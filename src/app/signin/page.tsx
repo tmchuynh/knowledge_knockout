@@ -28,6 +28,33 @@ const LoginPage: React.FC = () => {
         }, 5000 );
     };
 
+    const checkAvailability = async ( data: any ) => {
+        const { firstName, lastName, username, password, email } = data;
+
+        try {
+
+
+            if ( password !== userData.confirmPassword ) {
+                showToast( "error", "Passwords do not match." );
+                return;
+            }
+            console.log( data );
+
+            const response = await fetch( `/api/users/${ data.email }` );
+            console.log( response );
+
+            if ( !response.ok ) {
+                showToast( "error", 'Email already exists in the database. Try logging in.' );
+                throw new Error( `Request failed with status ${ response.status }` );
+            } else {
+                handleRegister( data );
+            }
+        } catch ( e ) {
+            console.error( e );
+            showToast( "error", "An error occurred while checking email availability." );
+        }
+    };
+
     const handleRegister = async ( data: any ) => {
         try {
             const { firstName, lastName, username, password, email } = data;
@@ -49,12 +76,18 @@ const LoginPage: React.FC = () => {
                     username,
                     password,
                     email,
-                    image: ''
+                    image: '',
                 } ),
             } );
 
             if ( !response.ok ) {
+                showToast( "error", 'Registration failed. Please try again later.' );
                 throw new Error( `Request failed with status ${ response.status }` );
+            } else {
+                showToast( "success", "Registration successful! Redirecting..." );
+                var registerInputs = document.querySelectorAll( 'input' );
+                registerInputs.forEach( input => input.value = '' );
+                router.push( '/dashboard' );
             }
 
         } catch ( error ) {
@@ -75,10 +108,14 @@ const LoginPage: React.FC = () => {
 
             const result = await response.json();
 
-            console.log( "RESULT:", result );
+            console.log( JSON.stringify( result.user ) );
 
             if ( response.ok ) {
                 showToast( "success", "Login successful! Redirecting..." );
+                sessionStorage.setItem( 'username', result.user.username );
+                sessionStorage.setItem( 'email', result.user.email );
+                sessionStorage.setItem( 'id', result.user.id );
+
                 router.push( '/dashboard' );
             } else {
                 showToast( "error", result.error || 'Invalid username or password.' );
@@ -151,7 +188,7 @@ const LoginPage: React.FC = () => {
                     <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Register</h1>
                     <form className="mx-auto w-full p-10" onSubmit={( e ) => {
                         e.preventDefault();
-                        handleRegister( userData );
+                        checkAvailability( userData );
                     }}>
                         <div className="grid md:grid-cols-2 md:gap-6">
                             {/* First Name */}
