@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import Link from "@/components/ui/link";
 import { Toast, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const LoginPage: React.FC = () => {
     const router = useRouter();
@@ -28,6 +28,7 @@ const LoginPage: React.FC = () => {
             setToastMessage( null );
         }, 5000 );
     };
+
 
     const checkAvailability = async ( data: any ) => {
         const { username } = data;
@@ -112,7 +113,7 @@ const LoginPage: React.FC = () => {
             const userData = await userResponse.json();
 
             showToast( "success", "Login successful! Redirecting..." );
-            router.push( '/dashboard' );
+            router.push( '/quiz' );
 
         } catch ( error ) {
             console.error( 'Error during login or fetching user data:', error );
@@ -121,8 +122,6 @@ const LoginPage: React.FC = () => {
             setIsLoading( false );
         }
     };
-
-
 
 
     const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {

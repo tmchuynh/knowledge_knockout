@@ -23,14 +23,6 @@ const ResultPage = () => {
             }
 
             try {
-                // Include JWT token for authentication
-                const token = document.cookie.split( 'token=' )[1];
-                if ( !token ) {
-                    setError( 'User not authenticated. Please log in.' );
-                    setLoading( false );
-                    return;
-                }
-
                 // Fetch the score data
                 const res = await fetch( `/api/scores/${ scoreId }`, {
                     credentials: 'include',

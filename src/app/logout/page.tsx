@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-export default function SignOutPage() {
+export default function LogOutPage() {
     const router = useRouter();
 
-    const handleSignOut = async () => {
+    const handleLogOut = async () => {
         try {
             const response = await fetch( '/api/auth/logout', {
                 method: 'POST',
@@ -14,7 +14,7 @@ export default function SignOutPage() {
             } );
 
             if ( response.ok ) {
-                router.push( '/' );
+                router.push( '/login' );
             } else {
                 console.error( 'Failed to log out' );
             }
@@ -28,7 +28,7 @@ export default function SignOutPage() {
             <h1 className="text-5xl p-8 font-extrabold text-stone text-center mb-5">Are you sure you want to sign out?</h1>
             <Button
                 variant={"destructive"}
-                onClick={handleSignOut}
+                onClick={handleLogOut}
             >
                 See you soon!
             </Button>

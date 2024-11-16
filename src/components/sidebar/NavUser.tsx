@@ -31,10 +31,18 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 import React, { useEffect, useState } from "react";
+import { usePathname } from 'next/navigation';
 
 export function NavUser() {
     const { isMobile } = useSidebar();
     const [user, setUser] = useState<{ full_name: string; email: string; image: string; } | null>( null );
+    const pathname = usePathname();
+    const [key, setKey] = useState( pathname );
+
+    useEffect( () => {
+        // Toggle refresh state to trigger a re-render when the pathname changes
+        setKey( pathname );
+    }, [pathname] );
 
     useEffect( () => {
         const fetchUser = async () => {
@@ -58,7 +66,7 @@ export function NavUser() {
     }, [] );
 
     return (
-        <SidebarMenu>
+        <SidebarMenu key={key}>
             <SidebarMenuItem>
                 {!user ? (
                     <SidebarMenuButton size="lg" asChild>

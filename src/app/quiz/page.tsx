@@ -12,6 +12,8 @@ const QuizSelectionPage: React.FC = () => {
     const router = useRouter();
 
     useEffect( () => {
+        router.push( '/quiz' );
+
         const fetchQuizNames = async () => {
             try {
                 const response = await fetch( "/api/quiz" );
