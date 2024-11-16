@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Score, User } from '@/backend/models';
+import { Quiz, Score, User } from '@/backend/models';
 
 export async function POST(
     request: Request,
@@ -51,7 +51,7 @@ export async function GET(
     _request: Request,
     props: { params: { username: string; }; }
 ) {
-    const { username } = props.params;
+    const { username } = await props.params;
 
     try {
         if ( !username ) {
@@ -68,7 +68,8 @@ export async function GET(
         // Fetch all scores associated with the user
         const scores = await Score.findAll( {
             where: { username: user.username },
-            order: [['created_at', 'DESC']], // Optional: order scores by creation date
+            include: [{ model: Quiz, as: 'quiz' }],
+            order: [['created_at', 'DESC']],
         } );
 
         return NextResponse.json( scores, { status: 200 } );

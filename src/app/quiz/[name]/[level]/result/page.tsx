@@ -73,7 +73,7 @@ const ResultPage = () => {
 
     return (
         <div className="flex flex-col justify-center items-center px-6 py-10 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12 shadow-lg">
-            <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Quiz Completed!</h1>
+            <h1 className="text-4xl font-extrabold text-stone text-center mb-5">Quiz Completed!</h1>
             <h3 className="text-center text-xl font-extrabold dark:text-white">Your Score:</h3>
             <h6 className="text-center text-lg pb-4 font-bold dark:text-white">
                 {score} out of {totalQuestions}

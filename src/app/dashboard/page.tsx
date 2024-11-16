@@ -1,6 +1,5 @@
 'use client';
 
-import { Score, User } from '@/backend/models';
 import React, { useEffect, useState } from 'react';
 import dotenv, { config } from 'dotenv';
 import ScoresPage from '../scores/page';
@@ -12,14 +11,23 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { useRouter } from 'next/navigation';
-import ContributionGrid from '@/components/ContributionsGrid';
+import { MonthSelector } from '@/components/MonthSelector';
+import { formatDate } from '@/utils/formatUtils';
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Quiz, Score } from '@/backend/models';
 
 dotenv.config();
 
+interface QuizData {
+    category: string;
+    subject: string;
+    total_questions: number;
+}
+
 const DashboardPage: React.FC = () => {
     const [scores, setScores] = useState<Score[]>( [] );
-    const router = useRouter();
+    const [quizData, setQuizData] = useState<QuizData[]>( [] );
+    const [selectedMonth, setSelectedMonth] = useState<string | null>( null );
     const [user, setUser] = useState<{ id: string; username: string; image: string; } | null>( null );
     const avatarArray = [
         "/images/astronaut.png",
@@ -87,6 +95,31 @@ const DashboardPage: React.FC = () => {
                     }
 
                     const data = await response.json();
+
+                    data.forEach( async ( score: Score ) => {
+                        const response = await fetch( `/api/quiz/id/${ score.quiz_id }`, {
+                            credentials: 'include',
+                        } );
+
+                        if ( !response.ok ) {
+                            throw new Error( `Failed to fetch quiz data. Status: ${ response.status }` );
+                        }
+
+                        const _quizData: Quiz = await response.json();
+
+                        const newQuizData = {
+                            id: score.id,
+                            quiz_id: score.quiz_id,
+                            username: score.username,
+                            score: score.score,
+                            category: _quizData.category,
+                            timelapsed: score.timelapsed,
+                            subject: _quizData.subject,
+                            total_questions: _quizData.total_questions,
+                        };
+                        quizData.push( newQuizData );
+                    } );
+
                     setScores( data );
                 } catch ( error ) {
                     console.error( 'Error fetching scores:', error );
@@ -122,19 +155,34 @@ const DashboardPage: React.FC = () => {
         }
     };
 
+    const filteredData = selectedMonth
+        ? scores.filter( ( data ) => formatDate( data.updated_at! ).startsWith( `2024-${ selectedMonth }` )
+        ) : scores;
+
+    const handleMonthSelect = ( month: string ) => {
+        setSelectedMonth( month );
+    };
+
     return (
         <>
-            <div className="dashboard-container flex flex-col items-center px-6 py-8 lg:px-8 m-4  rounded-lg shadow-md border hover:shadow-md w-11/12 mx-auto">
-                <h2 className="text-4xl font-extrabold mb-5">User Profile</h2>
+            <div className="dashboard-container bg-gray-50 flex flex-col items-center px-6 py-8 lg:px-8 m-4  rounded-lg shadow-md border hover:shadow-md w-11/12 mx-auto">
+                <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">User Profile</h2>
                 <div className="w-full mx-auto">
                     <div className="mt-2 flex flex-col w-1/4 py-5 items-start justify-center">
                         {user && (
-                            <img
-                                className="h-16 w-16 rounded-full m-3"
-                                src={user.image || "/images/user.png"}
-                                alt="User profile"
-                            />
+                            <>
+                                <img
+                                    className="h-16 w-16 rounded-full m-3"
+                                    src={user.image || "/images/user.png"}
+                                    alt="User profile"
+                                />
+                                <div className="profile-info space-y-4 mb-3">
+                                    <p>ID: {user.id || 'N/A'}</p>
+                                    <p>Username: {user.username || 'N/A'}</p>
+                                </div>
+                            </>
                         )}
+
                         <Dialog>
                             <DialogTrigger className='rounded-lg shadow-sm p-1 border hover:shadow-md'>Change Profile Image</DialogTrigger>
                             <DialogContent>
@@ -157,20 +205,43 @@ const DashboardPage: React.FC = () => {
                         </Dialog>
                     </div>
                 </div>
-                <div className='w-full mx-auto'>
-                    {user ? (
-                        <>
-                            <div className="profile-info space-y-4">
-                                <p>ID: {user.id || 'N/A'}</p>
-                                <p>Username: {user.username || 'N/A'}</p>
+            </div>
+            <div className='w-full mx-auto bg-gray-50'>
+                {user ? (
+                    <>
+                        <div className="flex flex-col gap-7 ">
+                            <div className="flex flex-col justify-center items-center dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl m-4 shadow-md border hover:shadow-md p-7 w-11/12 mx-auto">
+                                <div className="w-full">
+                                    <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Progress Tracking and Analytics</h2>
+                                    <p className="text-lg mb-4">
+                                        Use the dropdown below to select a month and view your quiz progress.
+                                    </p>
+                                    <MonthSelector onMonthSelect={handleMonthSelect} />
+                                    <div className="mt-8 w-full">
+                                        <h5 className="text-2xl font-semibold mt-2">
+                                            {selectedMonth ? `Progress for ${ selectedMonth }` : 'Overall Progress'}
+                                        </h5>
+                                        <div className="w-full h-80 ">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart data={filteredData}>
+                                                    <CartesianGrid strokeDasharray="3 3" />
+                                                    <XAxis dataKey="quizName" />
+                                                    <YAxis />
+                                                    <Tooltip />
+                                                    <Legend />
+                                                    <Bar dataKey="totalQuestions" fill="#8884d8" name="Total Questions" />
+                                                    <Bar dataKey="correctAnswers" fill="#82ca9d" name="Correct Answers" />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            {scores.length > 0 ? <ContributionGrid />
-                                : <></>}
-                        </>
-                    ) : (
-                        <p>Loading user information...</p>
-                    )}
-                </div>
+                        </div>
+                    </>
+                ) : (
+                    <p>Loading user information...</p>
+                )}
             </div>
             {scores.length > 0 ? <ScoresPage /> : <></>}
         </>

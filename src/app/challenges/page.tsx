@@ -57,9 +57,9 @@ const ChallengesPage: React.FC = () => {
 
     return (
         <div className="container mx-auto p-6">
-            <h1 className="text-4xl font-extrabold mb-8">Challenges</h1>
+            <h1 className="text-4xl font-extrabold text-stone text-center mb-5">Challenges</h1>
             <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Daily Challenges</h2>
+                <h3 className="text-2xl font-bold mb-4">Daily Challenges</h3>
                 {dailyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {dailyChallenges.map( ( challenge, index ) => (
@@ -77,7 +77,7 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Weekly Challenges</h2>
+                <h3 className="text-2xl font-bold mb-4">Weekly Challenges</h3>
                 {weeklyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {weeklyChallenges.map( ( challenge, index ) => (
@@ -95,7 +95,7 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Bi-Weekly Challenges</h2>
+                <h3 className="text-2xl font-bold mb-4">Bi-Weekly Challenges</h3>
                 {biWeeklyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {biWeeklyChallenges.map( ( challenge, index ) => (
@@ -113,7 +113,7 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Monthly Challenges</h2>
+                <h3 className="text-2xl font-bold mb-4">Monthly Challenges</h3>
                 {monthlyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {monthlyChallenges.map( ( challenge, index ) => (
@@ -131,7 +131,7 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Bi-Monthly Challenges</h2>
+                <h3 className="text-2xl font-bold mb-4">Bi-Monthly Challenges</h3>
                 {biMonthlyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {biMonthlyChallenges.map( ( challenge, index ) => (
@@ -149,7 +149,7 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Yearly Challenges</h2>
+                <h3 className="text-2xl font-bold mb-4">Yearly Challenges</h3>
                 {yearlyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {yearlyChallenges.map( ( challenge, index ) => (

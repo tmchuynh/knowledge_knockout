@@ -25,7 +25,7 @@ export default function LogOutPage() {
 
     return (
         <div className="flex flex-col gap-2 justify-center text-center p-6 rounded-lg shadow-md border hover:shadow-md w-11/12 mx-auto">
-            <h1 className="text-5xl p-8 font-extrabold text-stone text-center mb-5">Are you sure you want to sign out?</h1>
+            <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Are you sure you want to sign out?</h2>
             <Button
                 variant={"destructive"}
                 onClick={handleLogOut}

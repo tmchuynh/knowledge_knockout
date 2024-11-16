@@ -32,7 +32,7 @@ const Checklist: React.FC<ChecklistProps> = ( { initialItems, title = "Checklist
 
     return (
         <div className="p-4 border rounded-md shadow-md w-full max-w-md mx-auto">
-            <h2 className="text-xl font-bold mb-4">{title}</h2>
+            <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">{title}</h2>
             <ul>
                 {items.map( item => (
                     <li

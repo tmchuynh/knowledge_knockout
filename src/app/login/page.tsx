@@ -144,7 +144,7 @@ const LoginPage: React.FC = () => {
             <div className="grid md:grid-cols-2 md:gap-6 w-11/12 mx-auto">
                 {/* Login Form */}
                 <div className="p-6 rounded-lg shadow-md border hover:shadow-md">
-                    <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Login</h1>
+                    <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Login</h2>
                     <form className="mx-auto w-full p-10" onSubmit={( e ) => {
                         e.preventDefault();
                         const formData = new FormData( e.currentTarget );
@@ -182,7 +182,7 @@ const LoginPage: React.FC = () => {
                 </div>
                 {/* Registration Form */}
                 <div className="p-6 rounded-lg shadow-md border hover:shadow-md">
-                    <h1 className="text-5xl font-extrabold text-stone text-center mb-5">Register</h1>
+                    <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Register</h2>
                     <form className="mx-auto w-full p-10" onSubmit={( e ) => {
                         e.preventDefault();
                         checkAvailability( userData );

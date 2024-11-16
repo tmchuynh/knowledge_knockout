@@ -1,6 +1,7 @@
 'use client';
 
-import { Score, User } from '@/types/interface';
+import { Quiz, Score, User } from '@/types/interface';
+import { formatDate, formatTime } from '@/utils/formatUtils';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
@@ -32,6 +33,29 @@ const ScoresPage: React.FC = () => {
             }
         };
 
+        const fetchQuiz = async ( quizId: string ) => {
+            try {
+                const response = await fetch( `/api/quiz/id/${ quizId }`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                } );
+
+                if ( !response.ok ) {
+                    throw new Error( `Failed to fetch quiz subject. Status: ${ response.status }` );
+                }
+
+                const data = await response.json();
+                console.log( 'Quiz:', data );
+                return data.quiz;
+            } catch ( error ) {
+                console.error( 'Error fetching quiz subject:', error );
+                throw error;
+            }
+        };
+
         const fetchScoresWithQuizData = async ( username: string ) => {
             try {
                 const response = await fetch( `/api/score/username/${ username }`,
@@ -40,6 +64,12 @@ const ScoresPage: React.FC = () => {
                 const scores: Score[] = await response.json();
 
                 console.log( "SCORES", scores );
+                scores.forEach( async score => {
+                    const quiz: Quiz = await fetchQuiz( score.quiz_id );
+                    score.quiz = quiz;
+                } );
+
+                console.log( "scores updated", scores );
                 setPastScores( scores );
                 setFilteredScores( scores );
                 setLoading( false );
@@ -101,7 +131,7 @@ const ScoresPage: React.FC = () => {
 
     return (
         <div className="container mx-auto bg-gray-50 dark:bg-gray-900 p-6 rounded-lg shadow-md border hover:shadow-md w-11/12">
-            <h1 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Past Scores</h1>
+            <h1 className="text-4xl font-extrabold text-stone text-center mb-5">Past Scores</h1>
             <div className="flex flex-wrap justify-center gap-4 mb-4">
                 <button onClick={sortByQuiz} className="btn-primary">Sort by Quiz</button>
                 <button onClick={sortByDate} className="btn-primary">Sort by Date</button>
@@ -132,16 +162,17 @@ const ScoresPage: React.FC = () => {
                 <tbody>
                     {filteredScores.map( ( score, index ) => {
                         const percentage = ( ( score.score / score.quiz?.total_questions! ) * 100 ).toFixed( 2 );
-                        const date = new Date( score.quiz_date );
-                        const formattedDate = date.toLocaleDateString();
-                        const formattedTime = date.toLocaleTimeString();
+                        const date = score.updated_at!;
+                        const subject = score.quiz?.subject;
+                        const total_questions = score.quiz?.total_questions;
+
                         return (
                             <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                                <td className="p-4 border-b">{score.quiz_id}</td>
-                                <td className="p-4 border-b">{`${ score.score } / ${ score.quiz?.total_questions! }`}</td>
+                                <td className="p-4 border-b">{subject}</td>
+                                <td className="p-4 border-b">{`${ score.score } / ${ total_questions }`}</td>
                                 <td className="p-4 border-b">{percentage}%</td>
-                                <td className="p-4 border-b">{formattedDate}</td>
-                                <td className="p-4 border-b">{formattedTime}</td>
+                                <td className="p-4 border-b">{formatDate( date )}</td>
+                                <td className="p-4 border-b">{formatTime( date )}</td>
                             </tr>
                         );
                     } )}
