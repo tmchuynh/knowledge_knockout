@@ -9,11 +9,8 @@ export async function GET(
         const { searchParams } = new URL( request.url );
         const quizId = searchParams.get( 'id' );
 
-        console.log( 'Received quiz ID:', quizId );
-
         const { title } = props.params;
         const decodedTitle = decodeURIComponent( title );
-        console.log( 'Received quiz title:', decodedTitle );
 
         if ( !decodedTitle ) {
             return NextResponse.json( { error: 'Quiz title is required' }, { status: 400 } );
@@ -29,14 +26,10 @@ export async function GET(
             return NextResponse.json( { error: 'Quiz not found' }, { status: 404 } );
         }
 
-        console.log( 'Quiz found:', quiz );
-
         // Fetch scores by quiz ID
         const scores = await Score.findAll( {
             where: { quiz_id: quizId || quiz.id },
         } );
-
-        console.log( 'Scores fetched:', scores );
 
         if ( scores.length === 0 ) {
             return NextResponse.json( { message: 'No scores found for this quiz' }, { status: 404 } );
@@ -48,8 +41,6 @@ export async function GET(
             score: ( score.score! / quiz.total_questions! ) * 100,
             date: score.quiz_date,
         } ) );
-
-        console.log( 'leaderboardData:', leaderboardData );
 
         return NextResponse.json( leaderboardData, { status: 200 } );
     } catch ( error ) {

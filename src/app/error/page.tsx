@@ -65,7 +65,7 @@ export default function NotFound() {
                         Go back to Home
                     </Link>
                 ) : (
-                    <Link href="/signin" className={styles.backHomeLink}>
+                    <Link href="/login" className={styles.backHomeLink}>
                         Go back to Login
                     </Link>
                 )}

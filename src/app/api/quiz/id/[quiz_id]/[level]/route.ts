@@ -3,18 +3,15 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
     request: Request,
-    { params }: { params: { title: string; level: number; id: number; }; }
+    props: { params: { slug: string; level: number; id: number; }; }
 ) {
-    const { id } = params;
-
-    if ( !id ) {
-        return NextResponse.json( { error: 'Quiz ID is required' }, { status: 400 } );
-    }
+    const { id, slug, level } = await props.params;
 
     try {
         const questions = await Question.findAll( {
             where: {
-                quiz_id: id,
+                subject: slug,
+                level: level
             },
             include: [{ model: Answer, as: 'answers' }],
         } );

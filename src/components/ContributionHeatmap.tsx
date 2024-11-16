@@ -58,7 +58,6 @@ const ContributionHeatmap: React.FC = () => {
                     score_count: 1, // Assuming each record is one score, adjust as needed
                 } ) );
 
-                console.log( 'Formatted data:', formattedData );
                 setScores( formattedData );
             } catch ( error ) {
                 console.error( 'Error fetching or formatting scores:', error );

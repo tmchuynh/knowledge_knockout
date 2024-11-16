@@ -6,12 +6,7 @@ export async function GET( request: Request,
 ) {
     const params = await props.params;
     try {
-        console.log( request );
         const { username } = params;
-        const decodedTitle = decodeURIComponent( username );
-
-
-        console.log( "username: " + decodedTitle );
 
         if ( !username ) {
             return NextResponse.json( { error: 'Username query parameter is required.' }, { status: 400 } );

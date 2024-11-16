@@ -57,7 +57,6 @@ const ResultPage = () => {
                     }
 
                     const dataQ = await resQ.json();
-                    console.log( 'Quiz data:', dataQ );
                 } catch ( error ) {
                     console.error( 'Error fetching quiz:', error );
                 }

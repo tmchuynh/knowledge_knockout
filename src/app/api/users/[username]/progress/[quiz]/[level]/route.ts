@@ -1,85 +1,104 @@
 import { Progress, Quiz, User } from '@/backend/models';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // POST Handler to update or create user progress
-export async function POST( request: Request ) {
+export async function POST(
+    request: NextRequest,
+    { params }: { params: { username: string; quiz: string; level: string; }; }
+) {
     try {
-        const body = await request.json();
-        const { userId, questionId, index, scoreId, completed, updated_at } = body;
+        const { username, quiz, level } = params;
+        const { question_id, completed } = await request.json();
 
-        if ( !userId || !questionId || !scoreId || index === undefined || completed === undefined ) {
-            return NextResponse.json( { error: 'Missing required fields' }, { status: 400 } );
+        if ( !username || !quiz || !level ) {
+            return NextResponse.json( { error: 'Missing required parameters' }, { status: 400 } );
         }
 
-        // Validate the user
-        const user = await User.findOne( { where: { id: userId } } );
-        if ( !user ) {
+        // Validate that the user exists
+        const foundUser = await User.findOne( { where: { username } } );
+        if ( !foundUser ) {
             return NextResponse.json( { error: 'User not found' }, { status: 404 } );
         }
 
-        // Check for existing progress
-        let progress = await Progress.findOne( {
-            where: { id: userId, score_id: scoreId, question_id: questionId },
+        // Validate that the quiz exists
+        const foundQuiz = await Quiz.findOne( { where: { subject: quiz } } );
+        if ( !foundQuiz ) {
+            return NextResponse.json( { error: 'Quiz not found' }, { status: 404 } );
+        }
+
+        // Create or update progress
+        const [progress, created] = await Progress.findOrCreate( {
+            where: {
+                user_id: foundUser.id,
+                quiz_id: foundQuiz.id,
+                level,
+                question_id,
+            },
+            defaults: {
+                user_id: foundUser.id,
+                quiz_id: foundQuiz.id,
+                level,
+                question_id,
+                completed,
+            },
         } );
 
-        if ( progress ) {
-            // Update existing progress
-            await progress.update( {
-                score_id: scoreId,
-                completed,
-                updated_at: updated_at || new Date(),
-            } );
-            return NextResponse.json( { message: 'Progress updated successfully', progress } );
-        } else {
-            // Create new progress
-            const progressId = `progress-${ userId }-${ questionId }`;
-            const newProgress = await Progress.create( {
-                id: progressId,
-                question_id: questionId,
-                score_id: scoreId,
-                level: index,
-                total_questions: 1,
-                completed,
-                created_at: new Date(),
-                updated_at: new Date(),
-            } );
-            return NextResponse.json( { message: 'Progress created successfully', progress: newProgress } );
-        }
-    } catch ( error: any ) {
-        console.error( 'Error processing user progress:', error );
-
-        if ( error.code === 'ER_NO_REFERENCED_ROW_2' ) {
-            return NextResponse.json( { error: 'Invalid user ID or quiz ID reference' }, { status: 400 } );
+        if ( !created ) {
+            // Update existing progress if needed
+            await progress.update( { question_id, completed, updated_at: Date.now() } );
         }
 
-        return NextResponse.json( { error: 'Failed to process user progress' }, { status: 500 } );
+        return NextResponse.json(
+            { message: 'Progress initialized/updated successfully', progress },
+            { status: 200 }
+        );
+    } catch ( error ) {
+        console.error( 'Error initializing/updating progress:', error );
+        return NextResponse.json( { error: 'Failed to initialize/update progress' }, { status: 500 } );
     }
 }
 
 // GET Handler to fetch user progress
-export async function GET( request: Request ) {
-    try {
-        const { searchParams } = new URL( request.url );
-        const userId = searchParams.get( 'userId' );
-        const quizId = searchParams.get( 'quizId' );
+export async function GET(
+    request: Request,
+    { params }: { params: { username: string; quiz: string; level: number; }; }
+) {
 
-        if ( !userId || !quizId ) {
-            return NextResponse.json( { error: 'User ID and Quiz ID are required' }, { status: 400 } );
+    try {
+        let { username, quiz, level } = await params;
+        level++;
+
+        console.log( 'Received parameters:', username, quiz, level );
+
+        if ( !username || !quiz || !level ) {
+            return NextResponse.json( { error: 'Missing required parameters' }, { status: 400 } );
         }
 
-        const user = await User.findOne( { where: { id: userId } } );
+        // Fetch user
+        const user = await User.findOne( { where: { username } } );
         if ( !user ) {
+            console.log( "couldn't find user" );
             return NextResponse.json( { error: 'User not found' }, { status: 404 } );
         }
 
-        const progress = await Progress.findAll( { where: { user_id: userId, quiz_id: quizId } } );
+        // Fetch quiz infor
+        const _quiz = await Quiz.findOne( {
+            where: { subject: quiz, level: level },
+        } );
+
+        if ( !quiz ) {
+            console.log( "couldn't find quiz" );
+            return NextResponse.json( { error: 'Quiz not found' }, { status: 404 } );
+        }
+
+        // Fetch progress
+        const progress = await Progress.findAll( { where: { user_id: user.id, quiz_id: _quiz?.id } } );
         if ( !progress.length ) {
+            console.log( "couldn't find progress" );
             return NextResponse.json( { error: 'Progress not found' }, { status: 404 } );
         }
 
-        const quizzes = await Quiz.findAll();
-
-        return NextResponse.json( { quizzes, user, progress } );
+        return NextResponse.json( { progress }, { status: 200 } );
     } catch ( error ) {
         console.error( 'Error fetching user progress:', error );
         return NextResponse.json( { error: 'Failed to retrieve data' }, { status: 500 } );

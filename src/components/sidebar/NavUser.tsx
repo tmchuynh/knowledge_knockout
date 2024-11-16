@@ -37,14 +37,6 @@ export function NavUser() {
     const [user, setUser] = useState<{ full_name: string; email: string; image: string; } | null>( null );
 
     useEffect( () => {
-        const tokenMatch = document.cookie.match( /token=([^;]+)/ );
-        const token = tokenMatch ? tokenMatch[1] : null;
-
-        if ( !token ) {
-            console.warn( 'No token found. Skipping user fetch.' );
-            return;
-        }
-
         const fetchUser = async () => {
             try {
                 const response = await fetch( '/api/auth/me', {
@@ -70,7 +62,7 @@ export function NavUser() {
             <SidebarMenuItem>
                 {!user ? (
                     <SidebarMenuButton size="lg" asChild>
-                        <a href="/signin">
+                        <a href="/login">
                             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                                 <Command className="size-4" />
                             </div>
@@ -141,7 +133,7 @@ export function NavUser() {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
                                 <LogOut />
-                                Log out
+                                <a href="/logout">Logout</a>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

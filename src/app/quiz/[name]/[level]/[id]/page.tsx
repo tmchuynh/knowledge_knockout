@@ -4,52 +4,55 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Answer, Question, Score } from '@/types/interface';
+import { Answer, Progress, Question, Quiz, Score, User } from '@/types/interface';
 
 const QuizPage = () => {
     const router = useRouter();
     const pathname = usePathname();
-    const searchParams = useSearchParams();
 
     const segments = pathname.split( '/' ).filter( Boolean );
-    const currentTitle = segments.length > 1 ? decodeURIComponent( segments[1] ) : '';
-    const level = parseInt( segments[3] );
+    const subject = segments.length > 1 ? decodeURIComponent( segments[1] ) : '';
+    let level = parseInt( segments[3] );
+    const question_id = parseInt( segments[4] );
 
     const [questions, setQuestions] = useState<Question[]>( [] );
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState( 0 );
+    const [currentQuestion, setCurrentQuestion] = useState<Question>();
     const [scoreId, setScoreId] = useState<string | null>( null );
     const [score, setScore] = useState<number>( 0 );
     const [userInput, setUserInput] = useState<string>( '' );
+    const [user, setUser] = useState<User>();
+    const [progress, setProgress] = useState<Progress>();
     const [result, setResult] = useState<string | null>( null );
     const [loading, setLoading] = useState<boolean>( true );
     const [error, setError] = useState<string | null>( null );
 
     useEffect( () => {
-        const token = document.cookie.split( 'token=' )[1];
-        if ( !token ) {
-            setError( 'User not authenticated. Please log in.' );
-            setLoading( false );
-            return;
-        }
-
-        const fetchQuestionData = async () => {
+        const fetchUserData = async () => {
             try {
-                const quizRes = await fetch( `/api/quiz/${ encodeURIComponent( currentTitle ) }`, {
-                    headers: {
-                        Authorization: `Bearer ${ token }`,
-                        'Content-Type': 'application/json',
-                    },
+                const response = await fetch( '/api/auth/me', {
+                    credentials: 'include',
                 } );
-                const quizData = await quizRes.json();
 
-                if ( quizData.error ) {
-                    setError( 'Failed to fetch quiz data' );
-                    setLoading( false );
-                    return;
+                if ( !response.ok ) {
+                    throw new Error( 'Failed to fetch user data' );
                 }
 
+                const userData = await response.json();
+
+                fetchQuestionData( userData );
+
+                setUser( userData );
+            } catch ( error ) {
+                console.error( 'Error fetching user data:', error );
+            }
+        };
+
+        const fetchQuestionData = async ( userData: User ) => {
+
+            try {
                 const questionsRes = await fetch(
-                    `/api/quiz/${ encodeURIComponent( currentTitle ) }/${ level }`,
+                    `/api/quiz/${ encodeURIComponent( subject ) }`,
                     {
                         credentials: 'include',
                     }
@@ -65,12 +68,46 @@ const QuizPage = () => {
                 setQuestions( questionsData.questions );
                 setLoading( false );
 
+                console.log();
+
+                const response = await fetchUserProgress( userData, questionsData[0] );
+
+                if ( response.status === 200 ) {
+                    const progressData = await response.json();
+                    setProgress( progressData.progress );
+                }
+
                 if ( questionsData.questions.length > 0 && !scoreId ) {
-                    await initializeScore( quizData.quiz_id, questionsData.questions.length );
+                    await initializeScore( questionsData.quiz_id, questionsData.questions.length );
+                }
+                if ( !progress ) {
+                    await initializeProgress( questionsData, userData, currentQuestion?.id! );
                 }
             } catch ( error ) {
                 setError( 'Error fetching data' );
                 setLoading( false );
+            }
+        };
+
+        const fetchUserProgress = async ( userData: User, quiz: Quiz ) => {
+            try {
+                const response = await fetch( `/api/users/${ userData.username }/progress/${ quiz.subject }/${ level }`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                } );
+
+
+                if ( !response.ok ) {
+                    throw new Error( `Failed to fetch user progress, status: ${ response.status }` );
+                }
+
+                const data = await response.json();
+                return data;
+            } catch ( error ) {
+                console.error( 'Error fetching user progress:', error );
             }
         };
 
@@ -96,10 +133,31 @@ const QuizPage = () => {
             }
         };
 
-        fetchQuestionData();
-    }, [currentTitle] );
+        const initializeProgress = async ( quiz: Quiz, user: User, question_id: string ) => {
+            try {
+                const res = await fetch( `/api/users/${ user.username }/progress/${ quiz.subject }/${ level }`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify( { question_id, completed: false } ),
+                } );
 
-    const currentQuestion = questions[currentQuestionIndex];
+                const data = await res.json();
+                if ( res.ok ) {
+                    setScoreId( data.score_id );
+                } else {
+                    setError( 'Failed to initialize score' );
+                }
+            } catch ( error ) {
+                setError( 'Failed to initialize score' );
+            }
+        };
+
+        fetchUserData();
+    }, [subject] );
+
     if ( loading ) return <div>Loading...</div>;
     if ( error ) return <div className="text-red-500">{error}</div>;
 
@@ -120,7 +178,6 @@ const QuizPage = () => {
     };
 
     const handleWrittenAnswerSubmit = async () => {
-        const currentQuestion = questions[currentQuestionIndex];
         const userAnswer = userInput.trim();
 
         if ( !userAnswer ) {
@@ -128,11 +185,11 @@ const QuizPage = () => {
             return;
         }
 
-        const correctAnswers = currentQuestion.answers
+        const correctAnswers = currentQuestion?.answers
             .filter( ( answer: Answer ) => answer.is_correct )
             .map( ( answer: Answer ) => answer.content );
 
-        const isCorrect = correctAnswers.some( ( correctAnswer ) => {
+        const isCorrect = correctAnswers?.some( ( correctAnswer ) => {
             const distance = levenshtein( userAnswer, correctAnswer );
             const threshold = Math.floor( correctAnswer.length * 0.3 );
             return distance <= threshold;
@@ -157,15 +214,16 @@ const QuizPage = () => {
 
         if ( currentQuestionIndex < questions.length - 1 ) {
             setCurrentQuestionIndex( currentQuestionIndex + 1 );
+            setCurrentQuestion( questions[currentQuestionIndex] );
         } else {
-            router.push( `/quiz/${ encodeURIComponent( currentTitle ) }/difficulty/${ level }/result?scoreId=${ scoreId }` );
+            router.push( `/quiz/${ encodeURIComponent( subject ) }/difficulty/${ level }/result?scoreId=${ scoreId }` );
         }
     };
 
     return (
         <div className="flex flex-col justify-center items-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
-            <h1 className="text-3xl font-extrabold text-center mb-5">{currentQuestion.content}</h1>
-            {currentQuestion.question_type === 'multiple_choice' || currentQuestion.question_type === 'true_false' ? (
+            <h1 className="text-3xl font-extrabold text-center mb-5">{currentQuestion?.content}</h1>
+            {currentQuestion?.question_type === 'multiple_choice' || currentQuestion?.question_type === 'true_false' ? (
                 <div className="w-full flex flex-col">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {currentQuestion.answers.map( ( answer: Answer, index ) => (

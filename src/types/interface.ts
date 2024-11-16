@@ -45,7 +45,7 @@ export interface LeaderboardEntry {
 }
 
 export interface Answer {
-    id: number;
+    id: string;
     question_id: number;
     content: string;
     is_correct: boolean;
@@ -53,7 +53,7 @@ export interface Answer {
 
 export interface Question {
     answers: Answer[];
-    id: number;
+    id: string;
     quiz_id: string;
     content: string;
     question_type: "multiple_choice" | "true_false" | "written";
@@ -65,8 +65,7 @@ export interface Quiz {
     description: string;
     total_questions: number;
     category: string;
-    level: number[];
+    level: number;
     created_at?: Date;
     updated_at?: Date;
 }
-

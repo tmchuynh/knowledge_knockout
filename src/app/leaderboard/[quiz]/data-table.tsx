@@ -36,12 +36,9 @@ export function DataTable<TData, TValue>( {
 
 
     useEffect( () => {
-        console.log( 'Quiz Name from useParams:', quiz );
-
         const fetchLeaderboard = async () => {
             try {
                 const leaderboardDataByLevel = await getLeaderboardDataByLevel( quizNameStr );
-                console.log( 'Fetched leaderboard data:', leaderboardDataByLevel );
                 setLeaderboard( leaderboardDataByLevel );
             } catch ( error ) {
                 console.error( 'Error during fetchLeaderboard:', error );
@@ -116,14 +113,10 @@ export function DataTable<TData, TValue>( {
 }
 
 const getLeaderboardDataByLevel = async ( quizName: string ): Promise<Map<number, LeaderboardEntry[]>> => {
-    console.log( 'Fetching leaderboard for quiz:', quizName );
-
-
 
     const leaderboardDataByLevel = new Map<number, LeaderboardEntry[]>();
     try {
         const response = await fetch( `/api/leaderboard/${ quizName }` );
-        console.log( 'API response status:', response.status );
 
         if ( !response.ok ) {
             console.error( 'Failed to fetch leaderboard data: ', response.statusText );
@@ -131,7 +124,6 @@ const getLeaderboardDataByLevel = async ( quizName: string ): Promise<Map<number
         }
 
         const leaderboardData: LeaderboardEntry[] = await response.json();
-        console.log( 'Raw leaderboard data:', leaderboardData );
 
         leaderboardData.forEach( ( entry ) => {
             if ( !leaderboardDataByLevel.has( entry.level ) ) {

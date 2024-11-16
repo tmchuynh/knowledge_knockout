@@ -1,38 +1,52 @@
 "use client";
 
-import { Progress, Score } from '@/types/interface';
-import { useRouter } from 'next/navigation';
+import { Progress, Quiz, Score, User } from '@/types/interface';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-interface QuizDifficultyPageProps {
-    params: {
-        slug: string;
-    };
-}
+const QuizDifficultyPage: React.FC = () => {
+    const pathname = usePathname();
+    const segments = pathname.split( '/' ).filter( Boolean );
+    const subject = segments.length > 1 ? decodeURIComponent( segments[1] ) : '';
 
-const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = ( { params } ) => {
-    const { slug: quizId } = params;
     const router = useRouter();
     const [progress, setProgress] = useState<Progress[]>( [] );
     const [userScores, setUserScores] = useState<Score[]>( [] );
-    const [quizData, setQuizData] = useState<any>( null );
-    const [difficultyLevels, setDifficultyLevels] = useState<number[]>( [] );
+    const [quizData, setQuizData] = useState<Quiz[]>( [] );
+    const [user, setUser] = useState<User>();
     const [loading, setLoading] = useState( true );
     const [error, setError] = useState<string | null>( null );
 
     useEffect( () => {
-        const fetchQuizDetails = async () => {
+
+        const fetchUserData = async () => {
             try {
-                const token = document.cookie.split( 'token=' )[1];
-                if ( !token ) {
-                    console.error( 'Token not found. User might not be authenticated.' );
-                    return;
+                const response = await fetch( '/api/auth/me', {
+                    credentials: 'include',
+                } );
+
+                if ( !response.ok ) {
+                    throw new Error( 'Failed to fetch user data' );
                 }
 
-                console.log( 'Fetching quiz details for quizId:', quizId );
+                const userData = await response.json();
+                setUser( userData );
+            } catch ( error ) {
+                console.error( 'Error fetching user data:', error );
+            }
+        };
 
-                const response = await fetch( `/api/quiz-details?quizId=${ quizId }`, {
+        if ( !subject ) {
+            console.error( "Quiz ID is missing." );
+            setError( "Quiz ID is missing." );
+            setLoading( false );
+            return;
+        }
+
+        const fetchQuizDetails = async () => {
+            try {
+                const response = await fetch( `/api/quiz/${ subject }`, {
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
@@ -41,8 +55,7 @@ const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = ( { params } ) => 
 
                 if ( response.ok ) {
                     const data = await response.json();
-                    setQuizData( data.quiz );
-                    setDifficultyLevels( data.levels );
+                    setQuizData( data );
                     setProgress( data.progress || [] );
                     setUserScores( data.scores || [] );
                 } else {
@@ -57,23 +70,26 @@ const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = ( { params } ) => 
             }
         };
 
+        fetchUserData();
         fetchQuizDetails();
-    }, [quizId] );
+    }, [subject] );
 
-    const getButtonClass = ( level: number ): string => {
-        const isInProgress = progress.some( ( item ) => item.quiz_id === quizId && level === quizData.level );
+    const getButtonClass = ( quiz: Quiz, level: number ): string => {
+        level++;
+        const isInProgress = progress.some( ( item ) => item.quiz_id === quiz.id && level === quiz.level );
         return isInProgress ? 'bg-amber-700 hover:bg-amber-600' : 'bg-zinc-700 hover:bg-zinc-600';
     };
 
-    const handleDifficultySelection = ( level: number ) => {
-        if ( !quizId ) return;
-        sessionStorage.setItem( 'difficultyLevel', level.toString() );
-        router.push( `/quiz/${ quizId }/questions` );
+    const handleDifficultySelection = ( quiz: Quiz, level: number ) => {
+        if ( !quiz.id ) return;
+        level++;
+        router.push( `/quiz/${ quiz.subject }/${ level }/0` );
     };
 
-    const getHighestScoreForLevel = ( level: number ) => {
+    const getHighestScoreForLevel = ( quiz: Quiz, level: number ) => {
+        level++;
         return userScores
-            .filter( ( score ) => score.quiz_id === quizId && level === quizData.level )
+            .filter( ( score ) => score.quiz_id === quiz.id && level === quiz.level )
             .reduce( ( max, score ) => Math.max( max, score.score ), 0 );
     };
 
@@ -88,18 +104,18 @@ const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = ( { params } ) => 
     return (
         <div className="flex flex-col justify-center px-4 py-6 md:px-8 lg:px-10 container dark:border-gray-700 dark:bg-gray-800 dark:text-white my-4 p-6 rounded-lg border hover:shadow-md w-11/12 mx-auto lg:w-10/12 shadow-lg">
             <h2 className="text-center text-4xl py-5 font-extrabold dark:text-white">
-                Select Difficulty Level for <br /> {quizData ? quizData.title : 'Loading...'}
+                Select Difficulty Level for <br /> {quizData ? quizData[0].subject : 'Loading...'}
             </h2>
             <div id="difficultyOptions" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-3">
-                {difficultyLevels.map( ( level, index ) => (
+                {quizData.map( ( quiz, index ) => (
                     <Button
-                        key={`${ level }__${ index }`}
-                        onClick={() => handleDifficultySelection( level )}
-                        className={`${ getButtonClass( level ) } transition-all duration-200`}
+                        key={`${ quiz.id }__${ index + 1 }`}
+                        onClick={() => handleDifficultySelection( quiz, index )}
+                        className={`${ getButtonClass( quiz, index ) } transition-all duration-200`}
                     >
-                        Level {level}
+                        Level {index + 1}
                         <div className="text-sm mt-1">
-                            {getHighestScoreForLevel( level ) ? `High Score: ${ getHighestScoreForLevel( level ) }` : ''}
+                            {getHighestScoreForLevel( quiz, index ) ? `High Score: ${ getHighestScoreForLevel( quiz, index ) }` : ''}
                         </div>
                     </Button>
                 ) )}

@@ -75,7 +75,6 @@ const DashboardPage: React.FC = () => {
 
     useEffect( () => {
         if ( user?.username ) {
-            console.log( "user.username", user.username );
             const fetchScores = async () => {
                 try {
                     // No need to attach Authorization header manually; cookies are sent automatically

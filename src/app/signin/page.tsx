@@ -72,7 +72,7 @@ const LoginPage: React.FC = () => {
             } else {
                 showToast( "success", "Registration successful! Redirecting..." );
                 setUserData( { firstName: '', lastName: '', email: '', username: '', password: '', confirmPassword: '' } );
-                router.push( '/signin' );
+                router.push( '/login' );
             }
         } catch ( error ) {
             console.error( 'Error during registration:', error );
@@ -110,7 +110,6 @@ const LoginPage: React.FC = () => {
             }
 
             const userData = await userResponse.json();
-            console.log( 'User data:', userData );
 
             showToast( "success", "Login successful! Redirecting..." );
             router.push( '/dashboard' );

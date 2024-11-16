@@ -30,7 +30,6 @@ const LeaderboardSelectionPage: React.FC = () => {
 
                 if ( response.ok ) {
                     const data: Quiz[] = await response.json();
-                    console.log( 'Fetched quiz names:', data );
 
                     // Extract unique quiz titles
                     const uniqueTitles = data
@@ -39,11 +38,9 @@ const LeaderboardSelectionPage: React.FC = () => {
 
                     // Debugging uniqByKeepLast function
                     const uniqueData = uniqByKeepLast( data, 'name' );
-                    console.log( 'Unique quizzes by name:', uniqueData );
                     setQuizzes( uniqueData );
 
                     setQuizNames( uniqueTitles );
-                    console.log( 'Filtered quiz titles:', uniqueTitles );
                 } else {
                     console.error( 'Failed to fetch quiz names: HTTP status', response.status );
                 }

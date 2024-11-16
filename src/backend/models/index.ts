@@ -17,8 +17,8 @@ Quiz.hasMany( Question, { foreignKey: 'id' } );
 Question.belongsTo( Quiz, { foreignKey: 'id' } );
 
 // Association between Question and Answer
-Question.hasMany( Answer, { foreignKey: 'id' } );
-Answer.belongsTo( Question, { foreignKey: 'id' } );
+Question.hasMany( Answer, { as: 'answers', foreignKey: 'question_id' } );
+Answer.belongsTo( Question, { as: 'question', foreignKey: 'question_id' } );
 
 // Association between Quiz and Score
 Quiz.hasMany( Score, { foreignKey: 'id' } );

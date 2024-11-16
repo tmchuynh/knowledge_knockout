@@ -8,28 +8,10 @@ import { Button } from '@/components/ui/button';
 const QuizSelectionPage: React.FC = () => {
     const [quizProgress, setQuizProgress] = useState<Progress[]>( [] );
     const [quizNames, setQuizNames] = useState<string[]>( [] );
-    const [user, setUser] = useState<User | null>( null );
     const [quizzes, setQuizzes] = useState<Quiz[]>( [] );
     const router = useRouter();
 
     useEffect( () => {
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch( '/api/auth/me', {
-                    credentials: 'include',
-                } );
-
-                if ( !response.ok ) {
-                    throw new Error( 'Failed to fetch user data' );
-                }
-
-                const userData = await response.json();
-                setUser( userData );
-            } catch ( error ) {
-                console.error( 'Error fetching user data:', error );
-            }
-        };
-
         const fetchQuizNames = async () => {
             try {
                 const response = await fetch( "/api/quiz" );
@@ -51,40 +33,11 @@ const QuizSelectionPage: React.FC = () => {
             }
         };
 
-        fetchUserData();
         fetchQuizNames();
     }, [] );
 
     const handleQuizSelection = async ( quizName: Quiz ) => {
-        if ( !user || !user.id ) {
-            console.error( 'User not found' );
-            return;
-        }
-
-        const quiz = quizzes.find( ( quiz ) => quiz.id === quizName.id );
-        if ( !quiz ) {
-            console.error( 'Quiz not found' );
-            return;
-        }
-
-        try {
-            const response = await fetch( `/api/users/${ user.id }/progress/${ quizName.subject }/${ quizName.level }`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${ document.cookie.split( 'token=' )[1] }`, // Retrieve token from cookies
-                },
-                body: JSON.stringify( { quizName } ),
-            } );
-
-            if ( !response.ok ) throw new Error( `Request failed with status ${ response.status }` );
-
-            const data = await response.json();
-            console.log( 'Progress updated:', data );
-            // Optionally redirect to another page or show success message
-        } catch ( error ) {
-            console.error( 'Error updating quiz progress:', error );
-        }
+        router.push( `/quiz/${ quizName.subject }` );
     };
 
     const getButtonClass = ( _quizId: string ): string => {

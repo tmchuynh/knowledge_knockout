@@ -8,7 +8,6 @@ export const getQuizByTitle = async ( title: string ) => {
         } );
 
         if ( !quiz ) {
-            console.log( 'Quiz not found' );
             return null;
         }
 
