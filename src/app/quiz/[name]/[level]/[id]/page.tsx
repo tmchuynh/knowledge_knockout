@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Answer, Progress, Question, Quiz, Score, User } from '@/types/interface';
+import { Answer, Question, Quiz, Score, User } from '@/types/interface';
 
 const QuizPage = () => {
     const router = useRouter();
@@ -13,7 +13,6 @@ const QuizPage = () => {
     const segments = pathname.split( '/' ).filter( Boolean );
     const subject = segments.length > 1 ? decodeURIComponent( segments[1] ) : '';
     let level = parseInt( segments[3] );
-    const question_id = parseInt( segments[4] );
 
     const [questions, setQuestions] = useState<Question[]>( [] );
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState( 0 );
@@ -22,7 +21,6 @@ const QuizPage = () => {
     const [score, setScore] = useState<number>( 0 );
     const [userInput, setUserInput] = useState<string>( '' );
     const [user, setUser] = useState<User>();
-    const [progress, setProgress] = useState<Progress>();
     const [result, setResult] = useState<string | null>( null );
     const [loading, setLoading] = useState<boolean>( true );
     const [error, setError] = useState<string | null>( null );
@@ -70,44 +68,15 @@ const QuizPage = () => {
 
                 console.log();
 
-                const response = await fetchUserProgress( userData, questionsData[0] );
 
-                if ( response.status === 200 ) {
-                    const progressData = await response.json();
-                    setProgress( progressData.progress );
-                }
 
                 if ( questionsData.questions.length > 0 && !scoreId ) {
                     await initializeScore( questionsData.quiz_id, questionsData.questions.length );
                 }
-                if ( !progress ) {
-                    await initializeProgress( questionsData, userData, currentQuestion?.id! );
-                }
+
             } catch ( error ) {
                 setError( 'Error fetching data' );
                 setLoading( false );
-            }
-        };
-
-        const fetchUserProgress = async ( userData: User, quiz: Quiz ) => {
-            try {
-                const response = await fetch( `/api/users/${ userData.username }/progress/${ quiz.subject }/${ level }`, {
-                    method: 'GET',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                } );
-
-
-                if ( !response.ok ) {
-                    throw new Error( `Failed to fetch user progress, status: ${ response.status }` );
-                }
-
-                const data = await response.json();
-                return data;
-            } catch ( error ) {
-                console.error( 'Error fetching user progress:', error );
             }
         };
 
@@ -120,28 +89,6 @@ const QuizPage = () => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify( { quiz_id: quizId, level, total_questions: totalQuestions, score } ),
-                } );
-
-                const data = await res.json();
-                if ( res.ok ) {
-                    setScoreId( data.score_id );
-                } else {
-                    setError( 'Failed to initialize score' );
-                }
-            } catch ( error ) {
-                setError( 'Failed to initialize score' );
-            }
-        };
-
-        const initializeProgress = async ( quiz: Quiz, user: User, question_id: string ) => {
-            try {
-                const res = await fetch( `/api/users/${ user.username }/progress/${ quiz.subject }/${ level }`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify( { question_id, completed: false } ),
                 } );
 
                 const data = await res.json();

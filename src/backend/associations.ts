@@ -1,4 +1,4 @@
-import { User, Question, Answer, Progress } from "./models";
+import { User, Question, Answer } from "./models";
 import Quiz from "./models/Quiz";
 import Score from "./models/Score";
 
@@ -15,18 +15,7 @@ export default function setupAssociations() {
     Quiz.hasMany( Score, { foreignKey: 'quiz_id' } );
     Score.belongsTo( Quiz, { as: 'quiz', foreignKey: 'quiz_id' } );
 
-    // Association between Progress and User
-    Progress.belongsTo( User, { foreignKey: 'user_id' } );
-    User.hasMany( Progress, { foreignKey: 'user_id' } );
-
-    // Association between Progress and Quiz
-    Progress.belongsTo( Quiz, { foreignKey: 'quiz_id' } );
-    Quiz.hasMany( Progress, { foreignKey: 'quiz_id' } );
-
-    // Association between Progress and Score
-    Progress.belongsTo( Score, { foreignKey: 'score_id' } );
-    Score.hasMany( Progress, { foreignKey: 'score_id' } );
 }
 
 
-export { User, Question, Answer, Progress, Quiz, Score };
+export { User, Question, Answer, Quiz, Score };

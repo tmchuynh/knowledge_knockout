@@ -1,6 +1,6 @@
 "use client";
 
-import { Progress, Quiz, Score, User } from '@/types/interface';
+import { Quiz, Score, User } from '@/types/interface';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,6 @@ const QuizDifficultyPage: React.FC = () => {
     const subject = segments.length > 1 ? decodeURIComponent( segments[1] ) : '';
 
     const router = useRouter();
-    const [progress, setProgress] = useState<Progress[]>( [] );
     const [userScores, setUserScores] = useState<Score[]>( [] );
     const [quizData, setQuizData] = useState<Quiz[]>( [] );
     const [user, setUser] = useState<User>();
@@ -56,7 +55,6 @@ const QuizDifficultyPage: React.FC = () => {
                 if ( response.ok ) {
                     const data = await response.json();
                     setQuizData( data );
-                    setProgress( data.progress || [] );
                     setUserScores( data.scores || [] );
                 } else {
                     setError( `Failed to fetch quiz details: HTTP status ${ response.status }` );
@@ -73,12 +71,6 @@ const QuizDifficultyPage: React.FC = () => {
         fetchUserData();
         fetchQuizDetails();
     }, [subject] );
-
-    const getButtonClass = ( quiz: Quiz, level: number ): string => {
-        level++;
-        const isInProgress = progress.some( ( item ) => item.quiz_id === quiz.id && level === quiz.level );
-        return isInProgress ? 'bg-amber-700 hover:bg-amber-600' : 'bg-zinc-700 hover:bg-zinc-600';
-    };
 
     const handleDifficultySelection = ( quiz: Quiz, level: number ) => {
         if ( !quiz.id ) return;
@@ -111,7 +103,7 @@ const QuizDifficultyPage: React.FC = () => {
                     <Button
                         key={`${ quiz.id }__${ index + 1 }`}
                         onClick={() => handleDifficultySelection( quiz, index )}
-                        className={`${ getButtonClass( quiz, index ) } transition-all duration-200`}
+                        className={`transition-all duration-200`}
                     >
                         Level {index + 1}
                         <div className="text-sm mt-1">

@@ -14,17 +14,6 @@ export interface DecodedToken {
     [key: string]: any;
 }
 
-export interface Progress {
-    id: string;
-    user_id: string;
-    quiz_id: string;
-    question_id: string;
-    total_questions: number;
-    completed: boolean;
-    created_at?: Date;
-    updated_at?: Date;
-
-}
 export interface Score {
     quiz?: Quiz;
     id?: string;

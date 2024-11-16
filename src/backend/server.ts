@@ -3,7 +3,6 @@ import next from 'next';
 import dotenv from 'dotenv';
 import sequelize from './config/db';
 import userRouter from './routes/userRoutes';
-import progressRouter from './routes/progressRoutes';
 import scoreRouter from './routes/scoreRoutes';
 import setupAssociations from './associations';
 
@@ -29,7 +28,6 @@ app.prepare().then( () => {
 
     // Use routers for different API routes
     server.use( '/api/users', userRouter );
-    server.use( '/api/progress', progressRouter );
     server.use( '/api/scores', scoreRouter );
 
     // Handle all other routes with Next.js
