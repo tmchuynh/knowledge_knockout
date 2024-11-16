@@ -12,7 +12,7 @@ const QuizPage = () => {
 
     const segments = pathname.split( '/' ).filter( Boolean );
     const subject = segments.length > 1 ? decodeURIComponent( segments[1] ) : '';
-    let level = parseInt( segments[3] );
+    let level = parseInt( segments[2] );
 
     const [questions, setQuestions] = useState<Question[]>( [] );
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState( 0 );
@@ -38,7 +38,7 @@ const QuizPage = () => {
 
                 const userData = await response.json();
 
-                fetchQuestionData( userData );
+                fetchQuizzesData( userData );
 
                 setUser( userData );
             } catch ( error ) {
@@ -46,32 +46,35 @@ const QuizPage = () => {
             }
         };
 
-        const fetchQuestionData = async ( userData: User ) => {
-
+        const fetchQuizzesData = async ( userData: User ) => {
             try {
-                const questionsRes = await fetch(
+                const quizResponse = await fetch(
                     `/api/quiz/${ encodeURIComponent( subject ) }`,
                     {
                         credentials: 'include',
                     }
                 );
-                const questionsData = await questionsRes.json();
+                const quizData = await quizResponse.json();
 
-                if ( questionsData.error ) {
-                    setError( 'Failed to fetch questions' );
-                    setLoading( false );
-                    return;
-                }
+                console.log( quizData );
 
+                const questionResponse = await fetch( `/api/quiz/id/${ quizData[level].id }/${ level }`, {
+                    credentials: 'include',
+                } );
+                const questionsData = await questionResponse.json();
                 setQuestions( questionsData.questions );
+                setCurrentQuestion( questionsData.questions[0] );
+
                 setLoading( false );
 
-                console.log();
-
-
-
-                if ( questionsData.questions.length > 0 && !scoreId ) {
-                    await initializeScore( questionsData.quiz_id, questionsData.questions.length );
+                if ( quizData.length > 0 && !scoreId ) {
+                    try {
+                        await initializeScore( quizData[level].id, userData );
+                    } catch ( error ) {
+                        setError( 'Failed to initialize score' );
+                        setLoading( false );
+                        return;
+                    }
                 }
 
             } catch ( error ) {
@@ -80,15 +83,15 @@ const QuizPage = () => {
             }
         };
 
-        const initializeScore = async ( quizId: number, totalQuestions: number ) => {
+        const initializeScore = async ( quizId: number, user: User ) => {
             try {
-                const res = await fetch( '/api/users/score', {
+                const res = await fetch( `/api/score/username/${ user.username }`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify( { quiz_id: quizId, level, total_questions: totalQuestions, score } ),
+                    body: JSON.stringify( { quiz_id: quizId, level, score, user, timelapsed: "00:00:00" } ),
                 } );
 
                 const data = await res.json();

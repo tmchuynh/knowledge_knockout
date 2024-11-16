@@ -23,7 +23,6 @@ Answer.belongsTo( Question, { as: 'question', foreignKey: 'question_id' } );
 Quiz.hasMany( Score, { foreignKey: 'id' } );
 Score.belongsTo( Quiz, { foreignKey: 'id' } );
 
-
 sequelize.sync( { force: false } ).then( () => {
     console.log( 'Database & tables created!' );
 } );

@@ -7,7 +7,7 @@ class Score extends Model {
     public quiz_id!: string;
     public username!: string;
     public score!: number;
-    public quiz_date!: Date;
+    public timelapsed!: typeof DataTypes.TIME;
     public created_at?: Date;
     public updated_at?: Date;
 }
@@ -40,9 +40,9 @@ Score.init(
             allowNull: false,
             defaultValue: 0,
         },
-        quiz_date: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
+        timelapsed: {
+            type: DataTypes.TIME,
+            defaultValue: "00:00:00",
         },
         created_at: {
             type: DataTypes.DATE,

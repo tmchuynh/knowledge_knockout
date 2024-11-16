@@ -3,15 +3,14 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
     request: Request,
-    props: { params: { slug: string; level: number; id: number; }; }
+    props: { params: { quiz_id: string; level: number; }; }
 ) {
-    const { id, slug, level } = await props.params;
+    const { quiz_id, level } = await props.params;
 
     try {
         const questions = await Question.findAll( {
             where: {
-                subject: slug,
-                level: level
+                quiz_id: quiz_id,
             },
             include: [{ model: Answer, as: 'answers' }],
         } );

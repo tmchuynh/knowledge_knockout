@@ -1,24 +1,47 @@
-import { Score } from '@/backend/models';
 import { NextResponse } from 'next/server';
+import { Score, User } from '@/backend/models';
 
-export async function GET( request: Request,
+export async function POST(
+    request: Request,
     props: { params: { username: string; }; }
 ) {
-    const params = await props.params;
-    try {
-        const { username } = params;
+    const { username } = await props.params;
 
+    try {
         if ( !username ) {
-            return NextResponse.json( { error: 'Username query parameter is required.' }, { status: 400 } );
+            return NextResponse.json( { error: 'Username is required' }, { status: 400 } );
         }
 
-        const scores = await Score.findAll( {
-            where: { username }
+        const { quiz_id, score, user, level, timelapsed } = await request.json();
+
+        // Validate input data
+        if ( !quiz_id ) {
+            return NextResponse.json( { error: 'Quiz ID is required' }, { status: 400 } );
+        }
+
+        const id = `${ quiz_id }-${ level }-${ user.id }`;
+        // Find or create the score entry
+        const [scoreEntry, scoreCreated] = await Score.findOrCreate( {
+            where: {
+                id,
+                username: user.username,
+                quiz_id: quiz_id,
+            },
+            defaults: {
+                score: score,
+                timelapsed: timelapsed
+            },
         } );
 
-        return NextResponse.json( scores, { status: 200 } );
+        if ( scoreCreated ) {
+            console.log( 'New score entry created:', scoreEntry );
+        } else {
+            console.log( 'Score entry already exists:', scoreEntry );
+        }
+
+        return NextResponse.json( { score_id: scoreEntry.id, created: scoreCreated }, { status: 200 } );
     } catch ( error ) {
-        console.error( 'Error fetching scores:', error );
-        return NextResponse.json( { error: 'An internal server error occurred while fetching scores.' }, { status: 500 } );
+        console.error( 'Error initializing score:', error );
+        return NextResponse.json( { error: 'Internal server error' }, { status: 500 } );
     }
 }
