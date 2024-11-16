@@ -45,3 +45,35 @@ export async function POST(
         return NextResponse.json( { error: 'Internal server error' }, { status: 500 } );
     }
 }
+
+
+export async function GET(
+    _request: Request,
+    props: { params: { username: string; }; }
+) {
+    const { username } = props.params;
+
+    try {
+        if ( !username ) {
+            return NextResponse.json( { error: 'Username is required' }, { status: 400 } );
+        }
+
+        // Find the user by username
+        const user = await User.findOne( { where: { username } } );
+
+        if ( !user ) {
+            return NextResponse.json( { error: 'User not found' }, { status: 404 } );
+        }
+
+        // Fetch all scores associated with the user
+        const scores = await Score.findAll( {
+            where: { username: user.username },
+            order: [['created_at', 'DESC']], // Optional: order scores by creation date
+        } );
+
+        return NextResponse.json( scores, { status: 200 } );
+    } catch ( error ) {
+        console.error( 'Error fetching scores:', error );
+        return NextResponse.json( { error: 'Internal server error' }, { status: 500 } );
+    }
+}

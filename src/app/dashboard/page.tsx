@@ -4,7 +4,6 @@ import { Score, User } from '@/backend/models';
 import React, { useEffect, useState } from 'react';
 import dotenv, { config } from 'dotenv';
 import ScoresPage from '../scores/page';
-import ContributionHeatmap from '@/components/ContributionHeatmap';
 import {
     Dialog,
     DialogContent,
@@ -14,6 +13,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRouter } from 'next/navigation';
+import ContributionGrid from '@/components/ContributionsGrid';
 
 dotenv.config();
 
@@ -156,25 +156,23 @@ const DashboardPage: React.FC = () => {
                             </DialogContent>
                         </Dialog>
                     </div>
-
                 </div>
                 <div className='w-full mx-auto'>
-                    {scores.length > 0 ? <ScoresPage /> : <></>}
                     {user ? (
                         <>
                             <div className="profile-info space-y-4">
                                 <p>ID: {user.id || 'N/A'}</p>
                                 <p>Username: {user.username || 'N/A'}</p>
                             </div>
-                            {scores.length > 0 ? <ContributionHeatmap />
+                            {scores.length > 0 ? <ContributionGrid />
                                 : <></>}
                         </>
                     ) : (
                         <p>Loading user information...</p>
                     )}
                 </div>
-
             </div>
+            {scores.length > 0 ? <ScoresPage /> : <></>}
         </>
     );
 };

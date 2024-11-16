@@ -120,22 +120,22 @@ export function NavUser() {
                             <DropdownMenuGroup>
                                 <DropdownMenuItem>
                                     <Sparkles />
-                                    Upgrade to Pro
+                                    <a href="#">Upgrade to Pro</a>
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
                                 <DropdownMenuItem>
                                     <BadgeCheck />
-                                    Account
+                                    <a href="/dashboard">Account</a>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <CreditCard />
-                                    Billing
+                                    <a href="#">Billing</a>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     <Bell />
-                                    Notifications
+                                    <a href="#">Notifications</a>
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
                             <DropdownMenuSeparator />

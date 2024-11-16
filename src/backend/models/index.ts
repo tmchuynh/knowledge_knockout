@@ -20,8 +20,8 @@ Question.hasMany( Answer, { as: 'answers', foreignKey: 'question_id' } );
 Answer.belongsTo( Question, { as: 'question', foreignKey: 'question_id' } );
 
 // Association between Quiz and Score
-Quiz.hasMany( Score, { foreignKey: 'id' } );
-Score.belongsTo( Quiz, { foreignKey: 'id' } );
+Quiz.hasMany( Score, { as: 'score', foreignKey: 'id' } );
+Score.belongsTo( Quiz, { as: 'quiz', foreignKey: 'id' } );
 
 sequelize.sync( { force: false } ).then( () => {
     console.log( 'Database & tables created!' );

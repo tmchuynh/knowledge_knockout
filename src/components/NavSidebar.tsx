@@ -195,11 +195,6 @@ const data = {
             url: "/scores",
             icon: FolderClock,
         },
-        {
-            title: "Dashboard",
-            url: "/dashboard",
-            icon: UserPen,
-        },
     ],
     navSecondary: [
         {

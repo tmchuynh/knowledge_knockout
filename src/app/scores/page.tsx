@@ -1,46 +1,56 @@
 'use client';
 
-import { Score } from '@/types/interface';
+import { Score, User } from '@/types/interface';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 const ScoresPage: React.FC = () => {
     const searchParams = useSearchParams();
-    const username = searchParams.get( 'username' );
     const [pastScores, setPastScores] = useState<Score[]>( [] );
     const [filteredScores, setFilteredScores] = useState<Score[]>( [] );
     const [filterQuiz, setFilterQuiz] = useState( '' );
     const [loading, setLoading] = useState( true );
+    const [user, setUser] = useState<User>();
     const [error, setError] = useState<string | null>( null );
 
     useEffect( () => {
-        if ( username ) {
-            const fetchScoresWithQuizData = async ( id: string ) => {
-                try {
-                    const response = await fetch( `/api/scores?id=${ id }`,
-                        { credentials: 'include' }
-                    );
-                    const scores: Score[] = await response.json();
+        const fetchUserFromJWT = async () => {
+            try {
+                const response = await fetch( '/api/auth/me', {
+                    credentials: 'include',
+                } );
 
-                    // Ensure each Score has an associated Quiz with total_questions
-                    return scores.map( score => ( {
-                        ...score,
-                        quiz: {
-                            total_questions: score.quiz?.total_questions || 0,
-                        }
-                    } ) );
-                } catch ( error ) {
-                    console.error( 'Error fetching scores with quiz data:', error );
-                    return [];
+                if ( !response.ok ) {
+                    throw new Error( `Failed to fetch user, status: ${ response.status }` );
                 }
-            };
 
-            fetchScoresWithQuizData( username );
-        } else {
-            setError( 'Username is missing.' );
-            setLoading( false );
-        }
-    }, [username] );
+                const data = await response.json();
+                setUser( data );
+                fetchScoresWithQuizData( data.username );
+            } catch ( error ) {
+                console.error( 'Failed to fetch user data:', error );
+            }
+        };
+
+        const fetchScoresWithQuizData = async ( username: string ) => {
+            try {
+                const response = await fetch( `/api/score/username/${ username }`,
+                    { credentials: 'include' }
+                );
+                const scores: Score[] = await response.json();
+
+                console.log( "SCORES", scores );
+                setPastScores( scores );
+                setFilteredScores( scores );
+                setLoading( false );
+            } catch ( error ) {
+                console.error( 'Error fetching scores with quiz data:', error );
+                return [];
+            }
+        };
+
+        fetchUserFromJWT();
+    }, [] );
 
     const sortByQuiz = () => {
         const sorted = [...filteredScores].sort( ( a, b ) => a.quiz_id.localeCompare( b.quiz_id ) );
