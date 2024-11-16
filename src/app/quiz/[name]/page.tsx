@@ -33,9 +33,8 @@ const QuizDifficultyPage: React.FC<QuizDifficultyPageProps> = ( { params } ) => 
                 console.log( 'Fetching quiz details for quizId:', quizId );
 
                 const response = await fetch( `/api/quiz-details?quizId=${ quizId }`, {
-                    method: 'GET',
+                    credentials: 'include',
                     headers: {
-                        Authorization: `Bearer ${ token }`,
                         'Content-Type': 'application/json',
                     },
                 } );

@@ -1,17 +1,55 @@
 'use client';
 
-import { Score } from '@/backend/models';
+import { Score, User } from '@/backend/models';
 import React, { useEffect, useState } from 'react';
-import dotenv from 'dotenv';
+import dotenv, { config } from 'dotenv';
 import ScoresPage from '../scores/page';
 import ContributionHeatmap from '@/components/ContributionHeatmap';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { useRouter } from 'next/navigation';
 
 dotenv.config();
 
 const DashboardPage: React.FC = () => {
-    const [baseColor, setBaseColor] = useState( '#6a40d4' );
     const [scores, setScores] = useState<Score[]>( [] );
-    const [user, setUser] = useState<{ id: string; username: string; } | null>( null );
+    const router = useRouter();
+    const [user, setUser] = useState<{ id: string; username: string; image: string; } | null>( null );
+    const avatarArray = [
+        "/images/astronaut.png",
+        "/images/avatar.png",
+        "/images/cat.png",
+        "/images/chick.png",
+        "/images/cool-.png",
+        "/images/cool.png",
+        "/images/dinosaur.png",
+        "/images/dog.png",
+        "images/fear.png",
+        "/images/girl.png",
+        "/images/kitty.png",
+        "/images/leonardo.png",
+        "/images/man.png",
+        "/images/monster.png",
+        "/images/panda.png",
+        "/images/person (1).png",
+        "/images/polar-bear.png",
+        "/images/profile.png",
+        "/images/superhero.png",
+        "/images/swordsman.png",
+        "/images/try-me.png",
+        "/images/user.png",
+        "/images/robot.png",
+        "/images/ninja.png",
+        "/images/help.png",
+        "/images/heart.png",
+        "/images/alpine-forget-me-not.png"
+    ];
 
     useEffect( () => {
         const fetchUserFromJWT = async () => {
@@ -60,19 +98,66 @@ const DashboardPage: React.FC = () => {
         }
     }, [user] );
 
+    const handleImageClick = async ( imagePath: string ) => {
+        if ( !user ) return;
+
+        try {
+            const response = await fetch( `/api/users/update`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify( { username: user.username, image: imagePath } ),
+                credentials: 'include',
+            } );
+
+            if ( !response.ok ) {
+                throw new Error( 'Failed to update user image' );
+            }
+
+            const updatedUser = await response.json();
+            setUser( ( prevUser ) => prevUser ? { ...prevUser, image: updatedUser.image } : null );
+            window.location.reload();
+        } catch ( error ) {
+            console.error( 'Error updating user image:', error );
+        }
+    };
+
     return (
         <>
-            <div className="dashboard-container flex flex-col items-center px-6 py-4 lg:px-8 m-4  rounded-lg shadow-md border hover:shadow-md w-11/12 mx-auto">
+            <div className="dashboard-container flex flex-col items-center px-6 py-8 lg:px-8 m-4  rounded-lg shadow-md border hover:shadow-md w-11/12 mx-auto">
                 <h2 className="text-4xl font-extrabold mb-5">User Profile</h2>
                 <div className="w-full mx-auto">
-                    <div className="mt-2 flex flex-col sm:flex-row items-center gap-x-3">
-                        <svg className="h-12 w-12 text-gray-300 mb-2 sm:mb-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-                            <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clipRule="evenodd" />
-                        </svg>
-                        <button type="button" className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                            Change
-                        </button>
+                    <div className="mt-2 flex flex-col w-1/4 py-5 items-start justify-center">
+                        {user && (
+                            <img
+                                className="h-16 w-16 rounded-full m-3"
+                                src={user.image || "/images/user.png"}
+                                alt="User profile"
+                            />
+                        )}
+                        <Dialog>
+                            <DialogTrigger className='rounded-lg shadow-sm p-1 border hover:shadow-md'>Change Profile Image</DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Profile Photos</DialogTitle>
+                                    <DialogDescription className='flex flex-wrap'>
+                                        {avatarArray.map( ( avatar, index ) => (
+                                            <img
+                                                key={index}
+                                                className="h-16 w-16 rounded-full m-2 cursor-pointer hover:shadow-lg"
+                                                src={avatar}
+                                                alt={`Avatar ${ index }`}
+                                                onClick={() => handleImageClick( avatar )}
+                                            />
+                                        ) )}
+                                        <a href="https://www.flaticon.com/free-icons/astronaut" title="astronaut icons">Avatar icons created by Freepik - Flaticon</a>
+                                    </DialogDescription>
+                                </DialogHeader>
+                            </DialogContent>
+                        </Dialog>
                     </div>
+
                 </div>
                 <div className='w-full mx-auto'>
                     {scores.length > 0 ? <ScoresPage /> : <></>}
@@ -89,6 +174,7 @@ const DashboardPage: React.FC = () => {
                         <p>Loading user information...</p>
                     )}
                 </div>
+
             </div>
         </>
     );
