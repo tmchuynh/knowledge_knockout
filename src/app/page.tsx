@@ -251,7 +251,7 @@ const WelcomePage = () => {
                                 </div>
                             </div>
                             <button
-                                onClick={() => handleNavigation( '/' )}
+                                onClick={() => handleNavigation( '/challenges' )}
                                 className="mt-4 px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors duration-300">
                                 View Available Challenges
                             </button>
@@ -271,7 +271,7 @@ const WelcomePage = () => {
                     </p>
                     <div className="text-center">
                         <a
-                            href="/signup"
+                            href="/login"
                             className="inline-block bg-teal-600 text-white font-semibold text-lg py-3 px-8 rounded-full hover:bg-teal-700 transition duration-300"
                         >
                             Get Started Today!

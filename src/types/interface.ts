@@ -14,6 +14,14 @@ export interface DecodedToken {
     [key: string]: any;
 }
 
+export interface Challenge {
+    id: string;
+    date: Date;
+    title: string;
+    description: string;
+    type: "daily" | "weekly" | "bi-weekly" | "monthly" | "bi-monthly" | "yearly";
+}
+
 export interface Score {
     quiz?: Quiz;
     id?: string;

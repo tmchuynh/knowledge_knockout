@@ -21,6 +21,7 @@ import {
     NotebookPen,
     Rocket,
     Send,
+    Swords,
     Table2,
     TableProperties,
     TrendingUp,
@@ -130,28 +131,16 @@ const data = {
             ],
         },
     ],
-    challenges: [
-        {
-            title: "Daily Challenge",
-            url: "#",
-            icon: Gift,
-        },
-        {
-            title: "Weekly Challenge",
-            url: "#",
-            icon: Calendar1,
-        },
-        {
-            title: "Monthly Challenge",
-            url: "#",
-            icon: CalendarRange,
-        },
-    ],
     information: [
         {
             title: "Badges",
             url: "/badges",
             icon: Medal,
+        },
+        {
+            title: "Current Challenges",
+            url: "/challenges",
+            icon: Swords,
         },
         {
             title: "Memory Techniques",
@@ -228,7 +217,6 @@ export function AppSidebar( { ...props }: React.ComponentProps<typeof Sidebar> )
             </SidebarHeader>
             <SidebarContent>
                 <NavMain title="Platforms" items={data.navMain} />
-                <NavDropdown title="Challenges" projects={data.challenges} />
                 <NavMain title="Information" items={data.information} />
                 <NavMain title="For You" items={data.foryou} />
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
