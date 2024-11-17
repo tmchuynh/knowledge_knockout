@@ -13,7 +13,7 @@ export default function setupAssociations() {
 
     // Association between Quiz and Score
     Quiz.hasMany( Score, { foreignKey: 'quiz_id' } );
-    Score.belongsTo( Quiz, { as: 'quiz', foreignKey: 'quiz_id' } );
+    Score.belongsTo( Quiz, { foreignKey: 'quiz_id' } );
 
 }
 

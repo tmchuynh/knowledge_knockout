@@ -8,16 +8,26 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function POST( req: NextRequest ) {
-    const { username, password } = await req.json();
-
     try {
+        const { username, password } = await req.json();
+
+
+        if ( !username || !password ) {
+            throw new Error( 'Missing credentials' );
+        }
+
+        console.log( 'Request payload:', { username, password } );
+
+
         const user = await User.findOne( { where: { username } } );
         if ( !user ) {
+            console.log( 'No user found' );
             return NextResponse.json( { message: 'User not found' }, { status: 404 } );
         }
 
         const isPasswordValid = await bcrypt.compare( password, user.password );
         if ( !isPasswordValid ) {
+            console.log( 'Incorrect password' );
             return NextResponse.json( { message: 'Incorrect password' }, { status: 401 } );
         }
 
@@ -29,6 +39,7 @@ export async function POST( req: NextRequest ) {
 
         const token = signJWT( payload, JWT_SECRET );
 
+        // Create a single response object and set cookies
         const response = NextResponse.json( {
             message: 'Login successful',
             user: {
@@ -46,7 +57,7 @@ export async function POST( req: NextRequest ) {
             path: '/',
         } );
 
-        return response;
+        return response; // Return the single response object
     } catch ( error ) {
         console.error( 'Error logging in user:', error );
         return NextResponse.json( { message: 'Internal server error' }, { status: 500 } );

@@ -22,6 +22,17 @@ const LoginPage: React.FC = () => {
     const [toastMessage, setToastMessage] = useState<{ type: "error" | "success"; message: string; } | null>( null );
     const [isLoading, setIsLoading] = useState( false );
 
+    useEffect( () => {
+        if ( !sessionStorage.getItem( 'reloaded' ) ) {
+            sessionStorage.setItem( 'reloaded', 'true' ); // Mark the page as reloaded
+            window.location.reload(); // Reload the page
+        }
+    }, [] );
+
+    const windowReload = async () => {
+        window.location.reload();
+    };
+
     const showToast = ( type: "error" | "success", message: string ) => {
         setToastMessage( { type, message } );
         setTimeout( () => {
@@ -97,6 +108,7 @@ const LoginPage: React.FC = () => {
             } );
 
             if ( !response.ok ) {
+                console.log( response );
                 throw new Error( 'Login failed' );
             }
 
@@ -107,21 +119,25 @@ const LoginPage: React.FC = () => {
             } );
 
             if ( !userResponse.ok ) {
-                throw new Error( 'Failed to fetch user data' );
+                const userErrorData = await userResponse.json().catch( () => null );
+                console.error( 'User data response error:', userErrorData || 'Failed to fetch user data' );
+                throw new Error( userErrorData?.message || 'Failed to fetch user data' );
             }
 
             const userData = await userResponse.json();
+            console.log( 'User data:', userData );
 
-            showToast( "success", "Login successful! Redirecting..." );
+            showToast( 'success', 'Login successful! Redirecting...' );
             router.push( '/quiz' );
 
         } catch ( error ) {
             console.error( 'Error during login or fetching user data:', error );
-            showToast( "error", "Login failed. Please check your credentials." );
+            showToast( 'error', ( error as Error ).message || 'Login failed. Please check your credentials.' );
         } finally {
             setIsLoading( false );
         }
     };
+
 
 
     const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {

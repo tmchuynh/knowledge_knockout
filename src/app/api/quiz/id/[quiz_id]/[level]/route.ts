@@ -12,7 +12,7 @@ export async function GET(
             where: {
                 quiz_id: quiz_id,
             },
-            include: [{ model: Answer, as: 'answers' }],
+            include: [{ model: Answer, as: 'answer' }],
         } );
 
         if ( questions.length === 0 ) {

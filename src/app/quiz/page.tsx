@@ -11,7 +11,10 @@ const QuizSelectionPage: React.FC = () => {
     const router = useRouter();
 
     useEffect( () => {
-        router.push( '/quiz' );
+        if ( sessionStorage.getItem( 'reloaded' ) ) {
+            window.location.reload(); // Reload the page
+            sessionStorage.removeItem( 'reloaded' );
+        }
 
         const fetchQuizNames = async () => {
             try {
