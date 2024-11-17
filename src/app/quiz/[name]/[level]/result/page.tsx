@@ -35,13 +35,12 @@ const ResultPage = () => {
                 }
 
                 const data = await res.json();
-                const scoreData = data[0];
 
-                setScore( scoreData.score );
+                setScore( data.score );
 
                 try {
                     // Fetch the quiz data based on the quiz ID
-                    const resQ = await fetch( `/api/quiz/${ scoreData.quiz_id }`, {
+                    const resQ = await fetch( `/api/quiz/id/${ data.quiz_id }`, {
                         credentials: 'include',
                     } );
 
@@ -50,9 +49,12 @@ const ResultPage = () => {
                     }
 
                     const dataQ = await resQ.json();
-                    setQuiz( dataQ[0] );
+
+                    setQuiz( dataQ );
+
                 } catch ( error ) {
                     console.error( 'Error fetching quiz:', error );
+                    throw new Error( 'Failed to fetch quiz data' );
                 }
             } catch ( error ) {
                 console.error( 'Error fetching score:', error );
@@ -78,7 +80,7 @@ const ResultPage = () => {
             <h1 className="text-4xl font-extrabold text-stone text-center mb-5">Quiz Completed!</h1>
             <h3 className="text-center text-xl font-extrabold dark:text-white">Your Score:</h3>
             <h6 className="text-center text-lg pb-4 font-bold dark:text-white">
-                {score} out of {totalQuestions}
+                {score} out of {quiz?.total_questions}
             </h6>
             <Button
                 className="mt-4"

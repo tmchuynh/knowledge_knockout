@@ -17,7 +17,7 @@ export async function GET( request: Request, { params }: { params: { quiz_id: st
         }
 
         // Return the subject of the quiz
-        return NextResponse.json( { quiz }, { status: 200 } );
+        return NextResponse.json( quiz, { status: 200 } );
     } catch ( error ) {
         console.error( 'Error fetching quiz subject:', error );
         return NextResponse.json( { error: 'Failed to retrieve quiz subject.' }, { status: 500 } );

@@ -150,7 +150,7 @@ const QuizPage = () => {
 
     const handleSubmitAnswer = async ( isCorrect: boolean ) => {
         if ( isCorrect && scoreId ) {
-            await fetch( `/api/scores/${ scoreId }`, {
+            await fetch( `/api/score/${ scoreId }`, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
