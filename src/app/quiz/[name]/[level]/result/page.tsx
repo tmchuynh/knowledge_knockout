@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Quiz } from '@/backend/models';
 
 const ResultPage = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [score, setScore] = useState<number>( 0 );
+    const [quiz, setQuiz] = useState<Quiz>();
     const [totalQuestions, setTotalQuestions] = useState<number>( 0 );
     const [loading, setLoading] = useState( true );
     const [error, setError] = useState<string | null>( null );
@@ -24,7 +26,7 @@ const ResultPage = () => {
 
             try {
                 // Fetch the score data
-                const res = await fetch( `/api/scores/${ scoreId }`, {
+                const res = await fetch( `/api/score/${ scoreId }`, {
                     credentials: 'include',
                 } );
 
@@ -36,7 +38,6 @@ const ResultPage = () => {
                 const scoreData = data[0];
 
                 setScore( scoreData.score );
-                setTotalQuestions( scoreData.total_questions );
 
                 try {
                     // Fetch the quiz data based on the quiz ID
@@ -49,6 +50,7 @@ const ResultPage = () => {
                     }
 
                     const dataQ = await resQ.json();
+                    setQuiz( dataQ[0] );
                 } catch ( error ) {
                     console.error( 'Error fetching quiz:', error );
                 }

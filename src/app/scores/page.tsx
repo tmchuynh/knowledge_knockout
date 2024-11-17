@@ -1,7 +1,7 @@
 'use client';
 
 import { Quiz, Score, User } from '@/types/interface';
-import { formatDate, formatTime } from '@/utils/formatUtils';
+import { formatDate, formatTime, formatTimelapsed } from '@/utils/formatUtils';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
@@ -48,7 +48,6 @@ const ScoresPage: React.FC = () => {
                 }
 
                 const data = await response.json();
-                console.log( 'Quiz:', data );
                 return data.quiz;
             } catch ( error ) {
                 console.error( 'Error fetching quiz subject:', error );
@@ -58,26 +57,34 @@ const ScoresPage: React.FC = () => {
 
         const fetchScoresWithQuizData = async ( username: string ) => {
             try {
-                const response = await fetch( `/api/score/username/${ username }`,
-                    { credentials: 'include' }
-                );
-                const scores: Score[] = await response.json();
-
-                console.log( "SCORES", scores );
-                scores.forEach( async score => {
-                    const quiz: Quiz = await fetchQuiz( score.quiz_id );
-                    score.quiz = quiz;
+                const response = await fetch( `/api/score/username/${ username }`, {
+                    credentials: 'include',
                 } );
 
-                console.log( "scores updated", scores );
-                setPastScores( scores );
-                setFilteredScores( scores );
+                if ( !response.ok ) {
+                    throw new Error( 'Failed to fetch scores' );
+                }
+
+                const scores: Score[] = await response.json();
+                console.log( "SCORES", scores );
+
+                // Use `Promise.all` to wait for all quiz data to be fetched
+                const updatedScores = await Promise.all(
+                    scores.map( async ( score ) => {
+                        const quiz: Quiz = await fetchQuiz( score.quiz_id );
+                        return { ...score, quiz }; // Add quiz data to the score object
+                    } )
+                );
+
+                setPastScores( updatedScores );
+                setFilteredScores( updatedScores );
                 setLoading( false );
             } catch ( error ) {
                 console.error( 'Error fetching scores with quiz data:', error );
                 return [];
             }
         };
+
 
         fetchUserFromJWT();
     }, [] );
@@ -155,6 +162,7 @@ const ScoresPage: React.FC = () => {
                         <th className="p-4 border-b">Quiz</th>
                         <th className="p-4 border-b">Score</th>
                         <th className="p-4 border-b">Percentage</th>
+                        <th className="p-4 border-b">Timed</th>
                         <th className="p-4 border-b">Date</th>
                         <th className="p-4 border-b">Time</th>
                     </tr>
@@ -164,13 +172,16 @@ const ScoresPage: React.FC = () => {
                         const percentage = ( ( score.score / score.quiz?.total_questions! ) * 100 ).toFixed( 2 );
                         const date = score.updated_at!;
                         const subject = score.quiz?.subject;
+                        console.log( JSON.stringify( score ) );
                         const total_questions = score.quiz?.total_questions;
+                        const timelapsed = formatTimelapsed( score.timelapsed );
 
                         return (
-                            <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <tr key={index} className="hover:bg-gray-100 dark:hover:bg-gray-700 text-center">
                                 <td className="p-4 border-b">{subject}</td>
                                 <td className="p-4 border-b">{`${ score.score } / ${ total_questions }`}</td>
                                 <td className="p-4 border-b">{percentage}%</td>
+                                <td className="p-4 border-b">{timelapsed}</td>
                                 <td className="p-4 border-b">{formatDate( date )}</td>
                                 <td className="p-4 border-b">{formatTime( date )}</td>
                             </tr>

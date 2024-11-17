@@ -1,4 +1,4 @@
-import { Answer, Question } from '@/backend/models'; // Ensure this path matches your project structure
+import { Answer, Question } from '@/backend/associations';
 import { NextResponse } from 'next/server';
 
 export async function GET(
@@ -12,10 +12,13 @@ export async function GET(
             where: {
                 quiz_id: quiz_id,
             },
-            include: [{ model: Answer, as: 'answer' }],
+            include: [{ model: Answer, as: 'answers' }],
         } );
 
+        console.log( "all the questions", questions );
+
         if ( questions.length === 0 ) {
+            console.log( 'No questions found' );
             return NextResponse.json( { error: 'No questions found for this quiz' }, { status: 404 } );
         }
 

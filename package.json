@@ -42,7 +42,7 @@
 		"dotenv": "^16.4.5",
 		"express": "^4.21.1",
 		"express-session": "^1.18.1",
-		"framer-motion": "^11.11.13",
+		"framer-motion": "^11.11.17",
 		"input-otp": "^1.4.1",
 		"lucide-react": "^0.456.0",
 		"mysql": "^2.18.1",

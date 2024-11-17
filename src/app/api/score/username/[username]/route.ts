@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Quiz, Score, User } from '@/backend/models';
+import { formatTimelapsed } from '@/utils/formatUtils';
 
 export async function POST(
     request: Request,
@@ -19,7 +20,7 @@ export async function POST(
             return NextResponse.json( { error: 'Quiz ID is required' }, { status: 400 } );
         }
 
-        const id = `${ quiz_id }-${ level }-${ user.id }`;
+        const id = `${ quiz_id }-${ level + 1 }-${ user.id }`;
         // Find or create the score entry
         const [scoreEntry, scoreCreated] = await Score.findOrCreate( {
             where: {
@@ -29,7 +30,7 @@ export async function POST(
             },
             defaults: {
                 score: score,
-                timelapsed: timelapsed
+                timelapsed: formatTimelapsed( timelapsed )
             },
         } );
 

@@ -40,3 +40,19 @@ export function toTitleCase( str: string ): string {
         ( text ) => text.charAt( 0 ).toUpperCase() + text.substring( 1 ).toLowerCase()
     );
 }
+
+export function formatTimelapsed( timelapsed: string ): string {
+    // Ensure the input is already in HH:MM:SS format
+    if ( !timelapsed.match( /^\d{2}:\d{2}:\d{2}$/ ) ) {
+        throw new Error( 'Invalid TIME format. Expected format: HH:MM:SS' );
+    }
+
+    const [hours, minutes, seconds] = timelapsed.split( ':' ).map( Number );
+
+    // Pad values to ensure two digits if needed
+    const paddedHours = String( hours ).padStart( 2, '0' );
+    const paddedMinutes = String( minutes ).padStart( 2, '0' );
+    const paddedSeconds = String( seconds ).padStart( 2, '0' );
+
+    return `${ paddedHours }:${ paddedMinutes }:${ paddedSeconds }`;
+}

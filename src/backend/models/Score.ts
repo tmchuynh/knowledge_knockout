@@ -7,20 +7,23 @@ class Score extends Model {
     public quiz_id!: string;
     public username!: string;
     public score!: number;
-    public timelapsed!: typeof DataTypes.TIME;
+    public timelapsed!: string;
+    public completed!: boolean;
     public created_at?: Date;
     public updated_at?: Date;
+
+
 }
 
 Score.init(
     {
         id: {
-            type: DataTypes.STRING( 250 ),
+            type: DataTypes.STRING,
             primaryKey: true,
             allowNull: false,
         },
         quiz_id: {
-            type: DataTypes.STRING( 250 ),
+            type: DataTypes.STRING,
             allowNull: false,
             references: {
                 model: Quiz,
@@ -28,7 +31,7 @@ Score.init(
             },
         },
         username: {
-            type: DataTypes.STRING( 100 ),
+            type: DataTypes.STRING,
             allowNull: false,
             references: {
                 model: User,
@@ -42,7 +45,11 @@ Score.init(
         },
         timelapsed: {
             type: DataTypes.TIME,
-            defaultValue: "00:00:00",
+        },
+        completed: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
         },
         created_at: {
             type: DataTypes.DATE,

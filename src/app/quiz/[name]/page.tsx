@@ -74,7 +74,6 @@ const QuizDifficultyPage: React.FC = () => {
 
     const handleDifficultySelection = ( quiz: Quiz, level: number ) => {
         if ( !quiz.id ) return;
-        level++;
         router.push( `/quiz/${ quiz.subject }/${ level }/0` );
     };
 

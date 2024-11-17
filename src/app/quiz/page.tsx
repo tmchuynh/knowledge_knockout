@@ -12,7 +12,7 @@ const QuizSelectionPage: React.FC = () => {
 
     useEffect( () => {
         if ( sessionStorage.getItem( 'reloaded' ) ) {
-            window.location.reload(); // Reload the page
+            window.location.reload();
             sessionStorage.removeItem( 'reloaded' );
         }
 

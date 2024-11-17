@@ -24,14 +24,10 @@ const LoginPage: React.FC = () => {
 
     useEffect( () => {
         if ( !sessionStorage.getItem( 'reloaded' ) ) {
-            sessionStorage.setItem( 'reloaded', 'true' ); // Mark the page as reloaded
-            window.location.reload(); // Reload the page
+            sessionStorage.setItem( 'reloaded', 'true' );
+            window.location.reload();
         }
     }, [] );
-
-    const windowReload = async () => {
-        window.location.reload();
-    };
 
     const showToast = ( type: "error" | "success", message: string ) => {
         setToastMessage( { type, message } );

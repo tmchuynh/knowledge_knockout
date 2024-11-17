@@ -5,6 +5,7 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Answer, Question, Quiz, Score, User } from '@/types/interface';
+import Timer from '@/components/Timer';
 
 const QuizPage = () => {
     const router = useRouter();
@@ -15,6 +16,7 @@ const QuizPage = () => {
     let level = parseInt( segments[2] );
 
     const [questions, setQuestions] = useState<Question[]>( [] );
+    const [quizzes, setQuizzes] = useState<Quiz[]>( [] );
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState( 0 );
     const [currentQuestion, setCurrentQuestion] = useState<Question>();
     const [scoreId, setScoreId] = useState<string | null>( null );
@@ -37,16 +39,25 @@ const QuizPage = () => {
                 }
 
                 const userData = await response.json();
-
-                fetchQuizzesData( userData );
-
                 setUser( userData );
+                console.log( userData );
+
+
+                const questions = await fetchQuizzesData();
+                const scoreExists = await getScoreData( userData, questions );
+                console.log( scoreExists );
+                if ( !scoreExists ) {
+                    console.log( "createScore" );
+                    await createScoreData( userData, questions );
+                }
+
             } catch ( error ) {
                 console.error( 'Error fetching user data:', error );
             }
         };
 
-        const fetchQuizzesData = async ( userData: User ) => {
+
+        const fetchQuizzesData = async () => {
             try {
                 const quizResponse = await fetch(
                     `/api/quiz/${ encodeURIComponent( subject ) }`,
@@ -54,7 +65,13 @@ const QuizPage = () => {
                         credentials: 'include',
                     }
                 );
+
+                if ( !quizResponse.ok ) {
+                    throw new Error( 'Failed to fetch quiz data' );
+                }
+
                 const quizData = await quizResponse.json();
+                setQuizzes( quizData );
 
                 console.log( quizData );
 
@@ -64,44 +81,64 @@ const QuizPage = () => {
                 const questionsData = await questionResponse.json();
                 setQuestions( questionsData.questions );
                 setCurrentQuestion( questionsData.questions[0] );
+                console.log( "questionData", questionsData.questions );
 
                 setLoading( false );
-
-                if ( quizData.length > 0 && !scoreId ) {
-                    try {
-                        await initializeScore( quizData[level].id, userData );
-                    } catch ( error ) {
-                        setError( 'Failed to initialize score' );
-                        setLoading( false );
-                        return;
-                    }
-                }
-
+                return questionsData.questions;
             } catch ( error ) {
                 setError( 'Error fetching data' );
                 setLoading( false );
             }
         };
 
-        const initializeScore = async ( quizId: number, user: User ) => {
+        const getScoreData = async ( userData: User, questions: Question[] ) => {
+            const score_id = createScoreId( questions, level, userData );
+
             try {
-                const res = await fetch( `/api/score/username/${ user.username }`, {
+                const res = await fetch( `/api/score/${ score_id }`, {
+                    credentials: 'include',
+                } );
+
+                if ( !res.ok ) {
+                    throw new Error( 'Failed to fetch score data' );
+                }
+
+                const scoreData = await res.json();
+                setScore( scoreData.score );
+                setScoreId( scoreData.id );
+                return true;
+            } catch ( error ) {
+                console.log( error );
+                setLoading( false );
+                return false;
+            }
+        };
+
+        const createScoreData = async ( userData: User, questions: Question[] ) => {
+            const array = questions[0].id.split( "-" );
+            const quizId = array[1];
+
+            try {
+                const res = await fetch( `/api/score/username/${ userData.username }`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify( { quiz_id: quizId, level, score, user, timelapsed: "00:00:00" } ),
+                    body: JSON.stringify( { quiz_id: quizId, level, score, user: userData, timelapsed: '00:00:00' } ),
                 } );
 
-                const data = await res.json();
                 if ( res.ok ) {
+                    const data = await res.json();
                     setScoreId( data.score_id );
                 } else {
-                    setError( 'Failed to initialize score' );
+                    throw new Error( 'Failed to create score' );
                 }
             } catch ( error ) {
+                console.log( error );
                 setError( 'Failed to initialize score' );
+                setLoading( false );
+                return;
             }
         };
 
@@ -113,13 +150,13 @@ const QuizPage = () => {
 
     const handleSubmitAnswer = async ( isCorrect: boolean ) => {
         if ( isCorrect && scoreId ) {
-            await fetch( '/api/scores/update', {
+            await fetch( `/api/scores/${ scoreId }`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${ document.cookie.split( 'token=' )[1] }`,
                 },
-                body: JSON.stringify( { score_id: scoreId, increment: 1 } ),
+                body: JSON.stringify( { id: scoreId, score: score + 1 } ),
             } );
             setScore( score + 1 );
         }
@@ -146,14 +183,15 @@ const QuizPage = () => {
         } );
 
         if ( isCorrect && scoreId ) {
-            await fetch( '/api/scores/update', {
+            await fetch( `/api/scores/${ scoreId }`, {
                 method: 'PUT',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${ document.cookie.split( 'token=' )[1] }`,
                 },
-                body: JSON.stringify( { score_id: scoreId, increment: 1 } ),
+                body: JSON.stringify( { id: scoreId, score: score + 1 } ),
             } );
+            setScore( score + 1 );
         }
 
         goToNextQuestion();
@@ -166,53 +204,67 @@ const QuizPage = () => {
             setCurrentQuestionIndex( currentQuestionIndex + 1 );
             setCurrentQuestion( questions[currentQuestionIndex] );
         } else {
-            router.push( `/quiz/${ encodeURIComponent( subject ) }/difficulty/${ level }/result?scoreId=${ scoreId }` );
+            router.push( `/quiz/${ encodeURIComponent( subject ) }/${ level + 1 }/result?scoreId=${ scoreId }` );
         }
     };
 
     return (
-        <div className="flex flex-col justify-center items-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
-            <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">{currentQuestion?.content}</h2>
-            {currentQuestion?.question_type === 'multiple_choice' || currentQuestion?.question_type === 'true_false' ? (
-                <div className="w-full flex flex-col">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {currentQuestion.answers.map( ( answer: Answer, index ) => (
-                            <Button
-                                key={`${ answer.id }__${ index }`}
-                                onClick={() => handleSubmitAnswer( answer.is_correct )}
-                                className="text-center p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
-                            >
-                                {answer.content}
-                            </Button>
-                        ) )}
+        <>
+            <div className="flex flex-col justify-center items-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
+                <Timer scoreId={scoreId} />
+            </div>
+            <div className="flex flex-col justify-center items-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
+                <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">{currentQuestion?.content}</h2>
+                {currentQuestion?.question_type === 'multiple_choice' || currentQuestion?.question_type === 'true_false' ? (
+                    <div className="w-full flex flex-col">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {currentQuestion.answers.map( ( answer: Answer, index ) => (
+                                <Button
+                                    key={`${ answer.id }__${ index }`}
+                                    onClick={() => handleSubmitAnswer( answer.is_correct )}
+                                    className="text-center p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+                                >
+                                    {answer.content}
+                                </Button>
+                            ) )}
+                        </div>
                     </div>
-                </div>
-            ) : (
-                <div className="w-full flex flex-col mt-4">
-                    <label className="block mb-2 text-md font-medium">Input your answer</label>
-                    <Input
-                        type="text"
-                        value={userInput}
-                        onChange={( e ) => setUserInput( e.target.value )}
-                        onKeyDown={( e ) => {
-                            if ( e.key === 'Enter' ) {
-                                handleWrittenAnswerSubmit();
-                            }
-                        }}
-                        className="mb-4 p-2 border rounded-md"
-                    />
-                    <Button
-                        onClick={handleWrittenAnswerSubmit}
-                        className="bg-green-500 hover:bg-green-600 text-white rounded-md p-2"
-                    >
-                        Submit Answer
-                    </Button>
-                </div>
-            )}
-            {result && <div className="mt-4 text-green-500">{result}</div>}
-        </div>
+                ) : (
+                    <div className="w-full flex flex-col mt-4">
+                        <label className="block mb-2 text-md font-medium">Input your answer</label>
+                        <Input
+                            type="text"
+                            value={userInput}
+                            onChange={( e ) => setUserInput( e.target.value )}
+                            onKeyDown={( e ) => {
+                                if ( e.key === 'Enter' ) {
+                                    handleWrittenAnswerSubmit();
+                                }
+                            }}
+                            className="mb-4 p-2 border rounded-md"
+                        />
+                        <Button
+                            onClick={handleWrittenAnswerSubmit}
+                            className="bg-green-500 hover:bg-green-600 text-white rounded-md p-2"
+                        >
+                            Submit Answer
+                        </Button>
+                    </div>
+                )}
+                {result && <div className="mt-4 text-green-500">{result}</div>}
+            </div>
+        </>
+
     );
 };
+
+function createScoreId( questions: Question[], level: number, userData: User ) {
+    console.log( questions );
+    const array = questions[0].id.split( "-" );
+    const quizId = array[1];
+    const score_id = `${ quizId }-${ level + 1 }-${ userData?.id }`;
+    return score_id;
+}
 
 function levenshtein( a: string, b: string ): number {
     const an = a.length;
