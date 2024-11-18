@@ -127,7 +127,7 @@
 		"dev-server": "tsx src/backend/server.ts",
 		"start": "next start",
 		"start-server": "node src/dist/server.js",
-		"tailwind": "npx tailwindcss -i ./src/styles/globals.css -o ./src/styles/main.css --watch"
+		"tailwind": "npx tailwindcss -i ./src/app/globals.css -o ./src/app/main.css --watch"
 	},
 	"type": "module",
 	"version": "2.5.0"

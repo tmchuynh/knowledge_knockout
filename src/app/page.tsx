@@ -25,7 +25,7 @@ const WelcomePage = () => {
         <div className="flex flex-col justify-center items-center dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full">
             <header className="py-6">
                 <div className="container px-6 text-center">
-                    <h1 className="text-5xl font-extrabold text-stone text-center">
+                    <h1 className="text-center">
                         Welcome to Your Learning Journey
                     </h1>
                     <p className="mt-4 text-lg text-indigo-700">
@@ -37,7 +37,7 @@ const WelcomePage = () => {
             <main className="container grid grid-cols-1 gap-7 space-y-6 w-11/12 mx-auto">
                 <section>
                     <div className="text-center mb-10">
-                        <h2 className="text-4xl font-semibold text-indigo-900">
+                        <h2 className="text-center text-indigo-900">
                             Quizzes and Flashcards
                         </h2>
                         <p className="text-lg text-gray-800 mt-4">
@@ -48,7 +48,7 @@ const WelcomePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 p-6">
                         <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between">
                             <div>
-                                <h3 className="text-2xl font-semibold text-indigo-700 mb-4 flex items-center">
+                                <h3 className="text-indigo-700 flex items-center">
                                     <span className="mr-2">🧠</span> Enhanced Memory
                                 </h3>
                                 <p className="text-gray-600 mb-4">
@@ -64,7 +64,7 @@ const WelcomePage = () => {
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 flex-col flex justify-between">
                             <div>
-                                <h3 className="text-2xl font-semibold text-teal-700 mb-4 flex items-center">
+                                <h3 className="text-teal-700 mb-4 flex items-center">
                                     <span className="mr-2">💪</span> Confidence Boost
                                 </h3>
                                 <p className="text-gray-600 mb-4">
@@ -80,7 +80,7 @@ const WelcomePage = () => {
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between">
                             <div>
-                                <h3 className="text-2xl font-semibold text-purple-700 mb-4 flex items-center">
+                                <h3 className="text-purple-700 mb-4 flex items-center">
                                     <span className="mr-2">📚</span> Retention & Mastery
                                 </h3>
                                 <p className="text-gray-600 mb-4">
@@ -96,7 +96,7 @@ const WelcomePage = () => {
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between">
                             <div>
-                                <h3 className="text-2xl font-semibold text-blue-700 mb-4 flex items-center">
+                                <h3 className="text-blue-700 mb-4 flex items-center">
                                     <span className="mr-2">📈</span> Structured Growth
                                 </h3>
                                 <p className="text-gray-600 mb-4">
@@ -116,7 +116,7 @@ const WelcomePage = () => {
                 <hr />
 
                 <section className="mb-10">
-                    <h2 className="text-4xl font-semibold text-stone-800 mb-6">
+                    <h2>
                         Why Repetitive Learning?
                     </h2>
                     <p className="text-lg text-gray-700">
@@ -137,7 +137,7 @@ const WelcomePage = () => {
 
                 <section>
                     <div className="text-center mb-10">
-                        <h2 className="text-4xl font-semibold text-teal-800">
+                        <h2 className="text-teal-800">
                             Gamification Elements
                         </h2>
                         <p className="text-lg text-gray-800 mt-4">
@@ -147,7 +147,7 @@ const WelcomePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 p-6">
                         <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between">
                             <div>
-                                <h3 className="text-2xl font-semibold text-green-700 mb-4">Badges and Rewards</h3>
+                                <h3 className="text-green-700 mb-4">Badges and Rewards</h3>
                                 <p className="text-gray-600 mb-4">
                                     Earn badges as you complete quizzes and reach milestones. Consistent studying is rewarded, motivating you to keep progressing.
                                 </p>
@@ -236,7 +236,7 @@ const WelcomePage = () => {
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between">
                             <div>
-                                <h3 className="text-2xl font-semibold text-rose-700 mb-4">Challenge Yourself</h3>
+                                <h3 className="text-rose-700 mb-4">Challenge Yourself</h3>
                                 <p className="text-gray-600 mb-4">
                                     Participate in challenges that push your limits and unlock exclusive rewards. Stay engaged and build competitive spirit.
                                 </p>
@@ -246,7 +246,7 @@ const WelcomePage = () => {
                                     <Flame className="text-rose-700 w-8 h-8" />
                                 </div>
                                 <div>
-                                    <h4 className="text-rose-700 font-semibold">See Your Progress Little by Little</h4>
+                                    <h4 className="text-rose-700">See Your Progress Little by Little</h4>
                                     <p className="text-gray-500 text-sm">Commit to a short or long-term activity and see your progress soar.</p>
                                 </div>
                             </div>
@@ -262,9 +262,9 @@ const WelcomePage = () => {
                 <hr />
 
                 <section className="py-10">
-                    <h2 className="text-4xl font-semibold text-center text-teal-800 mb-8">
+                    <h1 className="text-center text-teal-800 mb-8">
                         Start Your Repetitive Learning Journey Today
-                    </h2>
+                    </h1>
                     <p className="text-center text-lg text-gray-800 mb-8">
                         Begin by setting small, achievable goals and commit to a daily learning routine. Over time, you'll
                         see substantial improvements.
@@ -284,9 +284,9 @@ const WelcomePage = () => {
 
                 <section>
                     <div className="text-center mb-10">
-                        <h2 className="text-4xl font-semibold text-fuchsia-900">
+                        <h1 className="text-fuchsia-900">
                             Progress Tracking and Analytics
-                        </h2>
+                        </h1>
                         <p className="text-lg text-gray-800 mt-4">
                             Stay informed about your learning progress and optimize your study plan.
                         </p>
@@ -294,7 +294,7 @@ const WelcomePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
                         <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between">
                             <div>
-                                <h3 className="text-2xl font-semibold text-fuchsia-700 mb-4">Detailed Insights</h3>
+                                <h3 className="text-fuchsia-700 mb-4">Detailed Insights</h3>
                                 <p className="text-gray-600 mb-4">
                                     Track your study habits with insights like time spent per subject and accuracy rates. Identify strengths and areas that need more focus.
                                 </p>
@@ -313,7 +313,7 @@ const WelcomePage = () => {
                         </div>
                         <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between">
                             <div>
-                                <h3 className="text-2xl font-semibold text-indigo-700 mb-4">Visual Progress</h3>
+                                <h3 className="text-indigo-700 mb-4">Visual Progress</h3>
                                 <p className="text-gray-600 mb-4">
                                     Stay motivated with visual graphs and charts that show your progress over time, giving you a clear view of your achievements.
                                 </p>
@@ -329,7 +329,7 @@ const WelcomePage = () => {
                                         />
                                     </div>
                                     <div className='justify-start flex flex-col h-full'>
-                                        <h4 className="text-indigo-700 font-semibold">Progress Highlights</h4>
+                                        <h4 className="text-indigo-700">Progress Highlights</h4>
                                         <p className="text-gray-500 text-sm">See your top-performing areas and areas needing improvement at a glance.</p>
                                     </div>
                                 </div>
