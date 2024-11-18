@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
 import { Quiz, Score } from '@/backend/models';
-import { formatDate } from '@/utils/formatUtils';
+import { formatDate, formatPercentage, formatTimeString } from '@/utils/formatUtils';
 
 export async function GET(
     request: Request,
-    props: { params: { quiz: string, id: string; }; }
+    props: { params: { quiz: string; }; }
 ) {
     try {
-        const { quiz, id } = await props.params;
+        const { quiz } = await props.params;
 
-        console.log( id, quiz );
+        console.log( quiz );
         const decodedTitle = decodeURIComponent( quiz );
 
         if ( !decodedTitle ) {
@@ -18,30 +18,49 @@ export async function GET(
         }
 
         // Fetch scores by quiz ID
-        const scores = await Score.findAll( {
-            where: { quiz_id: id },
+        const quizzes = await Quiz.findAll( {
+            where: { subject: quiz },
             include: [
                 {
-                    model: Quiz,
-                    as: 'quiz',
+                    model: Score,
+                    as: 'score',
                 }
             ]
         } );
 
-        console.log( "SCORES", scores );
+        console.log( "quizzes", quizzes );
 
-        if ( scores.length === 0 ) {
+        if ( quizzes.length === 0 ) {
             console.log( 'No scores found for this quiz' );
             return NextResponse.json( { message: 'No scores found for this quiz' }, { status: 404 } );
         }
 
+
         // Create leaderboard data with calculated score percentages
-        const leaderboardData = scores.map( ( score ) => ( {
-            username: score.username,
-            level: score.quiz.level,
-            score: ( score.score! / score.quiz.total_questions! ) * 100,
-            date: formatDate( score.updated_at! ),
-        } ) );
+        const leaderboardData = quizzes
+            .map( ( quiz ) => {
+                // Check if there is a score array and it has elements
+                if ( quiz.score.length > 0 ) {
+                    // Find the score entry with the highest score
+                    const highestScore = quiz.score.sort( ( a: { score: number; }, b: { score: number; } ) => b.score - a.score )[0];
+
+                    return {
+                        quiz_subject: quiz.subject,
+                        timelapsed: formatTimeString( highestScore.timelapsed ),
+                        quiz_id: quiz.id,
+                        username: highestScore.username,
+                        level: quiz.level,
+                        score: formatPercentage( highestScore.score / quiz.total_questions ),
+                        date: formatDate( highestScore.updated_at! ),
+                    };
+                } else {
+                    return null; // Return null if there is no score
+                }
+            } )
+            .filter( Boolean ) // Filter out any null values from the array
+            .sort( ( a, b ) => ( a.level as number ) - ( b.level as number ) ); // Sort by level in ascending order
+
+
 
         console.log( 'Leaderboard data', leaderboardData );
 

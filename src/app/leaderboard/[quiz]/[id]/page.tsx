@@ -26,7 +26,7 @@ const LeaderboardPage: React.FC = () => {
 
             try {
                 console.log( 'Fetching data for quiz:', quizName );
-                const response = await fetch( `/api/leaderboard/${ quizName }/${ quizID }`, {
+                const response = await fetch( `/api/leaderboard/${ quizName }`, {
                     credentials: 'include', // Ensure cookies are included for authentication
                 } );
 

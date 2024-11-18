@@ -41,6 +41,16 @@ export function toTitleCase( str: string ): string {
     );
 }
 
+/**
+ * Formats a number as a percentage string with a specified number of decimal places.
+ * @param value - The number to be formatted as a percentage.
+ * @param decimalPlaces - The number of decimal places to include (default is 2).
+ * @returns A string representing the formatted percentage.
+ */
+export function formatPercentage( value: number, decimalPlaces: number = 2 ): string {
+    return `${ ( value * 100 ).toFixed( decimalPlaces ) }%`;
+}
+
 export function formatTimelapsed( timelapsed: string ): string {
     // Ensure the input is already in HH:MM:SS format
     if ( !timelapsed.match( /^\d{2}:\d{2}:\d{2}$/ ) ) {

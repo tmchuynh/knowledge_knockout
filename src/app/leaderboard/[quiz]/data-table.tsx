@@ -55,7 +55,6 @@ export function DataTable<TData, TValue>( { columns, data, quiz }: DataTableProp
 
     return (
         <>
-            <h3>Level {quiz[0].level}</h3>
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
@@ -107,7 +106,7 @@ const getLeaderboardDataByLevel = async ( quizName: string, id: string ): Promis
     try {
         console.log( "Fetching leaderboard data for quiz:", quizName, "with ID:", id );
 
-        const response = await fetch( `/api/leaderboard/${ quizName }/${ id }` );
+        const response = await fetch( `/api/leaderboard/${ quizName }` );
         if ( !response.ok ) {
             console.error( "Failed to fetch leaderboard data:", response.statusText );
             throw new Error( "Failed to fetch leaderboard data" );
