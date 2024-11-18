@@ -46,7 +46,7 @@ const data = {
     navMain: [
         {
             title: "Flashcards",
-            url: "#",
+            url: "/flashcards",
             icon: NotebookPen,
         },
         {
@@ -82,7 +82,7 @@ const data = {
         },
         {
             title: "Tests",
-            url: "#",
+            url: "/exams",
             icon: BookCheck,
             items: [
                 {
@@ -105,7 +105,7 @@ const data = {
         },
         {
             title: "Learning Paths",
-            url: "#",
+            url: "/roadmaps",
             icon: NotebookPen,
             items: [
                 {
