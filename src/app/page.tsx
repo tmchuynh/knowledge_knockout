@@ -13,6 +13,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@radix-ui/react-tooltip';
 import AnimatedCircularProgressBar from '@/components/ui/animated-circular-progress-bar';
+import Testimonials from '@/components/Testimonials';
 const WelcomePage = () => {
     const router = useRouter();
 
@@ -20,6 +21,13 @@ const WelcomePage = () => {
     const handleNavigation = ( path: string ) => {
         router.push( path );
     };
+
+    const feedbackData = [
+        { name: "Alice Johnson", feedback: "This service was amazing!", rating: 5 },
+        { name: "Bob Smith", feedback: "Great experience and friendly staff.", rating: 4 },
+        { name: "Chris Lee", feedback: "I would recommend this to my friends.", rating: 5 },
+        { name: "Dana White", feedback: "Good service, but could be faster.", rating: 3 },
+    ];
 
     return (
         <div className="flex flex-col justify-center items-center dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full">
@@ -132,6 +140,13 @@ const WelcomePage = () => {
                         Ultimately, incorporating repetitive learning into educational strategies empowers students to achieve a deeper, more durable understanding of their subjects, enabling them to approach future challenges with confidence and competence.
                     </p>
                 </section>
+
+                <hr />
+
+                <div className="my-8">
+                    <h2 className="text-center">Customer Feedback</h2>
+                    <Testimonials testimonials={feedbackData} />
+                </div>
 
                 <hr />
 
