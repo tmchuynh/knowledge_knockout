@@ -72,7 +72,6 @@ export async function GET(
         // Fetch all scores associated with the user
         const scores = await Score.findAll( {
             where: { username: user.username },
-            include: [{ model: Quiz, as: 'quiz' }],
             order: [['created_at', 'DESC']],
         } );
 

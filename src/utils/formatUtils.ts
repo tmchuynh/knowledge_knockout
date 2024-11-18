@@ -56,3 +56,13 @@ export function formatTimelapsed( timelapsed: string ): string {
 
     return `${ paddedHours }:${ paddedMinutes }:${ paddedSeconds }`;
 }
+
+export function formatTimeString( timeString: string ): string {
+    const [hours, minutes, seconds] = timeString.split( ':' );
+
+    const formattedHours = `${ parseInt( hours, 10 ) } hour${ parseInt( hours, 10 ) !== 1 ? 's' : '' }`;
+    const formattedMinutes = `${ parseInt( minutes, 10 ) } minute${ parseInt( minutes, 10 ) !== 1 ? 's' : '' }`;
+    const formattedSeconds = `${ parseInt( seconds, 10 ) } second${ parseInt( seconds, 10 ) !== 1 ? 's' : '' }`;
+
+    return `${ formattedHours } ${ formattedMinutes } and ${ formattedSeconds }`;
+}

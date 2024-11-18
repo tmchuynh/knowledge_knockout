@@ -28,7 +28,7 @@ export interface Score {
     username: string;
     quiz_id: string;
     score: number;
-    timelapsed: number;
+    timelapsed: string;
     completed: boolean;
     created_at?: Date;
     updated_at?: Date;

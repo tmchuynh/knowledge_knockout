@@ -52,12 +52,12 @@ const getBgColorClass = ( color: string ) => {
 const BadgesPage: React.FC = () => {
     return (
         <div className="flex flex-col justify-center items-center px-6 py-4 lg:px-8 container dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
-            <h1 className="text-4xl font-extrabold text-stone text-center mb-5">Available Badges</h1>
+            <h1 className="text-center">Available Badges</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {badgesData.map( ( category, index ) => (
                     <div key={index} className="p-6 rounded-lg shadow-md border hover:shadow-md">
                         <div className="flex flex-col items-center mb-4">
-                            <h5 className="text-2xl font-semibold text-center mt-2">{category.category}</h5>
+                            <h5 className="text-center">{category.category}</h5>
                         </div>
                         <p className="text-neutral-600 text-center text-sm mb-4">{category.description}</p>
                         <div className="grid grid-cols-3 gap-4">

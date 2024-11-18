@@ -57,15 +57,15 @@ const ChallengesPage: React.FC = () => {
 
     return (
         <div className="container mx-auto p-6">
-            <h1 className="text-4xl font-extrabold text-stone text-center mb-5">Challenges</h1>
+            <h1 className="text-center">Challenges</h1>
             <section className="mb-8">
-                <h3 className="text-2xl font-bold mb-4">Daily Challenges</h3>
+                <h3>Daily Challenges</h3>
                 {dailyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {dailyChallenges.map( ( challenge, index ) => (
                             <div key={index} className="p-4 border rounded-lg shadow-md flex flex-col justify-between">
                                 <div>
-                                    <h3 className="text-lg font-semibold mb-2">{challenge.title}</h3>
+                                    <h4>{challenge.title}</h4>
                                     <p className="mb-4">{challenge.description}</p>
                                 </div>
                                 <Button className="bg-blue-500 hover:bg-blue-600 text-white">Start Challenge</Button>
@@ -77,13 +77,13 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h3 className="text-2xl font-bold mb-4">Weekly Challenges</h3>
+                <h3>Weekly Challenges</h3>
                 {weeklyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {weeklyChallenges.map( ( challenge, index ) => (
                             <div key={index} className="p-4 border rounded-lg shadow-md flex flex-col justify-between">
                                 <div>
-                                    <h3 className="text-lg font-semibold mb-2">{challenge.title}</h3>
+                                    <h4>{challenge.title}</h4>
                                     <p className="mb-4">{challenge.description}</p>
                                 </div>
                                 <Button className="bg-green-500 hover:bg-green-600 text-white">Start Challenge</Button>
@@ -95,13 +95,13 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h3 className="text-2xl font-bold mb-4">Bi-Weekly Challenges</h3>
+                <h3>Bi-Weekly Challenges</h3>
                 {biWeeklyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {biWeeklyChallenges.map( ( challenge, index ) => (
                             <div key={index} className="p-4 border rounded-lg shadow-md flex flex-col justify-between">
                                 <div>
-                                    <h3 className="text-lg font-semibold mb-2">{challenge.title}</h3>
+                                    <h4>{challenge.title}</h4>
                                     <p className="mb-4">{challenge.description}</p>
                                 </div>
                                 <Button className="bg-teal-500 hover:bg-teal-600 text-white">Start Challenge</Button>
@@ -113,13 +113,13 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h3 className="text-2xl font-bold mb-4">Monthly Challenges</h3>
+                <h3>Monthly Challenges</h3>
                 {monthlyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {monthlyChallenges.map( ( challenge, index ) => (
                             <div key={index} className="p-4 border rounded-lg shadow-md flex flex-col justify-between">
                                 <div>
-                                    <h3 className="text-lg font-semibold mb-2">{challenge.title}</h3>
+                                    <h4>{challenge.title}</h4>
                                     <p className="mb-4">{challenge.description}</p>
                                 </div>
                                 <Button className="bg-purple-500 hover:bg-purple-600 text-white">Start Challenge</Button>
@@ -131,13 +131,13 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h3 className="text-2xl font-bold mb-4">Bi-Monthly Challenges</h3>
+                <h3>Bi-Monthly Challenges</h3>
                 {biMonthlyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {biMonthlyChallenges.map( ( challenge, index ) => (
                             <div key={index} className="p-4 border rounded-lg shadow-md flex flex-col justify-between">
                                 <div>
-                                    <h3 className="text-lg font-semibold mb-2">{challenge.title}</h3>
+                                    <h4>{challenge.title}</h4>
                                     <p className="mb-4">{challenge.description}</p>
                                 </div>
                                 <Button className="bg-pink-500 hover:bg-pink-600 text-white">Start Challenge</Button>
@@ -149,13 +149,13 @@ const ChallengesPage: React.FC = () => {
                 )}
             </section>
             <section className="mb-8">
-                <h3 className="text-2xl font-bold mb-4">Yearly Challenges</h3>
+                <h3>Yearly Challenges</h3>
                 {yearlyChallenges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {yearlyChallenges.map( ( challenge, index ) => (
                             <div key={index} className="p-4 border rounded-lg shadow-md flex flex-col justify-between">
                                 <div>
-                                    <h3 className="text-lg font-semibold mb-2">{challenge.title}</h3>
+                                    <h4>{challenge.title}</h4>
                                     <p className="mb-4">{challenge.description}</p>
                                 </div>
                                 <Button className="bg-yellow-500 hover:bg-yellow-600 text-white">Start Challenge</Button>

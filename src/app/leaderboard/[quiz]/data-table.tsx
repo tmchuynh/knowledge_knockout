@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>( {
 
     return (
         <>
-            <h3 className="text-2xl mb-3">Level </h3>
+            <h3>Level </h3>
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>

@@ -48,7 +48,7 @@ const ScoresPage: React.FC = () => {
                 }
 
                 const data = await response.json();
-                return data.quiz;
+                return data;
             } catch ( error ) {
                 console.error( 'Error fetching quiz subject:', error );
                 throw error;
@@ -72,6 +72,7 @@ const ScoresPage: React.FC = () => {
                 const updatedScores = await Promise.all(
                     scores.map( async ( score ) => {
                         const quiz: Quiz = await fetchQuiz( score.quiz_id );
+                        console.log( "Quiz", quiz );
                         return { ...score, quiz }; // Add quiz data to the score object
                     } )
                 );
@@ -96,7 +97,7 @@ const ScoresPage: React.FC = () => {
 
     const sortByDate = () => {
         const sorted = [...filteredScores].sort(
-            ( a, b ) => new Date( b.quiz_date ).getTime() - new Date( a.quiz_date ).getTime()
+            ( a, b ) => new Date( b.updated_at! ).getTime() - new Date( a.updated_at! ).getTime()
         );
         setFilteredScores( sorted );
     };
@@ -138,7 +139,7 @@ const ScoresPage: React.FC = () => {
 
     return (
         <div className="container mx-auto bg-gray-50 dark:bg-gray-900 p-6 rounded-lg shadow-md border hover:shadow-md w-11/12">
-            <h1 className="text-4xl font-extrabold text-stone text-center mb-5">Past Scores</h1>
+            <h1 className="text-center">Past Scores</h1>
             <div className="flex flex-wrap justify-center gap-4 mb-4">
                 <button onClick={sortByQuiz} className="btn-primary">Sort by Quiz</button>
                 <button onClick={sortByDate} className="btn-primary">Sort by Date</button>
@@ -162,7 +163,7 @@ const ScoresPage: React.FC = () => {
                         <th className="p-4 border-b">Quiz</th>
                         <th className="p-4 border-b">Score</th>
                         <th className="p-4 border-b">Percentage</th>
-                        <th className="p-4 border-b">Timed</th>
+                        <th className="p-4 border-b">Timer</th>
                         <th className="p-4 border-b">Date</th>
                         <th className="p-4 border-b">Time</th>
                     </tr>

@@ -212,10 +212,6 @@ const QuizPage = () => {
     };
 
 
-
-
-
-
     if ( loading ) return <div>Loading...</div>;
     if ( error ) return <div className="text-red-500">{error}</div>;
 
@@ -299,7 +295,7 @@ const QuizPage = () => {
                 <Timer scoreId={scoreId} />
             </div>
             <div className="flex flex-col justify-center items-center px-6 py-4 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12">
-                <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">{currentQuestion?.content}</h2>
+                <h2 className="text-center">{currentQuestion?.content}</h2>
                 {currentQuestion?.question_type === 'multiple_choice' || currentQuestion?.question_type === 'true_false' ? (
                     <div className="w-full flex flex-col">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

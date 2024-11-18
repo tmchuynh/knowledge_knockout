@@ -166,7 +166,7 @@ const DashboardPage: React.FC = () => {
     return (
         <>
             <div className="dashboard-container bg-gray-50 flex flex-col items-center px-6 py-8 lg:px-8 m-4  rounded-lg shadow-md border hover:shadow-md w-11/12 mx-auto">
-                <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">User Profile</h2>
+                <h2 className="text-center">User Profile</h2>
                 <div className="w-full mx-auto">
                     <div className="mt-2 flex flex-col w-1/4 py-5 items-start justify-center">
                         {user && (
@@ -212,7 +212,7 @@ const DashboardPage: React.FC = () => {
                         <div className="flex flex-col gap-7 ">
                             <div className="flex flex-col justify-center items-center dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl m-4 shadow-md border hover:shadow-md p-7 w-11/12 mx-auto">
                                 <div className="w-full">
-                                    <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">Progress Tracking and Analytics</h2>
+                                    <h2 className="text-center">Progress Tracking and Analytics</h2>
                                     <p className="text-lg mb-4">
                                         Use the dropdown below to select a month and view your quiz progress.
                                     </p>

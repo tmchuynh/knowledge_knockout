@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Quiz, Score } from '@/backend/models';
+import { formatTimeString } from '@/utils/formatUtils';
 
 const ResultPage = () => {
     const searchParams = useSearchParams();
@@ -99,11 +100,14 @@ const ResultPage = () => {
 
     return (
         <div className="flex flex-col justify-center items-center px-6 py-10 lg:px-8 container border-4 border-gray-200 dark:border-gray-100 dark:bg-gray-800 dark:text-white rounded-2xl mx-auto my-4 w-full lg:w-11/12 shadow-lg">
-            <h1 className="text-4xl font-extrabold text-stone text-center mb-5">Quiz Completed!</h1>
-            <h3 className="text-center text-xl font-extrabold dark:text-white">Your Score:</h3>
-            <h6 className="text-center text-lg pb-4 font-bold dark:text-white">
-                {score} out of {quiz?.total_questions} in {timelapsed}
+            <h1 className="text-center">Quiz Completed!</h1>
+            <h3 className="text-center">Your Score:</h3>
+            <h6 className="text-center">
+                {score} out of {quiz?.total_questions}
             </h6>
+            <h5>
+                Time taken: {formatTimeString( timelapsed )}
+            </h5>
             <Button
                 className="mt-4"
                 onClick={() => router.push( '/quiz' )}
