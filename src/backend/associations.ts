@@ -4,12 +4,13 @@ import Score from "./models/Score";
 
 export default function setupAssociations() {
     // Association between User and Quiz
+    // Association between User and Quiz
     User.hasMany( Quiz, { foreignKey: 'id' } );
     Quiz.belongsTo( User, { foreignKey: 'id' } );
 
     // Association between Quiz and Question
-    Quiz.hasMany( Question, { foreignKey: 'id' } );
-    Question.belongsTo( Quiz, { foreignKey: 'id' } );
+    Quiz.hasMany( Question, { as: 'quiz', foreignKey: 'id' } );
+    Question.belongsTo( Quiz, { as: 'questions', foreignKey: 'id' } );
 
     // Association between Question and Answer
     Question.hasMany( Answer, { as: 'answers', foreignKey: 'question_id' } );
@@ -18,6 +19,7 @@ export default function setupAssociations() {
     // Association between Quiz and Score
     Quiz.hasMany( Score, { as: 'score', foreignKey: 'id' } );
     Score.belongsTo( Quiz, { as: 'quiz', foreignKey: 'id' } );
+
 
 }
 

@@ -9,24 +9,27 @@ export async function POST(
     const { username } = await props.params;
 
     try {
+        console.log( "USERNAME", username );
+        const { id, quiz_id, score, user, timelapsed } = await request.json();
+
         if ( !username ) {
             return NextResponse.json( { error: 'Username is required' }, { status: 400 } );
         }
 
-        const { quiz_id, score, user, level, timelapsed } = await request.json();
+        console.log( "information given", id, quiz_id, score, user, timelapsed );
 
         // Validate input data
         if ( !quiz_id ) {
             return NextResponse.json( { error: 'Quiz ID is required' }, { status: 400 } );
         }
 
-        const id = `${ quiz_id }-${ level + 1 }-${ user.id }`;
         // Find or create the score entry
         const [scoreEntry, scoreCreated] = await Score.findOrCreate( {
             where: {
                 id,
-                username: user.username,
+                username: username,
                 quiz_id: quiz_id,
+                completed: false,
             },
             defaults: {
                 score: score,

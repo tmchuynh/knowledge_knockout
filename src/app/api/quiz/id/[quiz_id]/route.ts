@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import Quiz from '@/backend/models/Quiz';
+import { Question } from '@/backend/models';
 
 export async function GET( request: Request, { params }: { params: { quiz_id: string; }; } ) {
     try {
@@ -10,7 +11,10 @@ export async function GET( request: Request, { params }: { params: { quiz_id: st
         }
 
         // Find the quiz by ID
-        const quiz = await Quiz.findOne( { where: { id: quiz_id } } );
+        const quiz = await Quiz.findOne( {
+            where: { id: quiz_id },
+            include: [{ model: Question }]
+        } );
 
         if ( !quiz ) {
             return NextResponse.json( { error: 'Quiz not found.' }, { status: 404 } );

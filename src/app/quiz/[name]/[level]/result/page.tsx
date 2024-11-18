@@ -3,19 +3,19 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Quiz } from '@/backend/models';
+import { Quiz, Score } from '@/backend/models';
 
 const ResultPage = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const [score, setScore] = useState<number>( 0 );
+    const [timelapsed, setTimelapsed] = useState<string>( '' );
     const [quiz, setQuiz] = useState<Quiz>();
-    const [totalQuestions, setTotalQuestions] = useState<number>( 0 );
     const [loading, setLoading] = useState( true );
     const [error, setError] = useState<string | null>( null );
 
     useEffect( () => {
-        const fetchScoreAndQuiz = async () => {
+        const fetchScore = async () => {
             const scoreId = searchParams.get( 'scoreId' );
 
             if ( !scoreId ) {
@@ -36,26 +36,12 @@ const ResultPage = () => {
 
                 const data = await res.json();
 
+                console.log( "scoreData", data );
+
                 setScore( data.score );
-
-                try {
-                    // Fetch the quiz data based on the quiz ID
-                    const resQ = await fetch( `/api/quiz/id/${ data.quiz_id }`, {
-                        credentials: 'include',
-                    } );
-
-                    if ( !resQ.ok ) {
-                        throw new Error( 'Failed to fetch quiz data.' );
-                    }
-
-                    const dataQ = await resQ.json();
-
-                    setQuiz( dataQ );
-
-                } catch ( error ) {
-                    console.error( 'Error fetching quiz:', error );
-                    throw new Error( 'Failed to fetch quiz data' );
-                }
+                setTimelapsed( data.timelapsed );
+                fetchQuizData( data );
+                updateCompletedScore( data );
             } catch ( error ) {
                 console.error( 'Error fetching score:', error );
                 setError( 'An error occurred while fetching data.' );
@@ -64,7 +50,43 @@ const ResultPage = () => {
             }
         };
 
-        fetchScoreAndQuiz();
+        const updateCompletedScore = async ( data: Score ) => {
+            const response = await fetch( `/api/score/${ data.id }`, {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify( { id: data.id, completed: true } ),
+            } );
+
+            if ( !response.ok ) {
+                throw new Error( 'Failed to update completed status.' );
+            }
+        };
+
+        const fetchQuizData = async ( data: Score ) => {
+            try {
+                // Fetch the quiz data based on the quiz ID
+                const resQ = await fetch( `/api/quiz/id/${ data.quiz_id }`, {
+                    credentials: 'include',
+                } );
+
+                if ( !resQ.ok ) {
+                    throw new Error( 'Failed to fetch quiz data.' );
+                }
+
+                const dataQ = await resQ.json();
+
+                setQuiz( dataQ );
+
+            } catch ( error ) {
+                console.error( 'Error fetching quiz:', error );
+                throw new Error( 'Failed to fetch quiz data' );
+            }
+        };
+
+        fetchScore();
     }, [] );
 
     if ( loading ) {
@@ -80,7 +102,7 @@ const ResultPage = () => {
             <h1 className="text-4xl font-extrabold text-stone text-center mb-5">Quiz Completed!</h1>
             <h3 className="text-center text-xl font-extrabold dark:text-white">Your Score:</h3>
             <h6 className="text-center text-lg pb-4 font-bold dark:text-white">
-                {score} out of {quiz?.total_questions}
+                {score} out of {quiz?.total_questions} in {timelapsed}
             </h6>
             <Button
                 className="mt-4"

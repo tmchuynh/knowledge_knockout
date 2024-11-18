@@ -1,8 +1,6 @@
 import { DecodedToken } from '@/types/interface';
 import crypto, { createSign, createVerify } from 'crypto';
 
-
-
 // Base64 URL encoding
 function base64UrlEncode( str: string ): string {
     return Buffer.from( str )
@@ -108,4 +106,3 @@ function verifyJWTWithRS256( token: string, publicKey: string ): object | null {
 
     return payload;
 }
-

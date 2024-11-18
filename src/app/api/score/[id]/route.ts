@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Score, Quiz } from '@/backend/models';
+import { formatTimelapsed } from '@/utils/formatUtils';
 
 export async function GET( req: NextRequest, { params }: { params: { id: string; }; } ) {
     try {
@@ -28,6 +29,8 @@ export async function PUT( req: NextRequest, { params }: { params: { id: string;
         const { id } = await params;
         const body = await req.json();
 
+        console.log( "BODY", body );
+
         // Ensure that at least one updatable field is provided
         if (
             ( !body.timelapsed && body.timelapsed !== 0 ) &&
@@ -43,6 +46,7 @@ export async function PUT( req: NextRequest, { params }: { params: { id: string;
         };
 
         if ( body.timelapsed ) {
+            formatTimelapsed( body.timelapsed );
             // Ensure timelapsed is in the correct HH:MM:SS format
             if ( !body.timelapsed.match( /^\d{2}:\d{2}:\d{2}$/ ) ) {
                 return NextResponse.json( { message: 'Invalid TIME format for timelapsed' }, { status: 400 } );
@@ -63,9 +67,9 @@ export async function PUT( req: NextRequest, { params }: { params: { id: string;
             where: { id },
         } );
 
-        // if ( updatedCount === 0 ) {
-        //     return NextResponse.json( { message: 'Score not found or no changes made' }, { status: 404 } );
-        // }
+        if ( updatedCount === 0 ) {
+            return NextResponse.json( { message: 'Score not found or no changes made' }, { status: 404 } );
+        }
 
         return NextResponse.json( { message: 'Score updated successfully' }, { status: 200 } );
     } catch ( error ) {

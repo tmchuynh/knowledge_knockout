@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Answer, Question, Quiz, Score, User } from '@/types/interface';
 import Timer from '@/components/Timer';
+import { generateRandomString } from '@/utils/regUtils';
 
 const QuizPage = () => {
     const router = useRouter();
@@ -16,7 +17,7 @@ const QuizPage = () => {
     let level = parseInt( segments[2] );
 
     const [questions, setQuestions] = useState<Question[]>( [] );
-    const [quizzes, setQuizzes] = useState<Quiz[]>( [] );
+    const [quiz, setQuiz] = useState<Quiz>();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState( 0 );
     const [currentQuestion, setCurrentQuestion] = useState<Question>();
     const [scoreId, setScoreId] = useState<string | null>( null );
@@ -26,139 +27,216 @@ const QuizPage = () => {
     const [result, setResult] = useState<string | null>( null );
     const [loading, setLoading] = useState<boolean>( true );
     const [error, setError] = useState<string | null>( null );
+    let createdNewScore = false;
 
     useEffect( () => {
-        const fetchUserData = async () => {
+        const handleFunctions = async () => {
+            if ( createdNewScore ) return;
+            createdNewScore = true;
             try {
-                const response = await fetch( '/api/auth/me', {
-                    credentials: 'include',
-                } );
-
-                if ( !response.ok ) {
-                    throw new Error( 'Failed to fetch user data' );
+                const user = await fetchUserData();
+                if ( !user ) {
+                    throw new Error( 'User data not available' );
                 }
 
-                const userData = await response.json();
-                setUser( userData );
-                console.log( userData );
-
-
-                const questions = await fetchQuizzesData();
-                const scoreExists = await getScoreData( userData, questions );
-                console.log( scoreExists );
-                if ( !scoreExists ) {
-                    console.log( "createScore" );
-                    await createScoreData( userData, questions );
+                const quiz_id = await fetchQuizzesData();
+                if ( !quiz_id ) {
+                    throw new Error( 'Quiz data not available' );
                 }
 
+                const questions = await fetchQuestions( quiz_id );
+                if ( questions && questions.questions.length > 0 ) {
+                    setCurrentQuestion( questions.questions[0] );
+                } else {
+                    console.warn( 'No questions found for the quiz.' );
+                }
+
+                const postId = `${ quiz_id }-${ level + 1 }-${ user.id }`;
+
+                // Check if the score already exists
+                const scoreExists = await getScoreData( postId );
+                if ( scoreExists ) {
+                    console.log( 'A score entry already exists and is not completed.' );
+                } else {
+                    // Ensure this block runs only once to prevent duplicate creation
+                    console.log( 'Creating new score entry...' );
+                    const uuidID = generateRandomString( 5 );
+                    const id = `${ uuidID }-${ quiz_id }-${ level + 1 }-${ user.id }`;
+                    console.log( 'Generated Score ID:', id );
+
+                    await createScoreData( user, id, quiz_id, "00:00:00" );
+                }
             } catch ( error ) {
-                console.error( 'Error fetching user data:', error );
+                console.error( 'Error in handleFunctions:', error );
+                setError( 'An error occurred during initialization.' );
+                setLoading( false );
+            } finally {
+                createdNewScore = false;
             }
         };
 
+        handleFunctions();
+    }, [] );
 
-        const fetchQuizzesData = async () => {
-            try {
-                const quizResponse = await fetch(
-                    `/api/quiz/${ encodeURIComponent( subject ) }`,
-                    {
-                        credentials: 'include',
-                    }
-                );
 
-                if ( !quizResponse.ok ) {
-                    throw new Error( 'Failed to fetch quiz data' );
-                }
+    const fetchUserData = async () => {
+        try {
+            const response = await fetch( '/api/auth/me', {
+                credentials: 'include',
+            } );
 
-                const quizData = await quizResponse.json();
-                setQuizzes( quizData );
-
-                console.log( quizData );
-
-                const questionResponse = await fetch( `/api/quiz/id/${ quizData[level].id }/${ level }`, {
-                    credentials: 'include',
-                } );
-                const questionsData = await questionResponse.json();
-                setQuestions( questionsData.questions );
-                setCurrentQuestion( questionsData.questions[0] );
-                console.log( "questionData", questionsData.questions );
-
-                setLoading( false );
-                return questionsData.questions;
-            } catch ( error ) {
-                setError( 'Error fetching data' );
-                setLoading( false );
+            if ( !response.ok ) {
+                throw new Error( 'Failed to fetch user data' );
             }
-        };
 
-        const getScoreData = async ( userData: User, questions: Question[] ) => {
-            const score_id = createScoreId( questions, level, userData );
+            const userData = await response.json();
+            console.log( "user data: " + JSON.stringify( userData ) );
+            setUser( userData );
+            return userData;
+        } catch ( error ) {
+            console.error( 'Error fetching user data:', error );
+        }
+    };
 
-            try {
-                const res = await fetch( `/api/score/${ score_id }`, {
+    const fetchQuestions = async ( quiz_id: string ) => {
+        try {
+            // Call the new API route for fetching quiz data by subject and level
+            const response = await fetch(
+                `/api/quiz/id/${ quiz_id }/${ level + 1 }`,
+                {
                     credentials: 'include',
-                } );
-
-                if ( !res.ok ) {
-                    throw new Error( 'Failed to fetch score data' );
                 }
+            );
 
-                const scoreData = await res.json();
-                setScore( scoreData.score );
-                setScoreId( scoreData.id );
-                return true;
-            } catch ( error ) {
-                console.log( error );
-                setLoading( false );
+            if ( !response.ok ) {
+                throw new Error( 'Failed to fetch questions data' );
+            }
+
+            const questions = await response.json();
+            setQuestions( questions.questions );
+
+            console.log( 'questions', questions );
+
+            setLoading( false );
+            return questions;
+        } catch ( error ) {
+            console.error( 'Error fetching data:', error );
+            setError( 'Error fetching data' );
+            setLoading( false );
+        }
+    };
+
+
+    const fetchQuizzesData = async () => {
+        try {
+            // Call the new API route for fetching quiz data by subject and level
+            const quizResponse = await fetch(
+                `/api/quiz/${ encodeURIComponent( subject ) }/${ level + 1 }`,
+                {
+                    credentials: 'include',
+                }
+            );
+
+            if ( !quizResponse.ok ) {
+                throw new Error( 'Failed to fetch quiz data' );
+            }
+
+            const quizData = await quizResponse.json();
+            setQuiz( quizData );
+
+            console.log( 'quizData', quizData[0] );
+
+            setLoading( false );
+            return quizData[0].id;
+        } catch ( error ) {
+            console.error( 'Error fetching data:', error );
+            setError( 'Error fetching data' );
+            setLoading( false );
+        }
+    };
+
+
+    const getScoreData = async ( postId: string ) => {
+        try {
+            const res = await fetch( `/api/score/find?partialId=${ postId }`, {
+                credentials: 'include',
+            } );
+
+            if ( !res.ok ) {
+                console.warn( `Score with partial ID ${ postId } not found.` );
                 return false;
             }
-        };
 
-        const createScoreData = async ( userData: User, questions: Question[] ) => {
-            const array = questions[0].id.split( "-" );
-            const quizId = array[1];
+            const scoreData = await res.json();
+            console.log( 'scoreData', scoreData );
 
-            try {
-                const res = await fetch( `/api/score/username/${ userData.username }`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify( { quiz_id: quizId, level, score, user: userData, timelapsed: '00:00:00' } ),
-                } );
-
-                if ( res.ok ) {
-                    const data = await res.json();
-                    setScoreId( data.score_id );
-                } else {
-                    throw new Error( 'Failed to create score' );
-                }
-            } catch ( error ) {
-                console.log( error );
-                setError( 'Failed to initialize score' );
-                setLoading( false );
-                return;
+            // Check if the existing score has `completed` set to `false`
+            if ( scoreData && scoreData.completed === false ) {
+                setScoreId( scoreData.id ); // Set the actual ID if found
+                return true; // A score entry exists and is not completed
             }
-        };
 
-        fetchUserData();
-    }, [subject] );
+            return false; // Either no score exists or the score is completed
+        } catch ( error ) {
+            console.error( 'Error fetching score data:', error );
+            return false;
+        }
+    };
+
+
+    const createScoreData = async ( userData: User, id: string, quiz_id: string, timelapsed: string ) => {
+        try {
+            const res = await fetch( `/api/score/username/${ userData.username }`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify( { id, quiz_id, score, user: userData, timelapsed } ),
+            } );
+
+            if ( res.ok ) {
+                const data = await res.json();
+                console.log( 'Score created:', data );
+                setScoreId( data.score_id );
+            } else {
+                const errorText = await res.text();
+                console.error( 'Failed to create score:', errorText );
+                throw new Error( 'Failed to create score' );
+            }
+        } catch ( error ) {
+            console.error( 'Error initializing score:', error );
+            setError( 'Failed to initialize score' );
+            setLoading( false );
+        }
+    };
+
+
+
+
+
 
     if ( loading ) return <div>Loading...</div>;
     if ( error ) return <div className="text-red-500">{error}</div>;
 
     const handleSubmitAnswer = async ( isCorrect: boolean ) => {
         if ( isCorrect && scoreId ) {
-            await fetch( `/api/score/${ scoreId }`, {
+            const newScore = score + 1;
+            const response = await fetch( `/api/score/${ scoreId }`, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify( { id: scoreId, score: score + 1 } ),
+                body: JSON.stringify( { id: scoreId, score: newScore } ),
             } );
-            setScore( score + 1 );
+            if ( !response.ok ) {
+                throw new Error( 'Failed to update score' );
+            }
+
+            const scoreData = await response.json();
+
+            setScore( scoreData.score );
         }
 
         goToNextQuestion();
@@ -183,15 +261,22 @@ const QuizPage = () => {
         } );
 
         if ( isCorrect && scoreId ) {
-            await fetch( `/api/scores/${ scoreId }`, {
+            const newScore = score + 1;
+            const response = await fetch( `/api/score/${ scoreId }`, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify( { id: scoreId, score: score + 1 } ),
+                body: JSON.stringify( { id: scoreId, score: newScore } ),
             } );
-            setScore( score + 1 );
+            if ( !response.ok ) {
+                throw new Error( 'Failed to update score' );
+            }
+
+            const scoreData = await response.json();
+
+            setScore( scoreData.score );
         }
 
         goToNextQuestion();
@@ -258,13 +343,7 @@ const QuizPage = () => {
     );
 };
 
-function createScoreId( questions: Question[], level: number, userData: User ) {
-    console.log( questions );
-    const array = questions[0].id.split( "-" );
-    const quizId = array[1];
-    const score_id = `${ quizId }-${ level + 1 }-${ userData?.id }`;
-    return score_id;
-}
+
 
 function levenshtein( a: string, b: string ): number {
     const an = a.length;
