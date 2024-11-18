@@ -35,11 +35,13 @@ export interface Score {
 }
 
 export interface LeaderboardEntry {
+    quiz_subject: string;
+    quiz_id: string;
     username: string;
-    quiz: string;
     level: number;
     score: number;
-    date_completed: Date;
+    timelapsed: string;
+    date: Date;
 }
 
 export interface Answer {

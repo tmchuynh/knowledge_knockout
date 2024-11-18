@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { Quiz, Score } from '@/backend/models';
-import { formatDate } from '@/utils/formatUtils';
+import { formatDate, formatTimeString } from '@/utils/formatUtils';
 
 export async function GET(
     request: Request,
@@ -37,6 +37,9 @@ export async function GET(
 
         // Create leaderboard data with calculated score percentages
         const leaderboardData = scores.map( ( score ) => ( {
+            quiz_subject: score.quiz.subject,
+            timelapsed: formatTimeString( score.timelapsed ),
+            quiz_id: score.quiz_id,
             username: score.username,
             level: score.quiz.level,
             score: ( score.score! / score.quiz.total_questions! ) * 100,

@@ -184,7 +184,7 @@ const data = {
     foryou: [
         {
             title: "Leaderboards",
-            url: "/leaderboards",
+            url: "/leaderboard",
             icon: Table2,
         },
         {

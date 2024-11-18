@@ -64,5 +64,5 @@ export function formatTimeString( timeString: string ): string {
     const formattedMinutes = `${ parseInt( minutes, 10 ) } minute${ parseInt( minutes, 10 ) !== 1 ? 's' : '' }`;
     const formattedSeconds = `${ parseInt( seconds, 10 ) } second${ parseInt( seconds, 10 ) !== 1 ? 's' : '' }`;
 
-    return `${ formattedHours } ${ formattedMinutes } and ${ formattedSeconds }`;
+    return `${ formattedMinutes } and ${ formattedSeconds }`;
 }

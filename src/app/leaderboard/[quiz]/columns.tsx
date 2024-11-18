@@ -5,23 +5,19 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<LeaderboardEntry>[] = [
     {
-        accessorKey: "status",
+        accessorKey: "date",
+        header: "Date Completed",
+    },
+    {
+        accessorKey: "username",
         header: "Username",
-    },
-    {
-        accessorKey: "email",
-        header: "Quiz",
-    },
-    {
-        accessorKey: "level",
-        header: "Level",
     },
     {
         accessorKey: "score",
         header: "Score",
     },
     {
-        accessorKey: "date",
-        header: "Date Completed",
+        accessorKey: "timelapsed",
+        header: "Time",
     },
 ];

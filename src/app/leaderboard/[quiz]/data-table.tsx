@@ -10,48 +10,42 @@ import { useEffect, useState } from "react";
 import { LeaderboardEntry } from "@/types/interface";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
-    quiz: string;
+    quiz: LeaderboardEntry[];
 }
 
-export function DataTable<TData, TValue>( {
-    columns,
-    data,
-    quiz,
-}: DataTableProps<TData, TValue> ) {
-    const quizNameStr = Array.isArray( quiz ) ? quiz[0] : quiz!;
+export function DataTable<TData, TValue>( { columns, data, quiz }: DataTableProps<TData, TValue> ) {
+    console.log( "Quiz prop:", quiz );
+
+    const quizNameStr = quiz.length > 0 ? quiz[0].quiz_subject : "N/A";
+    const quizId = quiz.length > 0 ? quiz[0].quiz_id : null;
+
     const [leaderboard, setLeaderboard] = useState<Map<number, LeaderboardEntry[]> | null>( null );
-
-
-    const transformRowData = ( entry: LeaderboardEntry, _index: number ) => ( {
-        username: entry.username,
-        quiz: quiz,
-        level: entry.level,
-        score: entry.score,
-        date_completed: entry.date_completed.toDateString(),
-    } );
-
 
     useEffect( () => {
         const fetchLeaderboard = async () => {
+            if ( !quizId ) {
+                console.error( "Quiz ID is missing. Skipping fetch." );
+                return;
+            }
+
             try {
-                const leaderboardDataByLevel = await getLeaderboardDataByLevel( quizNameStr );
+                const leaderboardDataByLevel = await getLeaderboardDataByLevel( quizNameStr, quizId );
+                console.log( "Leaderboard data by level:", leaderboardDataByLevel );
                 setLeaderboard( leaderboardDataByLevel );
             } catch ( error ) {
-                console.error( 'Error during fetchLeaderboard:', error );
+                console.error( "Error during fetchLeaderboard:", error );
             }
         };
 
-
-        if ( quiz ) {
+        if ( quizId ) {
             fetchLeaderboard();
         } else {
-            console.error( 'Quiz name is missing. Skipping fetch.' );
+            console.error( "Quiz data is missing. Skipping fetch." );
         }
-    }, [quiz] );
+    }, [quizId, quizNameStr] );
 
     const table = useReactTable( {
         data,
@@ -61,28 +55,26 @@ export function DataTable<TData, TValue>( {
 
     return (
         <>
-            <h3>Level </h3>
+            <h3>Level {quiz[0].level}</h3>
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map( ( headerGroup ) => (
                             <TableRow key={headerGroup.id}>
-                                {headerGroup.headers.map( ( header ) => {
-                                    return (
-                                        <TableHead key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                        </TableHead>
-                                    );
-                                } )}
+                                {headerGroup.headers.map( ( header ) => (
+                                    <TableHead key={header.id} className="text-center">
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                    </TableHead>
+                                ) )}
                             </TableRow>
                         ) )}
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className="text-center">
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map( ( row ) => (
                                 <TableRow
@@ -90,9 +82,7 @@ export function DataTable<TData, TValue>( {
                                     data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map( ( cell, index ) => (
-                                        <TableCell
-                                            key={`${ cell.id }__${ index }`}
-                                        >
+                                        <TableCell key={`${ cell.id }__${ index }`}>
                                             {flexRender( cell.column.columnDef.cell, cell.getContext() )}
                                         </TableCell>
                                     ) )}
@@ -100,7 +90,7 @@ export function DataTable<TData, TValue>( {
                             ) )
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell colSpan={columns.length + 1} className="h-24 text-center">
                                     No results.
                                 </TableCell>
                             </TableRow>
@@ -112,18 +102,19 @@ export function DataTable<TData, TValue>( {
     );
 }
 
-const getLeaderboardDataByLevel = async ( quizName: string ): Promise<Map<number, LeaderboardEntry[]>> => {
-
+const getLeaderboardDataByLevel = async ( quizName: string, id: string ): Promise<Map<number, LeaderboardEntry[]>> => {
     const leaderboardDataByLevel = new Map<number, LeaderboardEntry[]>();
     try {
-        const response = await fetch( `/api/leaderboard/${ quizName }` );
+        console.log( "Fetching leaderboard data for quiz:", quizName, "with ID:", id );
 
+        const response = await fetch( `/api/leaderboard/${ quizName }/${ id }` );
         if ( !response.ok ) {
-            console.error( 'Failed to fetch leaderboard data: ', response.statusText );
-            throw new Error( 'Failed to fetch leaderboard data' );
+            console.error( "Failed to fetch leaderboard data:", response.statusText );
+            throw new Error( "Failed to fetch leaderboard data" );
         }
 
         const leaderboardData: LeaderboardEntry[] = await response.json();
+        console.log( "Raw leaderboard data:", leaderboardData );
 
         leaderboardData.forEach( ( entry ) => {
             if ( !leaderboardDataByLevel.has( entry.level ) ) {
@@ -134,7 +125,7 @@ const getLeaderboardDataByLevel = async ( quizName: string ): Promise<Map<number
 
         leaderboardDataByLevel.forEach( ( entries ) => entries.sort( ( a, b ) => b.score - a.score ) );
     } catch ( error ) {
-        console.error( 'Error fetching leaderboard data:', error );
+        console.error( "Error fetching leaderboard data:", error );
     }
 
     return leaderboardDataByLevel;
