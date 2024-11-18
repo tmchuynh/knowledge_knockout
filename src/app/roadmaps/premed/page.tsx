@@ -85,12 +85,12 @@ const preMedLearningPath: TimelineElement[] = [
 
 export const TimelineLayout = ( { items }: { items: TimelineElement[]; } ) => {
     return (
-        <Timeline>
+        <Timeline className="w-10/12 mx-auto p-6">
             {items.map( ( item ) => (
                 <TimelineItem key={item.id}>
                     <TimelineConnector />
                     <TimelineHeader>
-                        <TimelineTime>{item.date}</TimelineTime>
+                        <TimelineTime className="w-12 text-center leading-1">{item.date}</TimelineTime>
                         <TimelineIcon />
                         <TimelineTitle>{item.title}</TimelineTitle>
                     </TimelineHeader>
