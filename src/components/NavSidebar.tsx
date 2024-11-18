@@ -109,24 +109,32 @@ const data = {
             icon: NotebookPen,
             items: [
                 {
-                    title: "Software Engineering",
-                    url: "#",
+                    title: "Full-Stack Web Development",
+                    url: "/roadmaps/fullstack",
+                },
+                {
+                    title: "Front-end Development",
+                    url: "/roadmaps/frontend",
+                },
+                {
+                    title: "Back-end Development",
+                    url: "/roadmaps/backend",
                 },
                 {
                     title: "Pre Medical",
-                    url: "#",
+                    url: "/roadmaps/premed",
                 },
                 {
                     title: "Business",
-                    url: "#",
+                    url: "/roadmaps/business",
                 },
                 {
                     title: "Law",
-                    url: "#",
+                    url: "/roadmaps/law",
                 },
                 {
                     title: "Entrepreneurship",
-                    url: "#",
+                    url: "/roadmaps/entrepreneurship",
                 },
             ],
         },

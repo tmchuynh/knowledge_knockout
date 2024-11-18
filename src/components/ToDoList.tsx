@@ -40,7 +40,7 @@ const ToDoList: React.FC = () => {
 
     return (
         <div className="p-4 border rounded-md shadow-md w-full max-w-md mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">To-Do List</h2>
+            <h2 className="text-center">To-Do List</h2>
             <div className="flex mb-4">
                 <Input
                     type="text"

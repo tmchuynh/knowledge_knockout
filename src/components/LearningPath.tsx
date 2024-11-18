@@ -20,7 +20,7 @@ interface LearningPathProps {
 const LearningPath: React.FC<LearningPathProps> = ( { steps, title = 'Learning Path' } ) => {
     return (
         <div className="p-4 border rounded-md shadow-md w-full max-w-2xl mx-auto">
-            <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">{title}</h2>
+            <h2 className="text-center">{title}</h2>
             <Timeline className="relative">
                 {steps.map( ( step, index ) => (
                     <TimelineItem key={step.id}>
