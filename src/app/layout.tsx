@@ -6,7 +6,7 @@ import React from "react";
 import { NotFoundProvider, useNotFound } from "../context/NotFoundContext";
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/NavSidebar';
-import './main.css';
+import './globals.css';
 
 export default function RootLayout( {
     children,
