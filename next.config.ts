@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
 	compiler: {
 		styledComponents: true,
 	},
+	turbopack: {},
 	webpack: ( config ) => {
 		config.module.exprContextCritical = false;
 		return config;
